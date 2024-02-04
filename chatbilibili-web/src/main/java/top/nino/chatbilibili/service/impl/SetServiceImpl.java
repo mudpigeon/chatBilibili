@@ -319,7 +319,5 @@ public class SetServiceImpl implements SetService {
     }
 
 
-    public void setTaskRegisterComponent(TaskRegisterComponent taskRegisterComponent) {
-//        this.taskRegisterComponent = taskRegisterComponent;
-    }
+
 }
