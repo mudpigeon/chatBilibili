@@ -5,14 +5,7 @@ import struct.StructField;
 
 import java.io.Serializable;
 
-/**
- * @ClassName BarrageHeadHandle
- * @Description TODO
- * @author BanqiJane
- * @date 2020年8月10日 下午12:27:54
- *
- * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
- */
+
 @StructClass
 public class BarrageHeadHandle implements Serializable,Cloneable {
 	/**

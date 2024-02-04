@@ -2,6 +2,8 @@ package top.nino.core;
 
 
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -9,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-
+@Slf4j
 public class ProFileTools {
 	private static final String STORE_DIR; // 存入 jar包的绝对路径
 	static {

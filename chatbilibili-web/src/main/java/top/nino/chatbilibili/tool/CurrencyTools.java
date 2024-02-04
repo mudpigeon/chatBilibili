@@ -1,24 +1,37 @@
-package top.nino.core;
+package top.nino.chatbilibili.tool;
 
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
-import top.nino.api.model.PublicDataConf;
+
+import top.nino.api.model.room.LotteryInfoWeb;
+import top.nino.api.model.room.RoomInit;
 import top.nino.api.model.server.HostServer;
+import top.nino.api.model.tools.FastJsonUtils;
+import top.nino.api.model.user.AutoSendGift;
+import top.nino.api.model.user.UserBag;
+import top.nino.api.model.user.UserCookie;
+import top.nino.api.model.user.UserMedal;
+import top.nino.api.model.welcome.BarrageHeadHandle;
+import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.conf.CacheConf;
+import top.nino.chatbilibili.conf.base.CenterSetConf;
+import top.nino.chatbilibili.http.HttpOtherData;
+import top.nino.chatbilibili.http.HttpRoomData;
+import top.nino.chatbilibili.http.HttpUserData;
+import top.nino.chatbilibili.ws.HandleWebsocketPackage;
+import top.nino.core.ByteUtils;
+import top.nino.core.JodaTimeUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-/**
- * @author BanqiJane
- * @ClassName CurrencyTools
- * @Description TODO
- * @date 2020年8月10日 下午12:31:10
- * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
- */
+
 public class CurrencyTools {
     private static Logger LOGGER = LogManager.getLogger(CurrencyTools.class);
 

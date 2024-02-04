@@ -2,8 +2,10 @@ package top.nino.chatbilibili.conf.base;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class ThankLiveSetConf extends LiveSetConf{
     //是否开启屏蔽天选时期的动作

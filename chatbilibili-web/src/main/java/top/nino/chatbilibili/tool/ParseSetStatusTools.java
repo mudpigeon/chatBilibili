@@ -1,6 +1,10 @@
-package top.nino.core;
+package top.nino.chatbilibili.tool;
 
 import org.apache.commons.lang3.StringUtils;
+import top.nino.api.model.enums.*;
+import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.conf.base.CenterSetConf;
+import top.nino.chatbilibili.conf.set.*;
 
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -76,7 +80,7 @@ public class ParseSetStatusTools {
 	*/
 	@Deprecated
 	public static ConcurrentHashMap<ShieldMessage, Boolean> getMessageConcurrentHashMap(CenterSetConf centerSetConf,
-			short live_status) {
+																						short live_status) {
 		ConcurrentHashMap<ShieldMessage, Boolean> messageConcurrentHashMap = new ConcurrentHashMap<ShieldMessage, Boolean>(
 				18);
 		if (centerSetConf.is_barrage_guard()) {

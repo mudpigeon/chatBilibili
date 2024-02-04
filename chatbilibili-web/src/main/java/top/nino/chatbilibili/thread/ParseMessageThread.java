@@ -6,6 +6,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.util.CollectionUtils;
+import top.nino.api.model.auto_reply.AutoReply;
+import top.nino.api.model.enums.ListPeopleShieldStatus;
+import top.nino.api.model.enums.ShieldGift;
+import top.nino.api.model.room.LotteryInfoWeb;
+import top.nino.api.model.superchat.MedalInfo;
+import top.nino.api.model.vo.WsPackage;
+import top.nino.chatbilibili.conf.CacheConf;
 import top.nino.chatbilibili.conf.base.CenterSetConf;
 import top.nino.chatbilibili.conf.base.ThankGiftRuleSet;
 import top.nino.api.model.danmu.*;
@@ -15,8 +22,11 @@ import top.nino.api.model.welcome.WelcomeVip;
 import top.nino.chatbilibili.PublicDataConf;
 import top.nino.chatbilibili.component.BlackParseComponent;
 import top.nino.chatbilibili.component.ThreadComponent;
+import top.nino.chatbilibili.http.HttpUserData;
 import top.nino.chatbilibili.rest.DanmuWebsocket;
 import top.nino.chatbilibili.service.SetService;
+import top.nino.chatbilibili.tool.*;
+import top.nino.core.JodaTimeUtils;
 import top.nino.core.SpringUtils;
 import top.nino.service.chatgpt.ChatGPTService;
 
@@ -24,6 +34,7 @@ import java.util.Arrays;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -1453,7 +1464,7 @@ public class ParseMessageThread extends Thread {
     public void DelayGiftTimeSetting() {
         synchronized (PublicDataConf.parsethankGiftThread) {
             if (PublicDataConf.parsethankGiftThread != null) {
-                threadComponent.startParseThankGiftThread(getCenterSetConf().getThank_gift(), getThankGiftRuleSets());
+//                threadComponent.startParseThankGiftThread(getCenterSetConf().getThank_gift(), getThankGiftRuleSets());
 //				if (PublicDataConf.parsethankGiftThread.getState().toString().equals("TERMINATED")
 //						|| PublicDataConf.parsethankGiftThread.getState().toString().equals("NEW")) {
 //					PublicDataConf.parsethankGiftThread = new ParseThankGiftThread();

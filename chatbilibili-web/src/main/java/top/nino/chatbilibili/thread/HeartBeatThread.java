@@ -1,7 +1,8 @@
 package top.nino.chatbilibili.thread;
 
 
-
+import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.http.HttpHeartBeatData;
 
 public class HeartBeatThread extends Thread{
 //	private static Logger LOGGER = LogManager.getLogger(HeartBeatThread.class);

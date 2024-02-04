@@ -1,8 +1,9 @@
-package top.nino.api.model.user_in_room_barrageMsg;
+package top.nino.chatbilibili.data.user_in_room_barrageMsg;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import top.nino.api.model.PublicDataConf;
+import top.nino.chatbilibili.PublicDataConf;
+
 
 import java.io.Serializable;
 

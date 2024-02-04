@@ -3,6 +3,7 @@ package top.nino.chatbilibili.conf.set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import top.nino.chatbilibili.conf.base.OpenSetConf;
 
@@ -10,6 +11,10 @@ import top.nino.chatbilibili.conf.base.OpenSetConf;
 import java.io.Serializable;
 
 
+/**
+ * @author nino
+ */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

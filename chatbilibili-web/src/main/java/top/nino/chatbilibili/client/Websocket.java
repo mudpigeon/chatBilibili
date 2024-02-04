@@ -6,6 +6,8 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import top.nino.api.model.room.Room;
 import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.thread.ReConnThread;
+import top.nino.chatbilibili.ws.HandleWebsocketPackage;
 
 import java.net.URI;
 import java.net.URISyntaxException;

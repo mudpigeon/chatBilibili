@@ -1,12 +1,16 @@
-package top.nino.api.model.serialize;
+package top.nino.chatbilibili.serialize;
 
 import com.alibaba.fastjson.parser.DefaultJSONParser;
 import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
-import top.nino.api.model.tools.ParseIndentityTools;
+import top.nino.chatbilibili.tool.ParseIndentityTools;
+
 
 import java.lang.reflect.Type;
 
 
+/**
+ * @author nino
+ */
 public class CoinTypeDeserializer implements ObjectDeserializer {
 
     @Override

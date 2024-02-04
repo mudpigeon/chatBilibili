@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-@Component
+
 public class TaskRegisterComponent implements DisposableBean{
 
 	private final Map<SchedulingRunnableUtil, ScheduledTask> scheduledTasks = new ConcurrentHashMap<>(6);
@@ -65,9 +65,9 @@ public class TaskRegisterComponent implements DisposableBean{
 
 	
 	public ScheduledTask scheduledTask(CronTask cronTask) {
-		  ScheduledTask scheduledTask = new ScheduledTask();
-		  scheduledTask.future = this.taskScheduler.schedule(cronTask.getRunnable(), cronTask.getTrigger());
-		  return scheduledTask;
+//		  ScheduledTask scheduledTask = new ScheduledTask();
+//		  scheduledTask.future = this.taskScheduler.schedule(cronTask.getRunnable(), cronTask.getTrigger());
+		  return null;
 	}
 	
 	public int getTaskSize() {

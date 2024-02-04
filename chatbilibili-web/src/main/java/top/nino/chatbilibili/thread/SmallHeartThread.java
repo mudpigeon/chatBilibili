@@ -2,6 +2,11 @@ package top.nino.chatbilibili.thread;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import top.nino.api.model.danmu.RoomInfo;
+import top.nino.api.model.heart.XData;
+import top.nino.api.model.tools.JodaTimeUtils;
+import top.nino.chatbilibili.http.HttpHeartBeatData;
+import top.nino.chatbilibili.http.HttpRoomData;
 
 import java.util.Date;
 
@@ -33,7 +38,7 @@ public class SmallHeartThread extends Thread {
 			if(num==0) {
 				roomInfo = HttpRoomData.httpGetRoomInfo().getRoomInfo();
 				try {
-					setxData(HttpHeartBeatData.httpPostE(roomInfo));	
+					setxData(HttpHeartBeatData.httpPostE(roomInfo));
 				} catch (Exception e) {
 					// TODO: handle exception
 					num=0;

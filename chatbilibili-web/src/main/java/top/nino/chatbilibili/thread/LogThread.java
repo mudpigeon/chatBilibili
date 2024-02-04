@@ -2,7 +2,7 @@ package top.nino.chatbilibili.thread;
 
 import org.apache.commons.lang3.StringUtils;
 import top.nino.chatbilibili.PublicDataConf;
-import top.nino.core.LogFileTools;
+import top.nino.chatbilibili.tool.LogFileTools;
 
 
 /**

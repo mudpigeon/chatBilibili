@@ -1,6 +1,9 @@
-package top.nino.core;
+package top.nino.chatbilibili.tool;
 
 
+
+import top.nino.chatbilibili.PublicDataConf;
+import top.nino.core.FileTools;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -24,7 +27,7 @@ public class GuardFileTools {
 //		file.setWritable(true, false);
 		if (file.exists() == false)
 			file.mkdirs();
-		file = new File(path + "/guards("+PublicDataConf.ROOMID +")"+ ".txt");
+		file = new File(path + "/guards("+ PublicDataConf.ROOMID +")"+ ".txt");
 //		file.setWritable(true, false);
 		if (file.exists() == false)
 			try {

@@ -4,9 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
+import top.nino.api.model.apex.ApexMessage;
+import top.nino.api.model.apex.PredatorResult;
+import top.nino.api.model.auto_reply.AutoReply;
 import top.nino.chatbilibili.PublicDataConf;
-import top.nino.core.CurrencyTools;
+import top.nino.chatbilibili.conf.AutoParamSetConf;
+import top.nino.chatbilibili.conf.set.AutoReplySet;
+import top.nino.chatbilibili.http.HttpRoomData;
+import top.nino.chatbilibili.http.HttpUserData;
+import top.nino.chatbilibili.tool.CurrencyTools;
 import top.nino.core.JodaTimeUtils;
+import top.nino.core.SpringUtils;
+import top.nino.service.chatgpt.ApiService;
 
 
 import java.math.BigDecimal;
@@ -365,224 +374,6 @@ public class AutoReplyThread extends Thread {
 //                weatherSB.delete(0, weatherSB.length());
 //            }
 //        }
-        //weather 天气 v2
-        if (StringUtils.containsAny(replyString, AutoParamSetConf.weather_v2_all_params)) {
-            if (autoReply.getBarrage().contains("天气") && (autoReply.getBarrage().contains("@") || autoReply.getBarrage().contains("#"))) {
-                int path1 = autoReply.getBarrage().indexOf("@") >= 0 ? autoReply.getBarrage().indexOf("@") : autoReply.getBarrage().indexOf("#");
-                int path2 = autoReply.getBarrage().indexOf("天气");
-                String city = autoReply.getBarrage().substring(path1 + 1, path2);
-                StringBuilder weatherSB = new StringBuilder();
-                WeatherV2 weatherV2 = null;
-                if (StringUtils.isBlank(city)) {
-                    city = "北京";
-                }
-                Short day = 0;
-                if (city.endsWith("昨天")) {
-                    city = city.substring(0, city.indexOf("昨天"));
-                    day = -1;
-                } else if (city.endsWith("明天")) {
-                    city = city.substring(0, city.indexOf("明天"));
-                    day = 1;
-                } else if (city.endsWith("后天")) {
-                    city = city.substring(0, city.indexOf("后天"));
-                    day = 2;
-                } else if (city.endsWith("后两天")||city.endsWith("大后天")) {
-                    city = city.substring(0, city.indexOf("后两天"));
-                    day = 3;
-                } else if (city.endsWith("后三天")) {
-                    city = city.substring(0, city.indexOf("后三天"));
-                    day = 4;
-                } else if (city.endsWith("后四天")) {
-                    city = city.substring(0, city.indexOf("后四天"));
-                    day = 5;
-                } else if (city.endsWith("后五天")) {
-                    city = city.substring(0, city.indexOf("后五天"));
-                    day = 6;
-                } else if (city.endsWith("后六天")) {
-                    city = city.substring(0, city.indexOf("后六天"));
-                    day = 7;
-                } else if (city.endsWith("今天")) {
-                    city = city.substring(0, city.indexOf("今天"));
-                    day = 0;
-                } else {
-                    day = 0;
-                }
-                weatherV2 = apiService.getWeatherV2(city, day);
-//                weather = HttpOtherData.httpPostWeather(city, day);
-                if (null != weatherV2) {
-                    if (replyString.contains("%WEATHER%") && !StringUtils.containsAny(replyString, AutoParamSetConf.weather_v2_params)) {
-                        if (day == 0) {
-                            weatherSB.append(weatherV2.getCity()).append(":").append(weatherV2.getDate_parse()).append(weatherV2.getWeek_name())
-                                    .append(",").append(weatherV2.getType()).append(" ").append(weatherV2.getFx())
-                                    .append(weatherV2.getFl()).append(",").append("气温").append(weatherV2.getWendu()).append("℃")
-                                    .append(" ").append("最低").append(weatherV2.getWendu_low()).append(" ").append("最高").append(weatherV2.getWendu_high())
-                                    .append(",").append(weatherV2.getTip());
-                        } else {
-                            weatherSB.append(weatherV2.getCity()).append(":").append(weatherV2.getDate_parse()).append(weatherV2.getWeek_name())
-                                    .append(",").append(weatherV2.getType()).append(" ").append(weatherV2.getFx())
-                                    .append(weatherV2.getFl()).append(",").append("气温").append(":").append("最低")
-                                    .append(weatherV2.getWendu_low()).append(" ").append("最高").append(weatherV2.getWendu_high());
-                        }
-                        if (!replyString.equals("%WEATHER%")) {
-                            replyString = StringUtils.replace(replyString, "%WEATHER%", weatherSB.toString());
-                        } else {
-                            replyString = weatherSB.toString();
-                        }
-                    } else if (!replyString.contains("%WEATHER%") && StringUtils.containsAny(replyString, AutoParamSetConf.weather_v2_params)) {
-                        //城市
-                        if (replyString.contains("%W_CITY%")) {
-                            replyString = StringUtils.replace(replyString, "%W_CITY%", weatherV2.getCity());
-                        }
-                        //时间  格式 多少日星期几
-                        if (replyString.contains("%W_DATE%")) {
-                            replyString = StringUtils.replace(replyString, "%W_DATE%", weatherV2.getDate_parse());
-                        }
-                        //时间 星期几
-                        if (replyString.contains("%W_WEEK%")) {
-                            replyString = StringUtils.replace(replyString, "%W_WEEK%", weatherV2.getWeek_name());
-                        }
-                        //最高温度 包含°C符号
-                        if (replyString.contains("%H_WENDU%")) {
-                            replyString = StringUtils.replace(replyString, "%H_WENDU%", weatherV2.getWendu_high());
-                        }
-                        //最低温度 包含°C符号
-                        if (replyString.contains("%L_WENDU%")) {
-                            replyString = StringUtils.replace(replyString, "%L_WENDU%", weatherV2.getWendu_low());
-                        }
-                        //温度区间 包含°C符号
-                        if (replyString.contains("%WENDU_RANGE%")) {
-                            replyString = StringUtils.replace(replyString, "%WENDU_RANGE%", weatherV2.getWendu_range());
-                        }
-                        // 风向
-                        if (replyString.contains("%W_FX%")) {
-                            replyString = StringUtils.replace(replyString, "%W_FX%", weatherV2.getFx());
-                        }
-                        // 风向 白天
-                        if (replyString.contains("%W_FX_D%")) {
-                            replyString = StringUtils.replace(replyString, "%W_FX_D%", weatherV2.getFx_day());
-                        }
-                        // 风向 晚上
-                        if (replyString.contains("%W_FX_N%")) {
-                            replyString = StringUtils.replace(replyString, "%W_FX_N%", weatherV2.getFx_night());
-                        }
-                        //风力
-                        if (replyString.contains("%W_FL%")) {
-                            replyString = StringUtils.replace(replyString, "%W_FL%", weatherV2.getFl());
-                        }
-
-                        //风力 白天
-                        if (replyString.contains("%W_FL_D%")) {
-                            replyString = StringUtils.replace(replyString, "%W_FL_D%", weatherV2.getFl_day());
-                        }
-
-                        //风力 晚上
-                        if (replyString.contains("%W_FL_N%")) {
-                            replyString = StringUtils.replace(replyString, "%W_FL_N%", weatherV2.getFl_day());
-                        }
-
-                        //天气类型 例如晴天 多云
-                        if (replyString.contains("%W_TYPE%")) {
-                            replyString = StringUtils.replace(replyString, "%W_TYPE%", weatherV2.getType());
-                        }
-
-                        //天气类型 白天
-                        if (replyString.contains("%W_TYPE_D%")) {
-                            replyString = StringUtils.replace(replyString, "%W_TYPE_D%", weatherV2.getType());
-                        }
-
-                        //天气类型 晚上
-                        if (replyString.contains("%W_TYPE_N%")) {
-                            replyString = StringUtils.replace(replyString, "%W_TYPE_N%", weatherV2.getType());
-                        }
-                        //日出
-                        if (replyString.contains("%RICHU%")) {
-                            replyString = StringUtils.replace(replyString, "%RICHU%", weatherV2.getSunriseTime());
-                        }
-                        //日落
-                        if (replyString.contains("%RILUO%")) {
-                            replyString = StringUtils.replace(replyString, "%RILUO%", weatherV2.getSunsetTime());
-                        }
-
-
-                        //分类处理当天没有的
-                        if (day == 0) {
-                            //小提示 只有当天有 未来和过去没有
-                            if (replyString.contains("%W_TIPS%")) {
-                                replyString = StringUtils.replace(replyString, "%W_TIP%", weatherV2.getTip());
-                            }
-                            //温度 包含°C符号 只有当天有 未来和过去没有
-                            if (replyString.contains("%WENDU%")) {
-                                replyString = StringUtils.replace(replyString, "%WENDU%", weatherV2.getWendu());
-                            }
-                            //湿度
-                            if (replyString.contains("%SHIDU%")) {
-                                replyString = StringUtils.replace(replyString, "%SHIDU%", weatherV2.getShidu());
-                            }
-                        } else {
-                            if (replyString.contains("%WENDU%")) {
-                                replyString = StringUtils.replace(replyString, "%WENDU%", "");
-                            }
-                            //感冒小提示 只有当天有 未来和过去没有
-                            if (replyString.contains("%W_TIPS%")) {
-                                replyString = StringUtils.replace(replyString, "%W_TIP%","");
-                            }
-                            //湿度
-                            if (replyString.contains("%SHIDU%")) {
-                                replyString = StringUtils.replace(replyString, "%SHIDU%", "");
-                            }
-                        }
-                        //小提示子类
-                        if(!CollectionUtils.isEmpty(weatherV2.getTipMap())){
-                            //小提示之洗车
-                            if (replyString.contains("%W_TIP_XICHE%")) {
-                                replyString = StringUtils.replace(replyString, "%W_TIP_XICHE%", weatherV2.tipParse("洗车"));
-                            }
-                            //小提示之出游
-                            if (replyString.contains("%W_TIP_CHUYOU%")) {
-                                replyString = StringUtils.replace(replyString, "%W_TIP_CHUYOU%", weatherV2.tipParse("出游"));
-                            }
-                            //小提示之化妆
-                            if (replyString.contains("%W_TIP_HUAZHUANG%")) {
-                                replyString = StringUtils.replace(replyString, "%W_TIP_HUAZHUANG%", weatherV2.tipParse("化妆"));
-                            }
-                            //小提示之穿衣
-                            if (replyString.contains("%W_TIP_CHUANYI%")) {
-                                replyString = StringUtils.replace(replyString, "%W_TIP_CHUANYI%", weatherV2.tipParse("穿衣"));
-                            }
-                            //小提示之感冒
-                            if (replyString.contains("%W_TIP_GANMAO%")) {
-                                replyString = StringUtils.replace(replyString, "%%", weatherV2.tipParse("感冒"));
-                            }
-                        }else{
-                            //小提示之洗车
-                            if (replyString.contains("%W_TIP_XICHE%")) {
-                                replyString = StringUtils.replace(replyString, "%W_TIP_XICHE%", weatherV2.tipParse(""));
-                            }
-                            //小提示之出游
-                            if (replyString.contains("%W_TIP_CHUYOU%")) {
-                                replyString = StringUtils.replace(replyString, "%W_TIP_CHUYOU%", weatherV2.tipParse(""));
-                            }
-                            //小提示之化妆
-                            if (replyString.contains("%W_TIP_HUAZHUANG%")) {
-                                replyString = StringUtils.replace(replyString, "%W_TIP_HUAZHUANG%", weatherV2.tipParse(""));
-                            }
-                            //小提示之穿衣
-                            if (replyString.contains("%W_TIP_CHUANYI%")) {
-                                replyString = StringUtils.replace(replyString, "%W_TIP_CHUANYI%", weatherV2.tipParse(""));
-                            }
-                            //小提示之感冒
-                            if (replyString.contains("%W_TIP_GANMAO%")) {
-                                replyString = StringUtils.replace(replyString, "%%", weatherV2.tipParse(""));
-                            }
-                        }
-                    }
-                    replyString = StringUtils.replace(replyString,"℃","度");
-                } else {
-                    replyString = "";
-                }
-                weatherSB.delete(0, weatherSB.length());
-            }
-        }
 
         //apex 排位 v1
         if (StringUtils.containsAny(replyString, AutoParamSetConf.apex_rank_params)) {

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import top.nino.api.model.serialize.CoinTypeDeserializer;
+
 
 
 import java.io.Serializable;
@@ -23,7 +23,7 @@ public class RoomGift implements Serializable{
 	private Integer type;
 	private Integer effect;
 	//类型不同 不给他反序列化了
-	@JSONField(deserializeUsing = CoinTypeDeserializer.class)
+//	@JSONField(deserializeUsing = CoinTypeDeserializer.class)
 	private Short coin_type;
 	private Integer stay_time;
 	private String desc;

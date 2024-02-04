@@ -56,7 +56,7 @@ public interface ThreadComponent {
 	boolean startWelcomeShieldThread(int time);
 
 	// 开启public的礼物感谢线程
-	void startParseThankGiftThread(ThankGiftSetConf thankGiftSetConf, HashSet<ThankGiftRuleSet> thankGiftRuleSets);
+//	void startParseThankGiftThread(ThankGiftSetConf thankGiftSetConf, HashSet<ThankGiftRuleSet> thankGiftRuleSets);
 
 	// 开启public的关注感谢线程
 	void startParseThankFollowThread(ThankFollowSetConf thankFollowSetConf);

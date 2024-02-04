@@ -1,5 +1,6 @@
 package top.nino.api.model.room;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class CheckTx implements Serializable{
 	/**
 	 * 
@@ -16,7 +18,7 @@ public class CheckTx implements Serializable{
 	private Long room_id;
 	private String gift_name;
 	private Short time;
-	
 
-	
+
+
 }

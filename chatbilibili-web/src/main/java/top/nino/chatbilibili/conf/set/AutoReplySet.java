@@ -4,6 +4,7 @@ package top.nino.chatbilibili.conf.set;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import top.nino.chatbilibili.conf.base.OpenSetConf;
 
@@ -14,6 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

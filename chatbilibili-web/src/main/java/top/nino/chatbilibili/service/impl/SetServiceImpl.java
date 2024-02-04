@@ -15,6 +15,8 @@ import top.nino.chatbilibili.PublicDataConf;
 import top.nino.chatbilibili.http.HttpOtherData;
 import top.nino.chatbilibili.service.ClientService;
 import top.nino.chatbilibili.service.SetService;
+import top.nino.chatbilibili.tool.CurrencyTools;
+import top.nino.chatbilibili.tool.ParseSetStatusTools;
 import top.nino.core.*;
 
 
@@ -30,7 +32,6 @@ public class SetServiceImpl implements SetService {
     private ClientService clientService;
     private ThreadComponent threadComponent;
     private ServerAddressComponent serverAddressComponent;
-    private TaskRegisterComponent taskRegisterComponent;
 
 
     public void init() {
@@ -185,12 +186,12 @@ public class SetServiceImpl implements SetService {
                 if (isSign) {
                     changeSet(PublicDataConf.centerSetConf);
                 }
-                if (!taskRegisterComponent.hasTask(task)) {
-                    taskRegisterComponent.addTask(task, CurrencyTools.dateStringToCron(centerSetConf.getSign_time()));
-                }
+//                if (!taskRegisterComponent.hasTask(task)) {
+//                    taskRegisterComponent.addTask(task, CurrencyTools.dateStringToCron(centerSetConf.getSign_time()));
+//                }
             } else {
                 try {
-                    taskRegisterComponent.removeTask(task);
+//                    taskRegisterComponent.removeTask(task);
                 } catch (Exception e) {
                     // TODO 自动生成的 catch 块
                     LOGGER.error("清理定时任务错误：" + e);
@@ -199,12 +200,12 @@ public class SetServiceImpl implements SetService {
 
             // 每日打卡
             if (centerSetConf.getClock_in().is_open()) {
-                if (!taskRegisterComponent.hasTask(dakatask)) {
-                    taskRegisterComponent.addTask(dakatask, CurrencyTools.dateStringToCron(centerSetConf.getClock_in().getTime()));
-                }
+//                if (!taskRegisterComponent.hasTask(dakatask)) {
+//                    taskRegisterComponent.addTask(dakatask, CurrencyTools.dateStringToCron(centerSetConf.getClock_in().getTime()));
+//                }
             } else {
                 try {
-                    taskRegisterComponent.removeTask(dakatask);
+//                    taskRegisterComponent.removeTask(dakatask);
                 } catch (Exception e) {
                     // TODO 自动生成的 catch 块
                     LOGGER.error("清理定时任务错误：" + e);
@@ -213,12 +214,12 @@ public class SetServiceImpl implements SetService {
 
             // 每日定时自动送礼
             if (centerSetConf.getAuto_gift().is_open()) {
-                if (!taskRegisterComponent.hasTask(autoSendGiftTask)) {
-                    taskRegisterComponent.addTask(autoSendGiftTask, CurrencyTools.dateStringToCron(centerSetConf.getAuto_gift().getTime()));
-                }
+//                if (!taskRegisterComponent.hasTask(autoSendGiftTask)) {
+//                    taskRegisterComponent.addTask(autoSendGiftTask, CurrencyTools.dateStringToCron(centerSetConf.getAuto_gift().getTime()));
+//                }
             } else {
                 try {
-                    taskRegisterComponent.removeTask(autoSendGiftTask);
+//                    taskRegisterComponent.removeTask(autoSendGiftTask);
                 } catch (Exception e) {
                     // TODO 自动生成的 catch 块
                     LOGGER.error("清理定时任务错误：" + e);
@@ -292,7 +293,7 @@ public class SetServiceImpl implements SetService {
         threadComponent.closeUser(true);
         // remove task all shutdown !!!!!!
         try {
-            taskRegisterComponent.destroy();
+//            taskRegisterComponent.destroy();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
             LOGGER.error("清理定时任务错误：" + e);
@@ -317,8 +318,8 @@ public class SetServiceImpl implements SetService {
         this.serverAddressComponent = serverAddressComponent;
     }
 
-    @Autowired
+
     public void setTaskRegisterComponent(TaskRegisterComponent taskRegisterComponent) {
-        this.taskRegisterComponent = taskRegisterComponent;
+//        this.taskRegisterComponent = taskRegisterComponent;
     }
 }

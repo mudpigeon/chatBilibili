@@ -3,7 +3,15 @@ package top.nino.chatbilibili.thread;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import top.nino.api.model.danmu.Gift;
+import top.nino.api.model.enums.ListGiftShieldStatus;
+import top.nino.api.model.enums.ListPeopleShieldStatus;
+import top.nino.api.model.enums.ShieldGift;
+import top.nino.api.model.enums.ThankGiftStatus;
 import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.conf.base.ThankGiftRuleSet;
+import top.nino.chatbilibili.tool.ParseSetStatusTools;
+import top.nino.chatbilibili.tool.ShieldGiftTools;
 
 
 import java.util.HashSet;

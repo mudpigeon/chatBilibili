@@ -4,13 +4,17 @@ package top.nino.chatbilibili.conf.set;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import top.nino.chatbilibili.PublicDataConf;
 import top.nino.chatbilibili.conf.base.ThankLiveSetConf;
 
 
 import java.io.Serializable;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

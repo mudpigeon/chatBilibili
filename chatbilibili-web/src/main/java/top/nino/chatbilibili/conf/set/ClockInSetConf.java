@@ -3,16 +3,21 @@ package top.nino.chatbilibili.conf.set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import top.nino.api.model.tools.JodaTimeUtils;
 import top.nino.chatbilibili.conf.base.OpenSetConf;
 
 
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author nino
+ */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class ClockInSetConf extends OpenSetConf implements Serializable {
 
     private static final long serialVersionUID = 3354141280551660852L;

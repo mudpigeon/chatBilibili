@@ -3,6 +3,7 @@ package top.nino.chatbilibili.thread;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import top.nino.api.model.enums.AdvertStatus;
 import top.nino.chatbilibili.PublicDataConf;
 
 

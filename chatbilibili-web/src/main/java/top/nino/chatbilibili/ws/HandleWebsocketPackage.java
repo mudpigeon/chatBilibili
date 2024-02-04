@@ -2,6 +2,8 @@ package top.nino.chatbilibili.ws;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import struct.JavaStruct;
+import struct.StructException;
 import top.nino.api.model.welcome.BarrageHeadHandle;
 import top.nino.chatbilibili.PublicDataConf;
 import top.nino.core.ByteUtils;

@@ -3,6 +3,7 @@ package top.nino.chatbilibili.conf.set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import top.nino.chatbilibili.PublicDataConf;
@@ -14,6 +15,10 @@ import top.nino.chatbilibili.conf.base.TimingLiveSetConf;
 import java.io.Serializable;
 
 
+/**
+ * @author nino
+ */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

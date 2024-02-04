@@ -4,7 +4,10 @@ package top.nino.chatbilibili.conf.set;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import top.nino.chatbilibili.PublicDataConf;
 import top.nino.chatbilibili.conf.base.ThankLiveSetConf;
 
 
@@ -15,9 +18,9 @@ import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class ThankGiftSetConf extends ThankLiveSetConf implements Serializable{
 	
 	/**

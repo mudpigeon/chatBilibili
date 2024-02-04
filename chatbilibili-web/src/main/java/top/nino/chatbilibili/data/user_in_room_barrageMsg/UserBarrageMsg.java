@@ -1,7 +1,6 @@
-package top.nino.api.model.user_in_room_barrageMsg;
+package top.nino.chatbilibili.data.user_in_room_barrageMsg;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

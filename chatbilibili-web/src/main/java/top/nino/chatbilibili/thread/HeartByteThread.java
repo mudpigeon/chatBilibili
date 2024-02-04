@@ -1,6 +1,8 @@
 package top.nino.chatbilibili.thread;
 
 
+import top.nino.chatbilibili.PublicDataConf;
+import top.nino.core.HexUtils;
 
 /**
  * 心跳检测线程

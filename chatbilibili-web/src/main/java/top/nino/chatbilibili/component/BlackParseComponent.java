@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import top.nino.api.model.auto_reply.AutoReply;
+import top.nino.api.model.danmu.Gift;
 import top.nino.api.model.danmu.Interact;
 import top.nino.chatbilibili.PublicDataConf;
 

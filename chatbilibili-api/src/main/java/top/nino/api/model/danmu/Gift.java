@@ -1,7 +1,7 @@
 package top.nino.api.model.danmu;
 
 import lombok.Data;
-import xyz.acproject.danmuji.entity.superchat.MedalInfo;
+import top.nino.api.model.superchat.MedalInfo;
 
 import java.io.Serializable;
 

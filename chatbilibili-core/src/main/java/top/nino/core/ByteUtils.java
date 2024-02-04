@@ -3,6 +3,8 @@ package top.nino.core;
 
 
 
+import org.apache.commons.compress.compressors.brotli.BrotliCompressorInputStream;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

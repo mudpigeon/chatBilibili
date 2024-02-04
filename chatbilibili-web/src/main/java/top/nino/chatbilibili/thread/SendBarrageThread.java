@@ -3,7 +3,8 @@ package top.nino.chatbilibili.thread;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.http.HttpUserData;
 
 
 public class SendBarrageThread extends Thread {

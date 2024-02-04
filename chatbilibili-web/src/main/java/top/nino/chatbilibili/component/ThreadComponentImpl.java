@@ -2,6 +2,13 @@ package top.nino.chatbilibili.component;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.conf.base.CenterSetConf;
+import top.nino.chatbilibili.conf.base.ThankGiftRuleSet;
+import top.nino.chatbilibili.conf.set.*;
+import top.nino.chatbilibili.http.HttpOtherData;
+import top.nino.chatbilibili.thread.*;
+import top.nino.chatbilibili.tool.ParseSetStatusTools;
 
 
 import java.util.HashSet;
@@ -63,13 +70,13 @@ public class ThreadComponentImpl implements ThreadComponent {
 		HashSet<ThankGiftRuleSet> thankGiftRuleSets = new HashSet<>();
 
 		// thankGiftRuleSets
-		for (Iterator<ThankGiftRuleSet> iterator = centerSetConf.getThank_gift().getThankGiftRuleSets()
-				.iterator(); iterator.hasNext();) {
-			ThankGiftRuleSet thankGiftRuleSet = iterator.next();
-			if (thankGiftRuleSet.is_open()) {
-				thankGiftRuleSets.add(thankGiftRuleSet);
-			}
-		}
+//		for (Iterator<ThankGiftRuleSet> iterator = centerSetConf.getThank_gift().getThankGiftRuleSets()
+//				.iterator(); iterator.hasNext();) {
+//			ThankGiftRuleSet thankGiftRuleSet = iterator.next();
+//			if (thankGiftRuleSet.is_open()) {
+//				thankGiftRuleSets.add(thankGiftRuleSet);
+//			}
+//		}
 
 		if (PublicDataConf.parseMessageThread != null && !PublicDataConf.parseMessageThread.getState().toString().equals("TERMINATED")) {
 			PublicDataConf.parseMessageThread.setCenterSetConf(centerSetConf);
@@ -362,9 +369,9 @@ public class ThreadComponentImpl implements ThreadComponent {
 		}
 	}
 
-	@Override
+
 	public void startParseThankGiftThread(ThankGiftSetConf thankGiftSetConf,
-			HashSet<ThankGiftRuleSet> thankGiftRuleSets) {
+										  HashSet<ThankGiftRuleSet> thankGiftRuleSets) {
 		// TODO 自动生成的方法存根
 		if (PublicDataConf.parsethankGiftThread == null) {
 			PublicDataConf.parsethankGiftThread = new ParseThankGiftThread();
@@ -442,13 +449,13 @@ public class ThreadComponentImpl implements ThreadComponent {
 		if (PublicDataConf.parseMessageThread != null) {
 			HashSet<ThankGiftRuleSet> thankGiftRuleSets = new HashSet<>();
 			// thankGiftRuleSets
-			for (Iterator<ThankGiftRuleSet> iterator = centerSetConf.getThank_gift().getThankGiftRuleSets()
-					.iterator(); iterator.hasNext();) {
-				ThankGiftRuleSet thankGiftRuleSet = iterator.next();
-				if (thankGiftRuleSet.is_open()) {
-					thankGiftRuleSets.add(thankGiftRuleSet);
-				}
-			}
+//			for (Iterator<ThankGiftRuleSet> iterator = centerSetConf.getThank_gift().getThankGiftRuleSets()
+//					.iterator(); iterator.hasNext();) {
+//				ThankGiftRuleSet thankGiftRuleSet = iterator.next();
+//				if (thankGiftRuleSet.is_open()) {
+//					thankGiftRuleSets.add(thankGiftRuleSet);
+//				}
+//			}
 			PublicDataConf.parseMessageThread.setCenterSetConf(centerSetConf);
 			PublicDataConf.parseMessageThread.setThankGiftRuleSets(thankGiftRuleSets);
 		}

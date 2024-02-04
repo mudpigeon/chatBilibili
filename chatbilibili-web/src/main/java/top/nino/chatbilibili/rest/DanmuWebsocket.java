@@ -4,6 +4,7 @@ package top.nino.chatbilibili.rest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import top.nino.chatbilibili.http.HttpUserData;
 
 
 import javax.websocket.*;

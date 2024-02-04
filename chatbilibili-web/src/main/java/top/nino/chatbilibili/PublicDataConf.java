@@ -12,7 +12,7 @@ import top.nino.api.model.user.AutoSendGift;
 import top.nino.api.model.user.User;
 import top.nino.api.model.user.UserCookie;
 import top.nino.api.model.user.UserManager;
-import top.nino.api.model.user_in_room_barrageMsg.UserBarrageMsg;
+import top.nino.chatbilibili.data.user_in_room_barrageMsg.UserBarrageMsg;
 import top.nino.chatbilibili.client.WebSocketProxy;
 import top.nino.chatbilibili.thread.*;
 

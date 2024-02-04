@@ -3,6 +3,8 @@ package top.nino.api.model.room;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import top.nino.api.model.tools.JodaTimeUtils;
 
 
 import java.io.Serializable;
