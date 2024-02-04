@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
+import top.nino.chatbilibili.PublicDataConf;
+import top.nino.core.CurrencyTools;
+import top.nino.core.JodaTimeUtils;
 
 
 import java.math.BigDecimal;
@@ -184,7 +187,7 @@ public class AutoReplyThread extends Thread {
         if (!replyString.equals("%TIME%")) {
             replyString = StringUtils.replace(replyString, "%TIME%", JodaTimeUtils.format(new Date(),TimeZone.getTimeZone("GMT+08:00"),"yyyy-MM-dd HH:mm:ss"));
         } else {
-            replyString =JodaTimeUtils.format(new Date(),TimeZone.getTimeZone("GMT+08:00"),"yyyy-MM-dd HH:mm:ss");
+            replyString = JodaTimeUtils.format(new Date(),TimeZone.getTimeZone("GMT+08:00"),"yyyy-MM-dd HH:mm:ss");
         }
         // 替换%LIVETIME%
         if (!replyString.equals("%LIVETIME%")) {

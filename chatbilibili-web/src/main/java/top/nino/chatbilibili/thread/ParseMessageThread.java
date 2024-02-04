@@ -7,15 +7,29 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 import top.nino.api.model.conf.CenterSetConf;
+import top.nino.api.model.conf.ThankGiftRuleSet;
+import top.nino.api.model.danmu.*;
+import top.nino.api.model.superchat.SuperChat;
+import top.nino.api.model.welcome.WelcomeGuard;
+import top.nino.api.model.welcome.WelcomeVip;
+import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.component.BlackParseComponent;
+import top.nino.chatbilibili.component.ThreadComponent;
+import top.nino.chatbilibili.rest.DanmuWebsocket;
+import top.nino.chatbilibili.service.SetService;
 import top.nino.core.SpringUtils;
 import top.nino.service.chatgpt.ChatGPTService;
 
 import java.util.Arrays;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * @author nino
+ */
 public class ParseMessageThread extends Thread {
     private final static Logger LOGGER = LogManager.getLogger(ParseMessageThread.class);
 
