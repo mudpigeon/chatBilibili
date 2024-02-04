@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
  * @date : 2024/2/4 20:48
  */
 @RestController
-@RequestMapping("/hello")
+@RequestMapping("/")
 public class TestController {
 
     @GetMapping("/word")
     public void hello() {
         System.out.println("helloWorld");
     }
+
+
 }

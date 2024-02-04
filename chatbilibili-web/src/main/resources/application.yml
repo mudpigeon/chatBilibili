@@ -1,5 +1,5 @@
 server:
-  port: 23333
+  port: 1999
   servlet:
   encoding:
     force: true

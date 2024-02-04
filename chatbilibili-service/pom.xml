@@ -23,6 +23,10 @@
             <groupId>top.nino</groupId>
             <artifactId>chatbilibili-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.codingguide</groupId>
+            <artifactId>chatgpt4j</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

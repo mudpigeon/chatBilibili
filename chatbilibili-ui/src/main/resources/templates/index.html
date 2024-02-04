@@ -4,11 +4,110 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link href="../static/css/semantic.min.css" th:href="@{/css/semantic.min.css}" rel="stylesheet" type="text/css">
-    <script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script src="../static/js/jquery-3.7.0.min.js" th:src="@{/js/jquery-3.7.0.min.js}"></script>
     <script src="../static/js/semantic.min.js" th:src="@{/js/semantic.min.js}"></script>
 </head>
 <body>
-    <button class="ui green button">green</button>
-    <h1>HelloWorld</h1>
+
+
+    <div class="ui fixed inverted menu">
+        <div class="ui container">
+            <a href="#" class="header item">
+                chatBilibili
+            </a>
+            <a href="#" class="item">B站直播区</a>
+        </div>
+    </div>
+
+<br><br><br>
+
+    <!--非互动，会隐藏的元素-->
+    <div class="ui page dimmer pageDimmer">
+        <div class="ui container">
+            <div class="ui two column centered grid">
+                <div class="ui column">
+
+                    <div class="ui centered grid">
+                        <img class="ui image" src="../static/img/null.png">
+                    </div>
+                </div>
+                <div class="ui column">
+                    <br><br><br><br><br><br><br>
+                    <div class="ui fluid action input">
+                        <input class="cookieValue" type="text" placeholder="输入你的cookie...">
+                        <div class="ui button setCookieButton">确认</div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui vertical divider">
+                <span style="color:white">Or</span>
+            </div>
+        </div>
+    </div>
+    <!---->
+
+    <div class="ui container">
+        <div class="ui segments">
+            <div class="ui segment">
+                <button class=" fluid ui  pink color  button loginButton">
+                    登录
+                </button>
+            </div>
+            <div class="ui segment">
+                <p>B站直播房间</p>
+            </div>
+            <div class="ui secondary segment">
+                <p>当前未连接到任何房间...</p>
+            </div>
+            <div class="ui segment">
+                <button class=" fluid ui green color  button">
+                    连接
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 显示登录页面 -->
+    <script type="text/javascript">
+        $(document).on('click', '.loginButton', function (e) {
+            $('.pageDimmer').dimmer('show');
+        });
+    </script>
+
+    <!-- 自定义cookie -->
+    <script type="text/javascript">
+        function loginByCookie(cookieValue) {
+            $.ajax({
+                url: '../web/loginByCookie',
+                async: false,
+                cache: false,
+                type: 'POST',
+                data: {
+                    cookieValue: cookieValue
+                },
+                dataType: 'json',
+                success: function (data) {
+                    const flag = data.result;
+                    if (flag == true) {
+                        // 提示设定成功：showMessage("cookie设定成功", "success","2");
+                        $(".cookieValue").val("");
+
+                        // 延迟1秒后执行页面刷新
+                        setTimeout(function(){
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        // 提示错误： showMessage("cookie错误", "danger","3");
+                    }
+                }
+            })
+        }
+
+        $(document).on('click', '.setCookieButton', function () {
+            const cookieValue = $(".cookieValue").val();
+            loginByCookie(cookieValue);
+        });
+    </script>
 </body>
 </html>
