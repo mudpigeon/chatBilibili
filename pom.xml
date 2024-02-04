@@ -16,11 +16,13 @@
         <version>2.7.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>top.nino.chatbilibili</groupId>
     <artifactId>chatbilibili</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>chatbilibili</name>
     <description>chatbilibili</description>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -46,6 +48,29 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>top.nino</groupId>
+                <artifactId>chatbilibili-api</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>top.nino</groupId>
+                <artifactId>chatbilibili-core</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>top.nino</groupId>
+                <artifactId>chatbilibili-service</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>top.nino</groupId>
+                <artifactId>chatbilibili-ui</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -58,8 +83,6 @@
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybaits-plus.version}</version>
             </dependency>
-
-
 
             <dependency>
                 <groupId>com.github.liuyueyi.media</groupId>
@@ -106,6 +129,14 @@
                 <version>${mapstruct.version}</version>
                 <scope>compile</scope>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/cn.codingguide/chatgpt4j -->
+            <dependency>
+                <groupId>cn.codingguide</groupId>
+                <artifactId>chatgpt4j</artifactId>
+                <version>1.0.1</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

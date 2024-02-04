@@ -7,26 +7,15 @@ server:
     enabled: true
 
 spring:
-  #开放spring完全循环构造引入
-  main:
-    allow-circular-references: true
-  thymeleaf:
-    prefix : classpath:/templates/
-    suffix : .html
-    cache: false
-    encoding: UTF-8
-    mode: HTML5
+  #  Spring Boot 2.4为了提升对Kubernetes的支持 将 spring.profiles 作废了
+  #  profiles:
+  #    active: dal,web,config,image
+  # 替换上面作废的spring.profiels.actice配置参数
+  config:
+    import: application-web.yml,application-ai.yml
   mvc:
-    static-path-pattern: /**
-    resources:
-      chain:
-        strategy:
-          content:
-            paths: /**
-            enabled: true
-      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
-
-
+    async:
+      request-timeout:
 
 chatBilibili:
   version: 0.1.0

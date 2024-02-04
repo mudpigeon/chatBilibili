@@ -20,8 +20,15 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>top.nino</groupId>
+            <artifactId>chatbilibili-ui</artifactId>
+        </dependency>
 
-
+        <dependency>
+            <groupId>top.nino</groupId>
+            <artifactId>chatbilibili-service</artifactId>
+        </dependency>
 
         <!--   以下为基础依赖  -->
         <dependency>
@@ -34,10 +41,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -69,9 +72,6 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
         </dependency>
-
-
-
 
 
         <!-- 引入 Apache collcections -->
@@ -106,6 +106,11 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.codingguide</groupId>
+            <artifactId>chatgpt4j</artifactId>
         </dependency>
     </dependencies>
 
