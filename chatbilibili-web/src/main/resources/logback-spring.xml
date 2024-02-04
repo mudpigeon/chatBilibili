@@ -3,7 +3,7 @@
     <!-- fixme 知识点：logback配置变量的姿势，如何读取Spring配置参数   -->
     <springProperty scope="context" name="log.path" source="log.path" defaultValue="logs"/>
     <springProperty scope="context" name="log.env" source="env.name" defaultValue="NO"/>
-    <property name="log.service.name" value="pai"/>
+    <property name="log.service.name" value="chatBilibili"/>
     <property name="log.req.name" value="req"/>
 
 
@@ -19,7 +19,7 @@
     </appender>
 
     <!-- 当出现error异常日志时，邮件报警   -->
-<!--    <appender name="errorAlarm" class="com.github.paicoding.forum.core.util.AlarmUtil">-->
+<!--    <appender name="errorAlarm" class="top.nino.chatbilibili.core.util.AlarmUtil">-->
 <!--        &lt;!&ndash;如果只是想要 Error 级别的日志，那么需要过滤一下，默认是 info 级别的，ThresholdFilter&ndash;&gt;-->
 <!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
 <!--            <level>ERROR</level>-->
@@ -92,7 +92,7 @@
     <!-- 指定项目中某个包，当有日志操作行为时的日志记录级别 -->
     <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->
     <!-- additivity=false 表示匹配之后，不再继续传递给其他的logger-->
-<!--    <logger name="com.github.paicoding.forum" level="INFO" additivity="false">-->
+<!--    <logger name="top.nino.chatbilibili" level="INFO" additivity="false">-->
 <!--        <appender-ref ref="service"/>-->
 <!--        <appender-ref ref="STDOUT"/>-->
 <!--        <appender-ref ref="errorAlarm"/>-->

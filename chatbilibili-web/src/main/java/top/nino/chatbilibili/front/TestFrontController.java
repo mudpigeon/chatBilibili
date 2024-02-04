@@ -1,5 +1,6 @@
 package top.nino.chatbilibili.front;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,13 +12,14 @@ import javax.servlet.http.HttpServletRequest;
  * @author : zengzhongjie
  * @date : 2024/2/4 20:48
  */
+@Slf4j
 @Controller
-@RequestMapping("/front")
+@RequestMapping
 public class TestFrontController {
 
     @GetMapping(value = {"/", "/index"})
     public String index(HttpServletRequest req, Model model) {
-        System.out.println();
+        log.info("日志打印");
         return "index";
     }
 }
