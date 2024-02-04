@@ -1,4 +1,4 @@
-package top.nino.api.model.conf;
+package top.nino.chatbilibili.conf.base;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;

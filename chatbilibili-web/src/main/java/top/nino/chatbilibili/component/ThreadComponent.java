@@ -2,7 +2,12 @@ package top.nino.chatbilibili.component;
 
 
 
-import top.nino.api.model.conf.CenterSetConf;
+import top.nino.chatbilibili.conf.base.CenterSetConf;
+import top.nino.chatbilibili.conf.base.ThankGiftRuleSet;
+import top.nino.chatbilibili.conf.set.AdvertSetConf;
+import top.nino.chatbilibili.conf.set.AutoReplySetConf;
+import top.nino.chatbilibili.conf.set.ThankFollowSetConf;
+import top.nino.chatbilibili.conf.set.ThankWelcomeSetConf;
 
 import java.util.HashSet;
 

@@ -3,7 +3,7 @@ package top.nino.chatbilibili;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import top.nino.api.model.auto_reply.AutoReply;
-import top.nino.api.model.conf.CenterSetConf;
+import top.nino.chatbilibili.conf.base.CenterSetConf;
 import top.nino.api.model.danmu.Gift;
 import top.nino.api.model.danmu.Interact;
 import top.nino.api.model.enums.LiveStatusEnum;

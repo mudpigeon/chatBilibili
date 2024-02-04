@@ -1,4 +1,4 @@
-package top.nino.api.model.conf;
+package top.nino.chatbilibili.conf.base;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
@@ -8,6 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
+
+import top.nino.api.model.tools.FastJsonUtils;
+import top.nino.chatbilibili.conf.set.*;
+import top.nino.core.BASE64Encoder;
 
 import java.io.IOException;
 import java.io.Serializable;

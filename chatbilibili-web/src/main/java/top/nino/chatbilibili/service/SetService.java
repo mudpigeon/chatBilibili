@@ -1,7 +1,7 @@
 package top.nino.chatbilibili.service;
 
 
-import top.nino.api.model.conf.CenterSetConf;
+import top.nino.chatbilibili.conf.base.CenterSetConf;
 
 public interface SetService {
 	void init();

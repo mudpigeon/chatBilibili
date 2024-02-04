@@ -16,7 +16,7 @@ public class RoomInit {
 	private Boolean is_hidden;
 	private Boolean is_portrait;
 	//0为不直播  1为直播中 2为轮播
-	private Short live_status;
+	private Integer live_status;
 	private Short hidden_till;
 	private Short lock_till;
 	private Boolean encrypted;
