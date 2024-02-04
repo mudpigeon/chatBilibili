@@ -1,0 +1,32 @@
+server:
+  port: 23333
+  servlet:
+  encoding:
+    force: true
+    charset: UTF-8
+    enabled: true
+
+spring:
+  #开放spring完全循环构造引入
+  main:
+    allow-circular-references: true
+  thymeleaf:
+    prefix : classpath:/templates/
+    suffix : .html
+    cache: false
+    encoding: UTF-8
+    mode: HTML5
+  mvc:
+    static-path-pattern: /**
+    resources:
+      chain:
+        strategy:
+          content:
+            paths: /**
+            enabled: true
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+
+
+
+chatBilibili:
+  version: 0.1.0
