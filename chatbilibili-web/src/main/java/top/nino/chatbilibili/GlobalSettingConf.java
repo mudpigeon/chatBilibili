@@ -33,8 +33,8 @@ public class GlobalSettingConf {
 
 	//------------- 2.运行中加载/缓存的数据-----------开始----------------------
 
-	// 房间号
-	public static Long ROOMID;
+	// 设置
+	public static CenterSetConf centerSetConf;
 
 	// cookie String串
 	public static String COOKIE_VALUE;
@@ -45,8 +45,17 @@ public class GlobalSettingConf {
 	// user信息（应该是验证cookie有效后才有数值）
 	public static User USER;
 
-	// 设置
-	public static CenterSetConf centerSetConf;
+	// 房间号
+	public static Long ROOMID;
+
+	// 短号
+	public static Integer SHORTROOMID = null;
+
+	// 主播uid
+	public static Long AUID = null;
+
+	// user弹幕长度
+	public static UserBarrageMsg USER_BARRAGE_MESSAGE;
 
 	//websocket客户端主线程
 	public static WebSocketProxy webSocketProxy;
@@ -57,12 +66,6 @@ public class GlobalSettingConf {
 	// url 直播弹幕websocket地址
 	public static String URL = "wss://broadcastlv.chat.bilibili.com:2245/sub";
 
-
-	// 短号
-	public static Integer SHORTROOMID = null;
-
-	// 主播uid
-	public static Long AUID = null;
 
 	// 主播粉丝数
 	public static Long FANSNUM =null;
@@ -85,8 +88,7 @@ public class GlobalSettingConf {
 	// 直播状态 0不直播 1直播 2轮播
 	public static Integer lIVE_STATUS = LiveStatusEnum.CLOSED.getCode();
 
-	// user弹幕长度
-	public static UserBarrageMsg USERBARRAGEMESSAGE = null;
+
 
 	// user房间管理信息
 	public static UserManager USERMANAGER = null;
@@ -234,7 +236,7 @@ public class GlobalSettingConf {
 		GlobalSettingConf.USER_COOKIE_INFO = null;
 		GlobalSettingConf.USER = null;
 		GlobalSettingConf.COOKIE_VALUE = null;
-		GlobalSettingConf.USERBARRAGEMESSAGE = null;
+		GlobalSettingConf.USER_BARRAGE_MESSAGE = null;
 	}
 
 	public static void init_send(){

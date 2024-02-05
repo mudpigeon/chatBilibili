@@ -212,134 +212,68 @@ public class HttpUserData {
         return data;
     }
 
-    /**
-     * 单点登录系统获取
-     */
-    public static List<String> httpPostSsoList() {
-        String data = null;
-        JSONObject jsonObject = null;
-        List<String> ssoList = new ArrayList<>();
-        Map<String, String> headers = null;
-        headers = new HashMap<>(3);
-        Map<String, String> params = null;
-        headers.put("user-agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-        if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-            headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
-        }
-        headers.put("Referer", "https://www.bilibili.com/");
-        params = new HashMap<>(2);
-        params.put("csrf", "");
-        try {
-            data = OkHttp3Utils.getHttp3Utils().httpPostForm("https://passport.bilibili.com/x/passport-login/web/sso/list", headers, null)
-                    .body().string();
-        } catch (Exception e) {
-            log.error(String.valueOf(e));
-            data = null;
-        }
-        if (data == null)
-            return ssoList;
-        jsonObject = JSONObject.parseObject(data);
-        JSONObject dataObject = jsonObject.getJSONObject("data");
-        List<String> ssos = JSONArray.parseArray(dataObject.getString("sso"), String.class);
-        return ssos!=null?ssos:ssoList;
-    }
 
 
-    /**
-     * 获取用户所在房间是否是房管
-     */
-    public static void httpGetUserIsManager() {
-        String data = null;
-        JSONObject jsonObject = null;
-        Map<String, String> headers = null;
-        headers = new HashMap<>(4);
-        headers.put("user-agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-        headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-        if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-            headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
-        }
-        try {
-            data = OkHttp3Utils.getHttp3Utils()
-                    .httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByUser?room_id="
-                            + CurrencyTools.parseRoomId(), headers, null)
-                    .body().string();
-        } catch (Exception e) {
-            // TODO 自动生成的 catch 块
-            log.error(String.valueOf(e));
-            data = null;
-        }
-        if (data == null)
-            return;
-        jsonObject = JSONObject.parseObject(data);
-        short code = jsonObject.getShort("code");
-        if (code == 0) {
-            log.info("获取本房间自身管理信息成功");
-            if (GlobalSettingConf.ROOMID != null && GlobalSettingConf.ROOMID > 0) {
-                Boolean manager = jsonObject.getJSONObject("data").getJSONObject("badge").getBoolean("is_room_admin");
-                GlobalSettingConf.USERMANAGER = new UserManager();
-                GlobalSettingConf.USERMANAGER.set_manager(manager != null ? manager : false);
-                GlobalSettingConf.USERMANAGER.setRoomid(GlobalSettingConf.ROOMID);
-                GlobalSettingConf.USERMANAGER.setShort_roomid(CurrencyTools.parseRoomId());
-            }
-        } else if (code == -101) {
-            log.info("未登录，请登录:" + jsonObject.toString());
-        } else if (code == -400) {
-            log.info("房间号不存在或者未输入房间号:" + jsonObject.toString());
-        } else {
-            log.error("未知错误,原因未知" + jsonObject.toString());
-        }
-    }
 
     /**
      * 获取用户在目标房间所能发送弹幕的最大长度
      */
     public static void httpGetUserBarrageMsg() {
-        if(CurrencyTools.parseRoomId()==0)return;
+
+        if(CurrencyTools.parseRoomId() == 0) {
+            // 如果没有直播间短号，直接结束
+            return;
+        }
+
         String data = null;
-        JSONObject jsonObject = null;
-        Map<String, String> headers = null;
-        headers = new HashMap<>(4);
-        headers.put("user-agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-        headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
+
+        Map<String, String> headers = new HashMap<>(4);
+        headers.put(HttpHeader.USER_AGENT_KEY, HttpHeader.USER_AGENT_KEY);
+        headers.put(HttpHeader.REFER, HttpBibilibiliUrl.REFER_PARAM_NONE_ROOM_ID + CurrencyTools.parseRoomId());
+
         if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
             headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
         }
         try {
-            data = OkHttp3Utils.getHttp3Utils()
-                    .httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByUser?room_id="
-                            + CurrencyTools.parseRoomId(), headers, null)
-                    .body().string();
+            data = OkHttp3Utils.getHttp3Utils().httpGet(
+                            HttpBibilibiliUrl.GET_PARAM_NONE_ROOM_ID + CurrencyTools.parseRoomId(),
+                            headers,
+                            null).body().string();
         } catch (Exception e) {
-            // TODO 自动生成的 catch 块
             log.error(String.valueOf(e));
-            data = null;
-        }
-        if (data == null)
             return;
-        jsonObject = JSONObject.parseObject(data);
-        short code = jsonObject.getShort("code");
-        if (code == 0) {
-            log.info("获取本房间可发送弹幕长度+是否是管理员 成功");
-            GlobalSettingConf.USERBARRAGEMESSAGE = JSONObject
-                    .parseObject((((JSONObject) jsonObject.get("data")).getString("property")), UserBarrageMsg.class);
-            Boolean manager = jsonObject.getJSONObject("data").getJSONObject("badge").getBoolean("is_room_admin");
-            GlobalSettingConf.USERMANAGER = new UserManager();
-            GlobalSettingConf.USERMANAGER.set_manager(manager != null ? manager : false);
-            GlobalSettingConf.USERMANAGER.setRoomid(GlobalSettingConf.ROOMID);
-            GlobalSettingConf.USERMANAGER.setShort_roomid(CurrencyTools.parseRoomId());
-            if(GlobalSettingConf.USER!=null&&ObjectUtil.equal(GlobalSettingConf.USER.getUid(), GlobalSettingConf.AUID)){
-                GlobalSettingConf.USERMANAGER.set_manager(true);
-            }
-        } else if (code == -101) {
-            log.info("未登录，请登录:" + jsonObject.toString());
-        } else if (code == -400) {
-            log.info("房间号不存在或者未输入房间号:" + jsonObject.toString());
-        } else {
-            log.error("未知错误,原因未知" + jsonObject.toString());
         }
+
+        JSONObject responseJsonObject = JSONObject.parseObject(data);
+        short code = responseJsonObject.getShort("code");
+
+        if (code == 0) {
+
+            GlobalSettingConf.USER_BARRAGE_MESSAGE = JSONObject.parseObject((((JSONObject) responseJsonObject.get("data")).getString("property")), UserBarrageMsg.class);
+
+            Boolean manager = responseJsonObject.getJSONObject("data").getJSONObject("badge").getBoolean("is_room_admin");
+            UserManager userManager =  new UserManager();
+            userManager.set_manager(manager != null ? manager : false);
+            userManager.setRoomid(GlobalSettingConf.ROOMID);
+            userManager.setShort_roomid(CurrencyTools.parseRoomId());
+            GlobalSettingConf.USERMANAGER = userManager;
+
+            log.info("获取本房间可发送弹幕长度+是否是管理员 成功");
+            return;
+        }
+
+        if (code == -101) {
+            log.info("未登录，请登录:{}", responseJsonObject.toString());
+            return;
+        }
+
+        if (code == -400) {
+            log.info("房间号不存在或者未输入房间号:{}", responseJsonObject.toString());
+            return;
+        }
+
+        log.error("未知错误,原因未知:{}", responseJsonObject.toString());
+
     }
 
     /**
@@ -397,7 +331,7 @@ public class HttpUserData {
         short code = -1;
         Map<String, String> headers = null;
         Map<String, String> params = null;
-        if (GlobalSettingConf.USERBARRAGEMESSAGE == null || GlobalSettingConf.USER_COOKIE_INFO == null)
+        if (GlobalSettingConf.USER_BARRAGE_MESSAGE == null || GlobalSettingConf.USER_COOKIE_INFO == null)
             return code;
         headers = new HashMap<>(4);
         headers.put("user-agent",
@@ -411,13 +345,13 @@ public class HttpUserData {
             return -400;
         }
         params = new HashMap<>(10);
-        params.put("color", GlobalSettingConf.USERBARRAGEMESSAGE.getDanmu().getColor().toString());
+        params.put("color", GlobalSettingConf.USER_BARRAGE_MESSAGE.getDanmu().getColor().toString());
         params.put("fontsize", "25");
-        params.put("mode", GlobalSettingConf.USERBARRAGEMESSAGE.getDanmu().getMode().toString());
+        params.put("mode", GlobalSettingConf.USER_BARRAGE_MESSAGE.getDanmu().getMode().toString());
         params.put("msg", UrlUtils.URLEncoderString(msg,"utf-8"));
         params.put("rnd", String.valueOf(System.currentTimeMillis()).substring(0, 10));
         params.put("roomid", GlobalSettingConf.ROOMID.toString());
-        params.put("bubble", GlobalSettingConf.USERBARRAGEMESSAGE.getBubble().toString());
+        params.put("bubble", GlobalSettingConf.USER_BARRAGE_MESSAGE.getBubble().toString());
         params.put("csrf_token", GlobalSettingConf.USER_COOKIE_INFO.getBili_jct());
         params.put("csrf", GlobalSettingConf.USER_COOKIE_INFO.getBili_jct());
         try {

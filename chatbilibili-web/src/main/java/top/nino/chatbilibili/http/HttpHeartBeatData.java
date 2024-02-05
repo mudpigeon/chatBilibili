@@ -68,7 +68,7 @@ public class HttpHeartBeatData {
 		String data = null;
 		Map<String, String> headers = null;
 		Map<String, String> params = null;
-		if (GlobalSettingConf.USERBARRAGEMESSAGE == null && GlobalSettingConf.USER_COOKIE_INFO == null)
+		if (GlobalSettingConf.USER_BARRAGE_MESSAGE == null && GlobalSettingConf.USER_COOKIE_INFO == null)
 			return;
 		headers = new HashMap<>(4);
 		headers.put("user-agent",
@@ -117,7 +117,7 @@ public class HttpHeartBeatData {
 		SmallHeart smallHeart=null;
 		XData xData = null;
 		StringBuilder stringBuilder = new StringBuilder(50);
-		if (GlobalSettingConf.USERBARRAGEMESSAGE == null && GlobalSettingConf.USER_COOKIE_INFO == null)
+		if (GlobalSettingConf.USER_BARRAGE_MESSAGE == null && GlobalSettingConf.USER_COOKIE_INFO == null)
 			return null;
 		headers = new HashMap<>(4);
 		headers.put("user-agent",
@@ -185,7 +185,7 @@ public class HttpHeartBeatData {
 		Map<String, String> headers = null;
 		Map<String, String> params = null;
 		SmallHeart smallHeart=null;
-		if (GlobalSettingConf.USERBARRAGEMESSAGE == null && GlobalSettingConf.USER_COOKIE_INFO == null)
+		if (GlobalSettingConf.USER_BARRAGE_MESSAGE == null && GlobalSettingConf.USER_COOKIE_INFO == null)
 			return xData;
 		headers = new HashMap<>(4);
 		headers.put("user-agent",

@@ -88,7 +88,7 @@ public class ClientServiceImpl implements ClientService {
         GlobalSettingConf.webSocketProxy.send(req);
         GlobalSettingConf.webSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.heartByte));
         threadComponent.startHeartByteThread();
-        settingService.holdSet(GlobalSettingConf.centerSetConf);
+//        settingService.holdSet(GlobalSettingConf.centerSetConf);
 
 
 
@@ -150,7 +150,7 @@ public class ClientServiceImpl implements ClientService {
             GlobalSettingConf.webSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.heartByte));
             threadComponent.startHeartByteThread();
             if (GlobalSettingConf.webSocketProxy.isOpen()) {
-                settingService.holdSet(GlobalSettingConf.centerSetConf);
+//                settingService.holdSet(GlobalSettingConf.centerSetConf);
             }
         }
     }

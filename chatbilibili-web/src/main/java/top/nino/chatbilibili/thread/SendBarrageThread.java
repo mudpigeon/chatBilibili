@@ -28,8 +28,8 @@ public class SendBarrageThread extends Thread {
                 barrageStr = GlobalSettingConf.barrageString.get(0);
                 int strLength = barrageStr.length();
                 int maxLength = 20;
-                if (GlobalSettingConf.USERBARRAGEMESSAGE != null) {
-                    maxLength = GlobalSettingConf.USERBARRAGEMESSAGE.getDanmu().getLength();
+                if (GlobalSettingConf.USER_BARRAGE_MESSAGE != null) {
+                    maxLength = GlobalSettingConf.USER_BARRAGE_MESSAGE.getDanmu().getLength();
                 }
                 //大于就分割发送
                 if (strLength > maxLength) {

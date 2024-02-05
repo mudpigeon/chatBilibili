@@ -133,8 +133,7 @@ public class CurrencyTools {
         if (GlobalSettingConf.SHORTROOMID != null && GlobalSettingConf.SHORTROOMID > 0) {
             return GlobalSettingConf.SHORTROOMID;
         }
-        return GlobalSettingConf.ROOMID != null ? GlobalSettingConf.ROOMID : 0;
-
+        return 0;
     }
 
     /**
