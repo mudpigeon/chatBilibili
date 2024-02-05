@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import top.nino.api.model.room.Room;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.thread.ReConnThread;
 import top.nino.chatbilibili.ws.HandleWebsocketPackage;
 
@@ -32,7 +32,7 @@ public class Websocket extends WebSocketClient {
 	@Override
 	public void onMessage(ByteBuffer message) {
 		// TODO 自动生成的方法存根
-		if(PublicDataConf.parseMessageThread !=null && ! PublicDataConf.parseMessageThread.FLAG) {
+		if(GlobalSettingConf.parseMessageThread !=null && ! GlobalSettingConf.parseMessageThread.FLAG) {
 		try {
 			HandleWebsocketPackage.handleMessage(message);
 		} catch (Exception e) {
@@ -49,24 +49,24 @@ public class Websocket extends WebSocketClient {
 	public void onClose(int code, String reason, boolean remote) {
 		// TODO 自动生成的方法存根
 		log.info("websocket connect close(连接已经断开)，纠错码:" + code);
-		PublicDataConf.heartByteThread.HFLAG = true;
-		PublicDataConf.parseMessageThread.FLAG = true;
+		GlobalSettingConf.heartByteThread.HFLAG = true;
+		GlobalSettingConf.parseMessageThread.FLAG = true;
 		if (code != 1000) {
 			log.info("websocket connect close(连接意外断开，正在尝试重连)，错误码:" + code);
-			if (!PublicDataConf.webSocketProxy.isOpen()) {
-				if (PublicDataConf.reConnThread != null) {
-					if (PublicDataConf.reConnThread.getState().toString().equals("TERMINATED")) {
-						PublicDataConf.reConnThread = new ReConnThread();
-						PublicDataConf.reConnThread.start();
+			if (!GlobalSettingConf.webSocketProxy.isOpen()) {
+				if (GlobalSettingConf.reConnThread != null) {
+					if (GlobalSettingConf.reConnThread.getState().toString().equals("TERMINATED")) {
+						GlobalSettingConf.reConnThread = new ReConnThread();
+						GlobalSettingConf.reConnThread.start();
 					} else {
 
 					}
 				} else {
-					PublicDataConf.reConnThread = new ReConnThread();
-					PublicDataConf.reConnThread.start();
+					GlobalSettingConf.reConnThread = new ReConnThread();
+					GlobalSettingConf.reConnThread.start();
 				}
 			} else {
-				PublicDataConf.reConnThread.RFLAG = true;
+				GlobalSettingConf.reConnThread.RFLAG = true;
 			}
 		}
 	}
@@ -76,22 +76,22 @@ public class Websocket extends WebSocketClient {
 		// TODO 自动生成的方法存根
 		log.error("[错误信息，请将log文件下的日志发送给管理员]websocket connect error,message:" + ex.getMessage());
 		log.info("尝试重新链接");
-		synchronized (PublicDataConf.webSocketProxy) {
-			PublicDataConf.webSocketProxy.close(1006);
-			if (!PublicDataConf.webSocketProxy.isOpen()) {
-				if (PublicDataConf.reConnThread != null) {
-					if (PublicDataConf.reConnThread.getState().toString().equals("TERMINATED")) {
-						PublicDataConf.reConnThread = new ReConnThread();
-						PublicDataConf.reConnThread.start();
+		synchronized (GlobalSettingConf.webSocketProxy) {
+			GlobalSettingConf.webSocketProxy.close(1006);
+			if (!GlobalSettingConf.webSocketProxy.isOpen()) {
+				if (GlobalSettingConf.reConnThread != null) {
+					if (GlobalSettingConf.reConnThread.getState().toString().equals("TERMINATED")) {
+						GlobalSettingConf.reConnThread = new ReConnThread();
+						GlobalSettingConf.reConnThread.start();
 					} else {
 
 					}
 				} else {
-					PublicDataConf.reConnThread = new ReConnThread();
-					PublicDataConf.reConnThread.start();
+					GlobalSettingConf.reConnThread = new ReConnThread();
+					GlobalSettingConf.reConnThread.start();
 				}
 			} else {
-				PublicDataConf.reConnThread.RFLAG = true;
+				GlobalSettingConf.reConnThread.RFLAG = true;
 			}
 		}
 	}

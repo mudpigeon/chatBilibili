@@ -1,16 +1,19 @@
 package top.nino.api.model.user;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.io.Serializable;
 
 
+/**
+ * 解析cookie后存储的数据
+ * @author nino
+ */
 @Data
 @NoArgsConstructor
-public class UserCookie implements Serializable{
+public class UserCookieInfo implements Serializable{
 	/**
 	 * 
 	 */
@@ -20,5 +23,8 @@ public class UserCookie implements Serializable{
 	private String DedeUserID__ckMd5;
 	private String sid;
 	private String SESSDATA;
+
+	// 我自己加的
+	private boolean validFlag = false;
 	
 }

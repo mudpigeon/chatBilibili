@@ -3,7 +3,7 @@ package top.nino.chatbilibili.component;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.http.HttpOtherData;
 
 
@@ -40,7 +40,7 @@ public class ServerAddressComponent implements ApplicationListener<WebServerInit
 	 */
 	public String getRemoteAddress() {
 		String ip = HttpOtherData.httpGetIpV2();
-		if(PublicDataConf.centerSetConf.getPrivacy().is_open()){
+		if(GlobalSettingConf.centerSetConf.getPrivacy().is_open()){
 			ip = "隐私模式禁止获取对公ip";
 		}
 		return "http://"+ ip +":"+this.serverPort;

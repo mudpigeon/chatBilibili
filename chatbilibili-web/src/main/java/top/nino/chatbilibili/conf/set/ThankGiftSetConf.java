@@ -2,12 +2,11 @@ package top.nino.chatbilibili.conf.set;
 
 
 import com.alibaba.fastjson.annotation.JSONField;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.conf.base.ThankLiveSetConf;
 
 
@@ -72,12 +71,12 @@ public class ThankGiftSetConf extends ThankLiveSetConf implements Serializable{
 
 	//方法区
 	public boolean is_giftThank(){
-		if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+		if(StringUtils.isBlank(GlobalSettingConf.COOKIE_VALUE)){
 			return false;
 		}
 		if(is_live_open()) {
 			//没在直播
-			if(PublicDataConf.lIVE_STATUS !=1){
+			if(GlobalSettingConf.lIVE_STATUS !=1){
 				return false;
 			}else{
 				if(is_open()) {
@@ -96,7 +95,7 @@ public class ThankGiftSetConf extends ThankLiveSetConf implements Serializable{
 	}
 
 	public boolean is_giftThank(short live_status){
-		if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+		if(StringUtils.isBlank(GlobalSettingConf.COOKIE_VALUE)){
 			return false;
 		}
 		if(is_live_open()) {

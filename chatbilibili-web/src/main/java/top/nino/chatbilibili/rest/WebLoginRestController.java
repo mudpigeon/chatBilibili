@@ -2,18 +2,15 @@ package top.nino.chatbilibili.rest;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import top.nino.api.model.user.UserCookieInfo;
 import top.nino.api.model.vo.Response;
-import top.nino.chatbilibili.PublicDataConf;
-import top.nino.chatbilibili.component.TaskRegisterComponent;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.http.HttpUserData;
 import top.nino.chatbilibili.service.ClientService;
 import top.nino.chatbilibili.service.SetService;
 import top.nino.chatbilibili.service.impl.DanmujiInitService;
-import top.nino.chatbilibili.tool.CurrencyTools;
+import top.nino.core.CookieUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -24,33 +21,37 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Slf4j
 @RestController
-@RequestMapping("/web")
-public class IndexController {
+@RequestMapping("/rest/login")
+public class WebLoginRestController {
 
     private SetService checkService;
+
     private ClientService clientService;
+
     @Resource
     private DanmujiInitService danmujiInitService;
-    private TaskRegisterComponent taskRegisterComponent;
 
 
     /**
      * 手动输入cookie
-     * @param cookie
+     * @param cookieValue
      * @param req
      * @return
      */
     @ResponseBody
     @PostMapping(value = "/loginByCookie")
-    public Response<?> customCookie(String cookie, HttpServletRequest req){
-        boolean flag = CurrencyTools.parseCookie(cookie);
-        if(flag){
+    public Response<?> loginByCookie(@RequestParam(name = "cookieValue") String cookieValue, HttpServletRequest req){
+        UserCookieInfo userCookieInfo = CookieUtils.parseCookie(cookieValue);
+        if(userCookieInfo.isValidFlag()){
+            GlobalSettingConf.COOKIE_VALUE = cookieValue;
+            GlobalSettingConf.USER_COOKIE_INFO = userCookieInfo;
+
             danmujiInitService.init();
             //弹幕长度刷新
-            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+            if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
                 HttpUserData.httpGetUserBarrageMsg();
             }
         }
-        return Response.success(flag,req);
+        return Response.success(userCookieInfo.isValidFlag(), req);
     }
 }

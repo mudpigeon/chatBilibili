@@ -1,7 +1,7 @@
 package top.nino.chatbilibili.thread;
 
 import org.apache.commons.lang3.StringUtils;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.tool.LogFileTools;
 
 
@@ -21,17 +21,17 @@ public class LogThread extends Thread{
 			if (FLAG) {
 				return;
 			}
-			if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
+			if(GlobalSettingConf.webSocketProxy!=null&&!GlobalSettingConf.webSocketProxy.isOpen()) {
 				return;
 			}
-			if(null!=PublicDataConf.logString&&!PublicDataConf.logString.isEmpty()&&StringUtils.isNotBlank(PublicDataConf.logString.get(0))) {
-				logString = PublicDataConf.logString.get(0);
+			if(null!= GlobalSettingConf.logString&&!GlobalSettingConf.logString.isEmpty()&&StringUtils.isNotBlank(GlobalSettingConf.logString.get(0))) {
+				logString = GlobalSettingConf.logString.get(0);
 				LogFileTools.getlogFileTools().logFile(logString);
-				PublicDataConf.logString.remove(0);
+				GlobalSettingConf.logString.remove(0);
 			}else {
-				synchronized (PublicDataConf.logThread) {
+				synchronized (GlobalSettingConf.logThread) {
 					try {
-						PublicDataConf.logThread.wait();
+						GlobalSettingConf.logThread.wait();
 					} catch (InterruptedException e) {
 						// TODO 自动生成的 catch 块
 //						LOGGER.info("日志线程关闭:" + e);

@@ -3,6 +3,7 @@ package top.nino.chatbilibili;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import top.nino.api.model.auto_reply.AutoReply;
+import top.nino.api.model.user.UserCookieInfo;
 import top.nino.chatbilibili.conf.base.CenterSetConf;
 import top.nino.api.model.danmu.Gift;
 import top.nino.api.model.danmu.Interact;
@@ -10,7 +11,6 @@ import top.nino.api.model.enums.LiveStatusEnum;
 import top.nino.api.model.room.MedalInfoAnchor;
 import top.nino.api.model.user.AutoSendGift;
 import top.nino.api.model.user.User;
-import top.nino.api.model.user.UserCookie;
 import top.nino.api.model.user.UserManager;
 import top.nino.chatbilibili.data.user_in_room_barrageMsg.UserBarrageMsg;
 import top.nino.chatbilibili.client.WebSocketProxy;
@@ -22,12 +22,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @Configuration
-public class PublicDataConf {
+public class GlobalSettingConf {
 
-	@Value("${danmuji.version}")
+	// cookie String串
+	public static String COOKIE_VALUE = null;
+
+	// cookie 解析后 的最小有效pojo存储
+	public static UserCookieInfo USER_COOKIE_INFO = null;
+
+	// user信息
+	public static User USER = null;
+
+
 	public static String VERSION ="";
 
-	@Value("${danmuji.version}")
 	public static String NEW_VERSION ="";
 
 	// url 直播弹幕websocket地址
@@ -62,15 +70,6 @@ public class PublicDataConf {
 
 	// 直播状态 0不直播 1直播 2轮播
 	public static Integer lIVE_STATUS = LiveStatusEnum.CLOSED.getCode();
-
-	// cookie String串
-	public static String USERCOOKIE = null;
-
-	// user信息
-	public static User USER = null;
-
-	// cookie
-	public static UserCookie COOKIE = null;
 
 	// user弹幕长度
 	public static UserBarrageMsg USERBARRAGEMESSAGE = null;
@@ -221,51 +220,51 @@ public class PublicDataConf {
 	//方法区
 
 	public static void init_user(){
-		PublicDataConf.COOKIE = null;
-		PublicDataConf.USER = null;
-		PublicDataConf.USERCOOKIE = null;
-		PublicDataConf.USERBARRAGEMESSAGE = null;
+		GlobalSettingConf.USER_COOKIE_INFO = null;
+		GlobalSettingConf.USER = null;
+		GlobalSettingConf.COOKIE_VALUE = null;
+		GlobalSettingConf.USERBARRAGEMESSAGE = null;
 	}
 
 	public static void init_send(){
-		PublicDataConf.replys.clear();
-		PublicDataConf.thankGiftConcurrentHashMap.clear();
-		PublicDataConf.barrageString.clear();
-		PublicDataConf.interacts.clear();
-		PublicDataConf.interactWelcome.clear();
+		GlobalSettingConf.replys.clear();
+		GlobalSettingConf.thankGiftConcurrentHashMap.clear();
+		GlobalSettingConf.barrageString.clear();
+		GlobalSettingConf.interacts.clear();
+		GlobalSettingConf.interactWelcome.clear();
 	}
 
 	public static void init_all(){
-		PublicDataConf.replys.clear();
-		PublicDataConf.resultStrs.clear();
-		PublicDataConf.thankGiftConcurrentHashMap.clear();
-		PublicDataConf.barrageString.clear();
-		PublicDataConf.logString.clear();
-		PublicDataConf.interacts.clear();
-		PublicDataConf.interactWelcome.clear();
-		PublicDataConf.SHIELDGIFTNAME = null;
-		PublicDataConf.ISSHIELDFOLLOW = false;
-		PublicDataConf.ISSHIELDWELCOME = false;
+		GlobalSettingConf.replys.clear();
+		GlobalSettingConf.resultStrs.clear();
+		GlobalSettingConf.thankGiftConcurrentHashMap.clear();
+		GlobalSettingConf.barrageString.clear();
+		GlobalSettingConf.logString.clear();
+		GlobalSettingConf.interacts.clear();
+		GlobalSettingConf.interactWelcome.clear();
+		GlobalSettingConf.SHIELDGIFTNAME = null;
+		GlobalSettingConf.ISSHIELDFOLLOW = false;
+		GlobalSettingConf.ISSHIELDWELCOME = false;
 	}
 
 	public static void init_connect(){
-		PublicDataConf.SHIELDGIFTNAME = null;
-		PublicDataConf.replys.clear();
-		PublicDataConf.resultStrs.clear();
-		PublicDataConf.thankGiftConcurrentHashMap.clear();
-		PublicDataConf.barrageString.clear();
-		PublicDataConf.interacts.clear();
-		PublicDataConf.logString.clear();
-		PublicDataConf.interactWelcome.clear();
-		PublicDataConf.ISSHIELDWELCOME=false;
-		PublicDataConf.ISSHIELDFOLLOW=false;
-		PublicDataConf.ROOMID = null;
-		PublicDataConf.ANCHOR_NAME = null;
-		PublicDataConf.AUID = null;
-		PublicDataConf.FANSNUM = null;
-		PublicDataConf.SHORTROOMID = null;
-		PublicDataConf.lIVE_STATUS = 0;
-		PublicDataConf.ROOM_POPULARITY = 1L;
+		GlobalSettingConf.SHIELDGIFTNAME = null;
+		GlobalSettingConf.replys.clear();
+		GlobalSettingConf.resultStrs.clear();
+		GlobalSettingConf.thankGiftConcurrentHashMap.clear();
+		GlobalSettingConf.barrageString.clear();
+		GlobalSettingConf.interacts.clear();
+		GlobalSettingConf.logString.clear();
+		GlobalSettingConf.interactWelcome.clear();
+		GlobalSettingConf.ISSHIELDWELCOME=false;
+		GlobalSettingConf.ISSHIELDFOLLOW=false;
+		GlobalSettingConf.ROOMID = null;
+		GlobalSettingConf.ANCHOR_NAME = null;
+		GlobalSettingConf.AUID = null;
+		GlobalSettingConf.FANSNUM = null;
+		GlobalSettingConf.SHORTROOMID = null;
+		GlobalSettingConf.lIVE_STATUS = 0;
+		GlobalSettingConf.ROOM_POPULARITY = 1L;
 	}
 
 

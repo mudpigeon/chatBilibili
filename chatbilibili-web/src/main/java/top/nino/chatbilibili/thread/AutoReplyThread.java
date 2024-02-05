@@ -7,7 +7,7 @@ import org.springframework.util.CollectionUtils;
 import top.nino.api.model.apex.ApexMessage;
 import top.nino.api.model.apex.PredatorResult;
 import top.nino.api.model.auto_reply.AutoReply;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.conf.AutoParamSetConf;
 import top.nino.chatbilibili.conf.set.AutoReplySet;
 import top.nino.chatbilibili.http.HttpRoomData;
@@ -54,11 +54,11 @@ public class AutoReplyThread extends Thread {
             if (FLAG) {
                 return;
             }
-            if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
+            if (GlobalSettingConf.webSocketProxy != null && !GlobalSettingConf.webSocketProxy.isOpen()) {
                 return;
             }
-            if (!CollectionUtils.isEmpty(PublicDataConf.replys)) {
-                AutoReply autoReply = PublicDataConf.replys.get(0);
+            if (!CollectionUtils.isEmpty(GlobalSettingConf.replys)) {
+                AutoReply autoReply = GlobalSettingConf.replys.get(0);
                 for (AutoReplySet autoReplySet : getAutoReplySets()) {
                     //优先级屏蔽词
                     if (!CollectionUtils.isEmpty(autoReplySet.getShields())) {
@@ -150,7 +150,7 @@ public class AutoReplyThread extends Thread {
                 hourString = null;
                 hourReplace = null;
                 hour = 1;
-                PublicDataConf.replys.remove(0);
+                GlobalSettingConf.replys.remove(0);
                 if (is_send) {
                     try {
                         Thread.sleep(new BigDecimal(getTime()).multiply(new BigDecimal("1000")).longValue());
@@ -161,9 +161,9 @@ public class AutoReplyThread extends Thread {
                 }
                 is_send = false;
             } else {
-                synchronized (PublicDataConf.autoReplyThread) {
+                synchronized (GlobalSettingConf.autoReplyThread) {
                     try {
-                        PublicDataConf.autoReplyThread.wait();
+                        GlobalSettingConf.autoReplyThread.wait();
                     } catch (Exception e) {
                         // TODO 自动生成的 catch 块
 //						e.printStackTrace();
@@ -188,9 +188,9 @@ public class AutoReplyThread extends Thread {
         }
         // 替换%FANS%
         if (!replyString.equals("%FANS%")) {
-            replyString = StringUtils.replace(replyString, "%FANS%", String.valueOf(PublicDataConf.FANSNUM));
+            replyString = StringUtils.replace(replyString, "%FANS%", String.valueOf(GlobalSettingConf.FANSNUM));
         } else {
-            replyString = String.valueOf(PublicDataConf.FANSNUM);
+            replyString = String.valueOf(GlobalSettingConf.FANSNUM);
         }
         // 替换%TIME%
         if (!replyString.equals("%TIME%")) {
@@ -200,40 +200,40 @@ public class AutoReplyThread extends Thread {
         }
         // 替换%LIVETIME%
         if (!replyString.equals("%LIVETIME%")) {
-            if (PublicDataConf.lIVE_STATUS == 1) {
+            if (GlobalSettingConf.lIVE_STATUS == 1) {
                 replyString = StringUtils.replace(replyString, "%LIVETIME%",
                         CurrencyTools.getGapTime(System.currentTimeMillis()
-                                - HttpRoomData.httpGetRoomInit(PublicDataConf.ROOMID).getLive_time() * 1000));
+                                - HttpRoomData.httpGetRoomInit(GlobalSettingConf.ROOMID).getLive_time() * 1000));
             } else {
                 replyString = StringUtils.replace(replyString, "%LIVETIME%", "0");
             }
         } else {
-            if (PublicDataConf.lIVE_STATUS == 1) {
+            if (GlobalSettingConf.lIVE_STATUS == 1) {
                 replyString = CurrencyTools.getGapTime(System.currentTimeMillis()
-                        - HttpRoomData.httpGetRoomInit(PublicDataConf.ROOMID).getLive_time() * 1000);
+                        - HttpRoomData.httpGetRoomInit(GlobalSettingConf.ROOMID).getLive_time() * 1000);
             } else {
                 replyString = "0";
             }
         }
         // 替换%HOT%
         if (!replyString.equals("%HOT%")) {
-            replyString = StringUtils.replace(replyString, "%HOT%", PublicDataConf.ROOM_POPULARITY.toString());
+            replyString = StringUtils.replace(replyString, "%HOT%", GlobalSettingConf.ROOM_POPULARITY.toString());
         } else {
-            replyString = PublicDataConf.ROOM_POPULARITY.toString();
+            replyString = GlobalSettingConf.ROOM_POPULARITY.toString();
         }
 
         // 替换%WATHER%
         if (!replyString.equals("%WATHER%")) {
-            replyString = StringUtils.replace(replyString, "%WATHER%", PublicDataConf.ROOM_WATCHER.toString());
+            replyString = StringUtils.replace(replyString, "%WATHER%", GlobalSettingConf.ROOM_WATCHER.toString());
         } else {
-            replyString = PublicDataConf.ROOM_WATCHER.toString();
+            replyString = GlobalSettingConf.ROOM_WATCHER.toString();
         }
 
         // 替换%LIKE%
         if (!replyString.equals("%LIKE%")) {
-            replyString = StringUtils.replace(replyString, "%LIKE%", PublicDataConf.ROOM_LIKE.toString());
+            replyString = StringUtils.replace(replyString, "%LIKE%", GlobalSettingConf.ROOM_LIKE.toString());
         } else {
-            replyString = PublicDataConf.ROOM_LIKE.toString();
+            replyString = GlobalSettingConf.ROOM_LIKE.toString();
         }
 
         // 替换%BLOCK%参数 和 {{time}}时间参数
@@ -253,7 +253,7 @@ public class AutoReplyThread extends Thread {
                     replyString = "";
                 }
             }
-            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+            if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
                 try {
                     if (HttpUserData.httpPostAddBlock(autoReply.getUid(), hour) != 0)
                         replyString = "";
@@ -582,11 +582,11 @@ public class AutoReplyThread extends Thread {
             }
         }
         if (StringUtils.isNotBlank(replyString)) {
-            if (PublicDataConf.sendBarrageThread != null && !PublicDataConf.sendBarrageThread.FLAG) {
-                PublicDataConf.barrageString.add(replyString);
+            if (GlobalSettingConf.sendBarrageThread != null && !GlobalSettingConf.sendBarrageThread.FLAG) {
+                GlobalSettingConf.barrageString.add(replyString);
                 is_send = true;
-                synchronized (PublicDataConf.sendBarrageThread) {
-                    PublicDataConf.sendBarrageThread.notify();
+                synchronized (GlobalSettingConf.sendBarrageThread) {
+                    GlobalSettingConf.sendBarrageThread.notify();
                 }
             }
         }

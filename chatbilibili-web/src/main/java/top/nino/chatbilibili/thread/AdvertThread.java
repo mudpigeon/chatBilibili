@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import top.nino.api.model.enums.AdvertStatus;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 
 
 import java.math.BigDecimal;
@@ -29,7 +29,7 @@ public class AdvertThread extends Thread {
 			if (FLAG) {
 				return;
 			}
-			if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
+			if(GlobalSettingConf.webSocketProxy!=null&&!GlobalSettingConf.webSocketProxy.isOpen()) {
 				return;
 			}
 			long delay_time = new BigDecimal(getTime()).multiply(new BigDecimal("1000")).longValue();
@@ -45,10 +45,10 @@ public class AdvertThread extends Thread {
 							// TODO 自动生成的 catch 块
 //							LOGGER.info("广告姬线程关闭:" + e);
 						}
-						if (PublicDataConf.sendBarrageThread != null&&!PublicDataConf.sendBarrageThread.FLAG) {
-						PublicDataConf.barrageString.add(string);
-						synchronized (PublicDataConf.sendBarrageThread) {
-							PublicDataConf.sendBarrageThread.notify();
+						if (GlobalSettingConf.sendBarrageThread != null&&!GlobalSettingConf.sendBarrageThread.FLAG) {
+						GlobalSettingConf.barrageString.add(string);
+						synchronized (GlobalSettingConf.sendBarrageThread) {
+							GlobalSettingConf.sendBarrageThread.notify();
 						}
 						}
 					}
@@ -63,17 +63,17 @@ public class AdvertThread extends Thread {
 					int strLength = strings.length;
 					if (strLength > 1) {
 						int randomNum = (int) Math.ceil(Math.random() * strLength);
-						if (PublicDataConf.sendBarrageThread != null&&!PublicDataConf.sendBarrageThread.FLAG) {
-						PublicDataConf.barrageString.add(strings[randomNum - 1]);
-							synchronized (PublicDataConf.sendBarrageThread) {
-								PublicDataConf.sendBarrageThread.notify();
+						if (GlobalSettingConf.sendBarrageThread != null&&!GlobalSettingConf.sendBarrageThread.FLAG) {
+						GlobalSettingConf.barrageString.add(strings[randomNum - 1]);
+							synchronized (GlobalSettingConf.sendBarrageThread) {
+								GlobalSettingConf.sendBarrageThread.notify();
 							}
 						}
 					} else {
-						if (PublicDataConf.sendBarrageThread != null&&!PublicDataConf.sendBarrageThread.FLAG) {
-						PublicDataConf.barrageString.add(getAdvertBarrage());
-						synchronized (PublicDataConf.sendBarrageThread) {
-							PublicDataConf.sendBarrageThread.notify();
+						if (GlobalSettingConf.sendBarrageThread != null&&!GlobalSettingConf.sendBarrageThread.FLAG) {
+						GlobalSettingConf.barrageString.add(getAdvertBarrage());
+						synchronized (GlobalSettingConf.sendBarrageThread) {
+							GlobalSettingConf.sendBarrageThread.notify();
 						}
 						}
 					}
@@ -87,10 +87,10 @@ public class AdvertThread extends Thread {
 					// TODO 自动生成的 catch 块
 //					LOGGER.info("广告姬线程关闭:" + e);
 				}
-				if (PublicDataConf.sendBarrageThread != null&&!PublicDataConf.sendBarrageThread.FLAG) {
-				PublicDataConf.barrageString.add(getAdvertBarrage());
-				synchronized (PublicDataConf.sendBarrageThread) {
-					PublicDataConf.sendBarrageThread.notify();
+				if (GlobalSettingConf.sendBarrageThread != null&&!GlobalSettingConf.sendBarrageThread.FLAG) {
+				GlobalSettingConf.barrageString.add(getAdvertBarrage());
+				synchronized (GlobalSettingConf.sendBarrageThread) {
+					GlobalSettingConf.sendBarrageThread.notify();
 				}
 				}
 

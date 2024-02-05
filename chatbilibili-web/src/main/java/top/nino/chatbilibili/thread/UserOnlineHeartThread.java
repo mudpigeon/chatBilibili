@@ -1,7 +1,7 @@
 package top.nino.chatbilibili.thread;
 
 
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.http.HttpHeartBeatData;
 
 public class UserOnlineHeartThread extends Thread{
@@ -15,7 +15,7 @@ public class UserOnlineHeartThread extends Thread{
 			if (FLAG) {
 				return;
 			}
-			if(PublicDataConf.USER==null) {
+			if(GlobalSettingConf.USER==null) {
 				return;
 			}
 			try {

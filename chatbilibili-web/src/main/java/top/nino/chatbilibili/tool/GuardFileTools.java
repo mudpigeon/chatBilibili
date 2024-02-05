@@ -2,7 +2,7 @@ package top.nino.chatbilibili.tool;
 
 
 
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.core.FileTools;
 
 import java.io.*;
@@ -27,7 +27,7 @@ public class GuardFileTools {
 //		file.setWritable(true, false);
 		if (file.exists() == false)
 			file.mkdirs();
-		file = new File(path + "/guards("+ PublicDataConf.ROOMID +")"+ ".txt");
+		file = new File(path + "/guards("+ GlobalSettingConf.ROOMID +")"+ ".txt");
 //		file.setWritable(true, false);
 		if (file.exists() == false)
 			try {
@@ -79,7 +79,7 @@ public class GuardFileTools {
 //			file.setWritable(true, false);
 			if (file.exists() == false)
 				file.mkdirs();
-			file = new File(path + "guards("+PublicDataConf.ROOMID +")"+ ".txt");
+			file = new File(path + "guards("+ GlobalSettingConf.ROOMID +")"+ ".txt");
 //			file.setWritable(true, false);
 			if (file.exists() == false)
 				try {

@@ -8,7 +8,7 @@ import top.nino.api.model.enums.ListGiftShieldStatus;
 import top.nino.api.model.enums.ListPeopleShieldStatus;
 import top.nino.api.model.enums.ShieldGift;
 import top.nino.api.model.enums.ThankGiftStatus;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.conf.base.ThankGiftRuleSet;
 import top.nino.chatbilibili.tool.ParseSetStatusTools;
 import top.nino.chatbilibili.tool.ShieldGiftTools;
@@ -51,7 +51,7 @@ public class ParseThankGiftThread extends Thread {
 				if (TFLAG) {
 					return;
 				}
-				if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
+				if (GlobalSettingConf.webSocketProxy != null && !GlobalSettingConf.webSocketProxy.isOpen()) {
 					return;
 				}
 				try {
@@ -63,14 +63,14 @@ public class ParseThankGiftThread extends Thread {
 				if (nowTime - getTimestamp() < getDelaytime()) {
 
 				} else {
-					if (PublicDataConf.thankGiftConcurrentHashMap.size() > 0) {
+					if (GlobalSettingConf.thankGiftConcurrentHashMap.size() > 0) {
 
 						//这里是自定义模式去除
-						for (Entry<String, Vector<Gift>> entry : PublicDataConf.thankGiftConcurrentHashMap.entrySet()) {
+						for (Entry<String, Vector<Gift>> entry : GlobalSettingConf.thankGiftConcurrentHashMap.entrySet()) {
 							gifts = entry.getValue();
 							for (Iterator<Gift> iterator = gifts.iterator(); iterator.hasNext();) {
 								gift = iterator.next();
-								if (ParseSetStatusTools.getGiftShieldStatus(PublicDataConf.centerSetConf.getThank_gift()
+								if (ParseSetStatusTools.getGiftShieldStatus(GlobalSettingConf.centerSetConf.getThank_gift()
 										.getShield_status()) == ShieldGift.CUSTOM_RULE) {
 									if (ShieldGiftTools.shieldGift(gift,
 											getListGiftShieldStatus(),
@@ -93,11 +93,11 @@ public class ParseThankGiftThread extends Thread {
 									thankGiftStr = StringUtils.replace(thankGiftStr, "%GiftName%", gift.getGiftName());
 									thankGiftStr = StringUtils.replace(thankGiftStr, "%Num%", gift.getNum().toString());
 									thankGiftStr = StringUtils.replace(thankGiftStr, "%Type%", gift.getAction());
-									if (PublicDataConf.sendBarrageThread != null
-											&& !PublicDataConf.sendBarrageThread.FLAG) {
-										PublicDataConf.barrageString.add(thankGiftStr);
-										synchronized (PublicDataConf.sendBarrageThread) {
-											PublicDataConf.sendBarrageThread.notify();
+									if (GlobalSettingConf.sendBarrageThread != null
+											&& !GlobalSettingConf.sendBarrageThread.FLAG) {
+										GlobalSettingConf.barrageString.add(thankGiftStr);
+										synchronized (GlobalSettingConf.sendBarrageThread) {
+											GlobalSettingConf.sendBarrageThread.notify();
 										}
 									}
 								}
@@ -124,11 +124,11 @@ public class ParseThankGiftThread extends Thread {
 									//如果还有这个参数写死赠送
 									thankGiftStr = StringUtils.replace(thankGiftStr, "%Type%","赠送");
 									stringBuilder.delete(0, stringBuilder.length());
-									if (PublicDataConf.sendBarrageThread != null
-											&& !PublicDataConf.sendBarrageThread.FLAG) {
-										PublicDataConf.barrageString.add(thankGiftStr);
-										synchronized (PublicDataConf.sendBarrageThread) {
-											PublicDataConf.sendBarrageThread.notify();
+									if (GlobalSettingConf.sendBarrageThread != null
+											&& !GlobalSettingConf.sendBarrageThread.FLAG) {
+										GlobalSettingConf.barrageString.add(thankGiftStr);
+										synchronized (GlobalSettingConf.sendBarrageThread) {
+											GlobalSettingConf.sendBarrageThread.notify();
 										}
 									}
 									thankGiftStr = null;
@@ -156,22 +156,22 @@ public class ParseThankGiftThread extends Thread {
 						if (getThankGiftStatus() == ThankGiftStatus.some_peoples) {
 							// 多次
 							int page = (int) Math.ceil(
-									(double) PublicDataConf.thankGiftConcurrentHashMap.size() / (double) getNum());
-							if (getNum() > 1 && PublicDataConf.thankGiftConcurrentHashMap.size() > 1) {
+									(double) GlobalSettingConf.thankGiftConcurrentHashMap.size() / (double) getNum());
+							if (getNum() > 1 && GlobalSettingConf.thankGiftConcurrentHashMap.size() > 1) {
 								for (int i = 0; i < page; i++) {
-									if (PublicDataConf.sendBarrageThread != null
-											&& !PublicDataConf.sendBarrageThread.FLAG) {
-										PublicDataConf.barrageString
-												.add(somePeoplesHandle(PublicDataConf.thankGiftConcurrentHashMap,
+									if (GlobalSettingConf.sendBarrageThread != null
+											&& !GlobalSettingConf.sendBarrageThread.FLAG) {
+										GlobalSettingConf.barrageString
+												.add(somePeoplesHandle(GlobalSettingConf.thankGiftConcurrentHashMap,
 														getNum(), handleThankStr(getThankGiftString())));
-										synchronized (PublicDataConf.sendBarrageThread) {
-											PublicDataConf.sendBarrageThread.notify();
+										synchronized (GlobalSettingConf.sendBarrageThread) {
+											GlobalSettingConf.sendBarrageThread.notify();
 										}
 									}
 								}
 							} else {
 								// 单次
-								for (Entry<String, Vector<Gift>> entry : PublicDataConf.thankGiftConcurrentHashMap
+								for (Entry<String, Vector<Gift>> entry : GlobalSettingConf.thankGiftConcurrentHashMap
 										.entrySet()) {
 									gifts = entry.getValue();
 									for (int i = 0; i < gifts.size(); i += getNum()) {
@@ -194,11 +194,11 @@ public class ParseThankGiftThread extends Thread {
 										//如果还有这个参数写死赠送
 										thankGiftStr = StringUtils.replace(thankGiftStr, "%Type%","赠送");
 										stringBuilder.delete(0, stringBuilder.length());
-										if (PublicDataConf.sendBarrageThread != null
-												&& !PublicDataConf.sendBarrageThread.FLAG) {
-											PublicDataConf.barrageString.add(thankGiftStr);
-											synchronized (PublicDataConf.sendBarrageThread) {
-												PublicDataConf.sendBarrageThread.notify();
+										if (GlobalSettingConf.sendBarrageThread != null
+												&& !GlobalSettingConf.sendBarrageThread.FLAG) {
+											GlobalSettingConf.barrageString.add(thankGiftStr);
+											synchronized (GlobalSettingConf.sendBarrageThread) {
+												GlobalSettingConf.sendBarrageThread.notify();
 											}
 										}
 										thankGiftStr = null;
@@ -212,7 +212,7 @@ public class ParseThankGiftThread extends Thread {
 //							.iterator(); iterator.hasNext();) {
 //						iterator.remove();
 //					}
-					PublicDataConf.thankGiftConcurrentHashMap.clear();
+					GlobalSettingConf.thankGiftConcurrentHashMap.clear();
 					break;
 				}
 			}

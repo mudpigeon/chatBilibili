@@ -1,10 +1,10 @@
 package top.nino.chatbilibili.tool;
 
 
+import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -14,10 +14,10 @@ import top.nino.api.model.server.HostServer;
 import top.nino.api.model.tools.FastJsonUtils;
 import top.nino.api.model.user.AutoSendGift;
 import top.nino.api.model.user.UserBag;
-import top.nino.api.model.user.UserCookie;
+import top.nino.api.model.user.UserCookieInfo;
 import top.nino.api.model.user.UserMedal;
 import top.nino.api.model.welcome.BarrageHeadHandle;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.conf.CacheConf;
 import top.nino.chatbilibili.conf.base.CenterSetConf;
 import top.nino.chatbilibili.http.HttpOtherData;
@@ -32,8 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 public class CurrencyTools {
-    private static Logger LOGGER = LogManager.getLogger(CurrencyTools.class);
 
     /**
      * 获取随机破站弹幕服务器地址 20201218优化获取
@@ -46,7 +46,7 @@ public class CurrencyTools {
         String wsUrl = null;
         int control = 0;
         if (hostServers.size() > 0) {
-            while (!(PublicDataConf.URL).equals(wsUrl)) {
+            while (!(GlobalSettingConf.URL).equals(wsUrl)) {
                 if (control > 5) {
                     break;
                 }
@@ -61,7 +61,7 @@ public class CurrencyTools {
                 control++;
             }
         }
-        LOGGER.info("获取破站弹幕服务器websocket地址：" + wsUrl);
+        log.info("获取破站弹幕服务器websocket地址：" + wsUrl);
         return wsUrl;
     }
 
@@ -95,8 +95,8 @@ public class CurrencyTools {
     public static byte[] heartBytes() {
         return ByteUtils.byteMerger(
                 HandleWebsocketPackage.BEhandle(BarrageHeadHandle.getBarrageHeadHandle(
-                        "[object Object]".getBytes().length + 16, PublicDataConf.packageHeadLength,
-                        PublicDataConf.packageVersion, PublicDataConf.heartPackageType, PublicDataConf.packageOther)),
+                        "[object Object]".getBytes().length + 16, GlobalSettingConf.packageHeadLength,
+                        GlobalSettingConf.packageVersion, GlobalSettingConf.heartPackageType, GlobalSettingConf.packageOther)),
                 "[object Object]".getBytes());
     }
 
@@ -130,10 +130,10 @@ public class CurrencyTools {
      * @return
      */
     public static long parseRoomId() {
-        if (PublicDataConf.SHORTROOMID != null && PublicDataConf.SHORTROOMID > 0) {
-            return PublicDataConf.SHORTROOMID;
+        if (GlobalSettingConf.SHORTROOMID != null && GlobalSettingConf.SHORTROOMID > 0) {
+            return GlobalSettingConf.SHORTROOMID;
         }
-        return PublicDataConf.ROOMID != null ? PublicDataConf.ROOMID : 0;
+        return GlobalSettingConf.ROOMID != null ? GlobalSettingConf.ROOMID : 0;
 
     }
 
@@ -198,29 +198,29 @@ public class CurrencyTools {
         //判定是否有签到
         Date date = new Date();
         int nowDay = JodaTimeUtils.formatToInt(date, "yyyyMMdd");
-        if (PublicDataConf.centerSetConf.getPrivacy().getClockInDay() == nowDay) {
+        if (GlobalSettingConf.centerSetConf.getPrivacy().getClockInDay() == nowDay) {
             return 0;
         }
-        if (!PublicDataConf.centerSetConf.getPrivacy().is_open()) {
+        if (!GlobalSettingConf.centerSetConf.getPrivacy().is_open()) {
             Long uid = HttpOtherData.httpGetClockInRecord();
             if (uid != null && uid > 0) return 0;
         }
 
         //逻辑开始
-        if (StringUtils.isBlank(PublicDataConf.centerSetConf.getClock_in().getBarrage())) return 0;
+        if (StringUtils.isBlank(GlobalSettingConf.centerSetConf.getClock_in().getBarrage())) return 0;
         int max = 0;
         RoomInit roomInit;
         if (!CollectionUtils.isEmpty(userMedals)) {
             for (UserMedal userMedal : userMedals) {
                 try {
-                    LOGGER.info("第{}次打卡开始,勋章数据", max + 1, userMedal);
+                    log.info("第{}次打卡开始,勋章数据", max + 1, userMedal);
                     roomInit = HttpRoomData.httpGetRoomInit(userMedal.getRoomid());
                     try {
                         Thread.sleep(4050);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    String barrge = handleEnterStr(PublicDataConf.centerSetConf.getClock_in().getBarrage());
+                    String barrge = handleEnterStr(GlobalSettingConf.centerSetConf.getClock_in().getBarrage());
                     //   short code = 0;
                     short code = HttpUserData.httpPostSendBarrage(barrge, roomInit.getRoom_id());
                     try {
@@ -229,10 +229,10 @@ public class CurrencyTools {
                         e.printStackTrace();
                     }
 
-                    LOGGER.info("第{}次打卡{},直播间:{},up主:{},发送弹幕:{}", max + 1, code == 0 ? "成功" : "失败", userMedal.getRoomid(), userMedal.getTarget_name(), barrge);
+                    log.info("第{}次打卡{},直播间:{},up主:{},发送弹幕:{}", max + 1, code == 0 ? "成功" : "失败", userMedal.getRoomid(), userMedal.getTarget_name(), barrge);
                     max++;
                 } catch (Exception e) {
-                    LOGGER.info("第{}次打卡{},直播间:{},up主:{},发送弹幕:{}", max + 1, "异常", userMedal.getRoomid(), userMedal.getTarget_name(), "未能成功发送");
+                    log.info("第{}次打卡{},直播间:{},up主:{},发送弹幕:{}", max + 1, "异常", userMedal.getRoomid(), userMedal.getTarget_name(), "未能成功发送");
 //                    e.printStackTrace();
                 }
             }
@@ -244,10 +244,10 @@ public class CurrencyTools {
     public static String sendGiftCode(short guardLevel) {
         String code = "";
         //默认随机发送
-        if (!CollectionUtils.isEmpty(PublicDataConf.centerSetConf.getThank_gift().getCodeStrings())) {
-            synchronized (PublicDataConf.centerSetConf.getThank_gift().getCodeStrings()) {
+        if (!CollectionUtils.isEmpty(GlobalSettingConf.centerSetConf.getThank_gift().getCodeStrings())) {
+            synchronized (GlobalSettingConf.centerSetConf.getThank_gift().getCodeStrings()) {
                 //分组
-                HashSet<String> codeStrings = PublicDataConf.centerSetConf.getThank_gift().getCodeStrings();
+                HashSet<String> codeStrings = GlobalSettingConf.centerSetConf.getThank_gift().getCodeStrings();
                 Map<String, HashSet<String>> codeMap = codeStrings.stream().map(s -> {
                     if (!StringUtils.startsWithAny(s, "舰长-", "总督-", "提督-")) {
                         return "全部-" + s;
@@ -269,9 +269,9 @@ public class CurrencyTools {
                 }
                 //根据舰长等级获取对应的礼物码
                 if (onlyHasAll) {
-                    int random = (int) Math.ceil(Math.random() * PublicDataConf.centerSetConf.getThank_gift().getCodeStrings().size()) - 1;
+                    int random = (int) Math.ceil(Math.random() * GlobalSettingConf.centerSetConf.getThank_gift().getCodeStrings().size()) - 1;
                     int i = 0;
-                    for (Iterator<String> iterator = PublicDataConf.centerSetConf.getThank_gift().getCodeStrings().iterator(); iterator.hasNext(); ) {
+                    for (Iterator<String> iterator = GlobalSettingConf.centerSetConf.getThank_gift().getCodeStrings().iterator(); iterator.hasNext(); ) {
                         if (i == random) {
                             code = new String(iterator.next());
                             break;
@@ -342,7 +342,7 @@ public class CurrencyTools {
     }
 
     public static CenterSetConf codeRemove(String code) {
-        CenterSetConf centerSetConf = PublicDataConf.centerSetConf;
+        CenterSetConf centerSetConf = GlobalSettingConf.centerSetConf;
         HashSet<String> codeStrings = centerSetConf.getThank_gift().getCodeStrings();
         if(StringUtils.isNotBlank(code)) {
             Iterator<String> it = codeStrings.iterator();
@@ -350,11 +350,11 @@ public class CurrencyTools {
                 String next = it.next();
                 if (next.endsWith(code)) {
                     it.remove();
-                    LOGGER.info("gift code移除:{}",next);
+                    log.info("gift code移除:{}",next);
                 }
             }
         }
-        LOGGER.info("gift code移除:{}",codeStrings);
+        log.info("gift code移除:{}",codeStrings);
         centerSetConf.getThank_gift().setCodeStrings(codeStrings);
         return  centerSetConf;
     }
@@ -376,51 +376,53 @@ public class CurrencyTools {
      * 3.循环拆出":" key value
      * 4.存入UserCookie、PublicDataConf
      */
-    public static boolean parseCookie(String init_cookie) {
-        String key = null;
-        String value = null;
-        int controlNum = 0;
-        UserCookie userCookie = new UserCookie();
-        init_cookie = StringUtils.remove(init_cookie, (char) 32);
-        init_cookie = init_cookie.trim();
-        String[] a = init_cookie.split(";");
-        for (String string : a) {
+    public static boolean parseCookie(String cookieValue) {
+        if(StringUtils.isBlank(cookieValue)) return false;
+
+        // 去除所有空格
+        cookieValue = cookieValue.replaceAll("\\s", "");
+        UserCookieInfo userCookieInfo = new UserCookieInfo();
+
+        int haveNum = 0;
+        for (String string : cookieValue.split(";")) {
             if (string.contains("=")) {
-                String[] maps = string.split("=");
-                key = maps[0];
-                value = maps.length >= 2 ? maps[1] : "";
-//                LOGGER.info("key:{},value:{}", key, value);
-                if (key.equals("DedeUserID")) {
-                    userCookie.setDedeUserID(value);
-                    controlNum++;
-                } else if (key.equals("bili_jct")) {
-                    userCookie.setBili_jct(value);
-                    controlNum++;
-                } else if (key.equals("DedeUserID__ckMd5")) {
-                    userCookie.setDedeUserID__ckMd5(value);
-                    controlNum++;
-                } else if (key.equals("sid")) {
-                    userCookie.setSid(value);
-                    controlNum++;
-                } else if (key.equals("SESSDATA")) {
-                    userCookie.setSESSDATA(value);
-                    controlNum++;
-                } else {
-//						LOGGER.info("获取cookie失败，字段为" + key);
+                String[] strings = string.split("=");
+                String key = strings[0];
+                String value = strings.length >= 2 ? strings[1] : "";
+
+                if ("DedeUserID".equals(key)) {
+                    userCookieInfo.setDedeUserID(value);
+                    haveNum++;
+                }
+
+                if ("bili_jct".equals(key)) {
+                    userCookieInfo.setBili_jct(value);
+                    haveNum++;
+                }
+
+                if ("DedeUserID__ckMd5".equals(key)) {
+                    userCookieInfo.setDedeUserID__ckMd5(value);
+                    haveNum++;
+                }
+
+                if ("sid".equals(key)) {
+                    userCookieInfo.setSid(value);
+                    haveNum++;
+                }
+
+                if ("SESSDATA".equals(key)) {
+                    userCookieInfo.setSESSDATA(value);
+                    haveNum++;
                 }
             }
         }
-        if (controlNum >= 2) {
-            LOGGER.info("用户cookie装载成功");
-            PublicDataConf.USERCOOKIE = init_cookie;
-            PublicDataConf.COOKIE = userCookie;
-            controlNum = 0;
+        if (haveNum >= 2) {
+            GlobalSettingConf.COOKIE_VALUE = cookieValue;
+            GlobalSettingConf.USER_COOKIE_INFO = userCookieInfo;
+            log.info("cookie装载成功,userCookie:{}", JSON.toJSONString(userCookieInfo));
             return true;
-        } else {
-            LOGGER.info("用户cookie装载失败");
-            PublicDataConf.COOKIE = null;
         }
-        //写入文件
+        log.info("cookie参数异常，无法解析：{}", cookieValue);
         return false;
     }
 
@@ -434,7 +436,7 @@ public class CurrencyTools {
                 String[] maps = string.split("=");
                 key = maps[0];
                 value = maps.length >= 2 ? maps[1] : "";
-                LOGGER.info("key:{},value:{}", key, value);
+                log.info("key:{},value:{}", key, value);
                 if(StringUtils.equals(key,"buvid3")) {
                     return value;
                 }
@@ -446,38 +448,38 @@ public class CurrencyTools {
 
     public synchronized static void autoSendGift() {
         //PublicDataConf.centerSetConf.getAuto_gift().is_open()
-        if (CollectionUtils.isEmpty(PublicDataConf.autoSendGiftMap)) {
-            PublicDataConf.autoSendGiftMap = new ConcurrentHashMap<>(5);
-            PublicDataConf.autoSendGiftMap.put(1, new AutoSendGift(1, "辣条", 1, (short) 0));
-            PublicDataConf.autoSendGiftMap.put(6, new AutoSendGift(6, "亿圆", 10, (short) 0));
-            PublicDataConf.autoSendGiftMap.put(30607, new AutoSendGift(30607, "小心心", 50, (short) 0));
+        if (CollectionUtils.isEmpty(GlobalSettingConf.autoSendGiftMap)) {
+            GlobalSettingConf.autoSendGiftMap = new ConcurrentHashMap<>(5);
+            GlobalSettingConf.autoSendGiftMap.put(1, new AutoSendGift(1, "辣条", 1, (short) 0));
+            GlobalSettingConf.autoSendGiftMap.put(6, new AutoSendGift(6, "亿圆", 10, (short) 0));
+            GlobalSettingConf.autoSendGiftMap.put(30607, new AutoSendGift(30607, "小心心", 50, (short) 0));
         }
         //房间集合-轮询勋章(获得对应房间勋章差值) -> 获取礼物包裹(过期排序，计算勋章亲密度)
-        if (StringUtils.isBlank(PublicDataConf.USERCOOKIE)) {
-            LOGGER.info("自动给送礼 -> 未登录");
+        if (StringUtils.isBlank(GlobalSettingConf.COOKIE_VALUE)) {
+            log.info("自动给送礼 -> 未登录");
             return;
         }
-        if (!PublicDataConf.centerSetConf.getAuto_gift().is_open() || StringUtils.isBlank(PublicDataConf.centerSetConf.getAuto_gift().getRoom_id()))
+        if (!GlobalSettingConf.centerSetConf.getAuto_gift().is_open() || StringUtils.isBlank(GlobalSettingConf.centerSetConf.getAuto_gift().getRoom_id()))
             return;
         List<UserMedal> userMedals = HttpUserData.httpGetMedalList();
         List<UserMedal> wait_send_rooms = new LinkedList<>();
         if (CollectionUtils.isEmpty(userMedals)) {
-            LOGGER.info("自动给送礼 -> 获取勋章列表失败");
+            log.info("自动给送礼 -> 获取勋章列表失败");
             return;
         }
         //礼物包 姑且写死？
         List<UserBag> userBagList = HttpUserData.httpGetBagList(5067l);
         if (userBagList != null) {
             userBagList = userBagList.stream().filter(userBag ->
-                    PublicDataConf.autoSendGiftMap.containsKey(userBag.getGift_id())
+                    GlobalSettingConf.autoSendGiftMap.containsKey(userBag.getGift_id())
             ).collect(Collectors.toList());
         }
         if (CollectionUtils.isEmpty(userBagList)) {
-            LOGGER.info("自动给送礼 -> 获取礼物列表失败");
+            log.info("自动给送礼 -> 获取礼物列表失败");
             return;
         }
-        String[] roomidStrs = PublicDataConf.centerSetConf.getAuto_gift().getRoom_id().split("，");
-        LOGGER.info("自动给送礼pre -> 配置文件:{} ; 发送房间:{} ;", FastJsonUtils.toJson(PublicDataConf.centerSetConf.getAuto_gift()), roomidStrs);
+        String[] roomidStrs = GlobalSettingConf.centerSetConf.getAuto_gift().getRoom_id().split("，");
+        log.info("自动给送礼pre -> 配置文件:{} ; 发送房间:{} ;", FastJsonUtils.toJson(GlobalSettingConf.centerSetConf.getAuto_gift()), roomidStrs);
         for (String roomidStr : roomidStrs) {
             if (StringUtils.isNumeric(roomidStr)) {
                 long roomid = Long.valueOf(roomidStr);
@@ -487,7 +489,7 @@ public class CurrencyTools {
                 ).findFirst();
                 if (userMedalOptional.isPresent()) {
                     wait_send_rooms.add(userMedalOptional.get());
-                    LOGGER.info("自动送礼ing -> 添加房间1:{}", roomid);
+                    log.info("自动送礼ing -> 添加房间1:{}", roomid);
                 } else {
                     RoomInit roomInit = HttpRoomData.httpGetRoomInit(roomid);
                     try {
@@ -498,11 +500,11 @@ public class CurrencyTools {
                             ).findFirst();
                             if (userMedalOptional.isPresent()) {
                                 wait_send_rooms.add(userMedalOptional.get());
-                                LOGGER.info("自动送礼ing -> 添加房间2:{}", roomid);
+                                log.info("自动送礼ing -> 添加房间2:{}", roomid);
                             }
                         }
                     } catch (Exception e) {
-                        LOGGER.error("自动送礼异常：{}", e);
+                        log.error("自动送礼异常：{}", e);
                     }
                 }
             }
@@ -510,7 +512,7 @@ public class CurrencyTools {
         //拿到房间号开始算了（姑且排除舰长的勋章？）
         userBagList = userBagList.stream()
                 .map(userBag -> {
-                    userBag.setFeed(PublicDataConf.autoSendGiftMap.get(userBag.getGift_id()).getFeed());
+                    userBag.setFeed(GlobalSettingConf.autoSendGiftMap.get(userBag.getGift_id()).getFeed());
                     return userBag;
                 })
                 .sorted(Comparator.comparingLong(UserBag::getExpire_at).thenComparingInt(UserBag::getGift_id))
@@ -518,7 +520,7 @@ public class CurrencyTools {
         long total = userBagList.stream().map(userBag -> (long) userBag.getFeed() * (long) userBag.getGift_num()).collect(Collectors.summingLong(Long::longValue));
         //未来可能添加 补足策略 和先送策略 现在就先
         // 送策略把
-        LOGGER.info("自动给送礼total -> 总量:{} ; 发送房间:{} ; 待发送礼物包裹：{}", total, wait_send_rooms, userBagList);
+        log.info("自动给送礼total -> 总量:{} ; 发送房间:{} ; 待发送礼物包裹：{}", total, wait_send_rooms, userBagList);
         for (UserMedal userMedal : wait_send_rooms) {
             if (CollectionUtils.isEmpty(userBagList)) break;
             if (userMedal.getToday_feed() == userMedal.getDay_limit().intValue()) continue;
@@ -574,9 +576,9 @@ public class CurrencyTools {
     public static boolean signNow() {
         Date date = new Date();
         int nowDay = JodaTimeUtils.formatToInt(date, "yyyyMMdd");
-        if (PublicDataConf.centerSetConf.getPrivacy().getSignDay() != nowDay) {
+        if (GlobalSettingConf.centerSetConf.getPrivacy().getSignDay() != nowDay) {
             HttpUserData.httpGetDoSign();
-            PublicDataConf.centerSetConf.getPrivacy().setSignDay(nowDay);
+            GlobalSettingConf.centerSetConf.getPrivacy().setSignDay(nowDay);
             return true;
         }
         return false;

@@ -10,7 +10,7 @@ import org.springframework.util.CollectionUtils;
 import top.nino.api.model.danmu.RoomInfo;
 import top.nino.api.model.room.*;
 import top.nino.api.model.server.Conf;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.tool.CurrencyTools;
 import top.nino.core.OkHttp3Utils;
 
@@ -41,11 +41,11 @@ public class HttpRoomData {
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
+			headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
 		}
 		datas = new HashMap<>(3);
-		datas.put("id", PublicDataConf.ROOMID.toString());
+		datas.put("id", GlobalSettingConf.ROOMID.toString());
 		datas.put("type", "0");
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
@@ -84,8 +84,8 @@ public class HttpRoomData {
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-//		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-//			headers.put("cookie", PublicDataConf.USERCOOKIE);
+//		if (StringUtils.isNotBlank(PublicDataConf.COOKIE_VALUE)) {
+//			headers.put("cookie", PublicDataConf.COOKIE_VALUE);
 //		}
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
@@ -123,8 +123,8 @@ public class HttpRoomData {
 		headers = new HashMap<>(2);
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-//		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-//			headers.put("cookie", PublicDataConf.USERCOOKIE);
+//		if (StringUtils.isNotBlank(PublicDataConf.COOKIE_VALUE)) {
+//			headers.put("cookie", PublicDataConf.COOKIE_VALUE);
 //		}
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
@@ -166,8 +166,8 @@ public class HttpRoomData {
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-//		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-//			headers.put("cookie", PublicDataConf.USERCOOKIE);
+//		if (StringUtils.isNotBlank(PublicDataConf.COOKIE_VALUE)) {
+//			headers.put("cookie", PublicDataConf.COOKIE_VALUE);
 //		}
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
@@ -211,26 +211,26 @@ public class HttpRoomData {
 		ConcurrentHashMap<Long, String> followConcurrentHashMap = null;
 		Map<String, String> headers = null;
 		Map<String, String> datas = null;
-		if (PublicDataConf.AUID == null) {
+		if (GlobalSettingConf.AUID == null) {
 			return null;
 		}
-		if (PublicDataConf.FANSNUM.equals(null) || PublicDataConf.FANSNUM.equals(0L)) {
+		if (GlobalSettingConf.FANSNUM.equals(null) || GlobalSettingConf.FANSNUM.equals(0L)) {
 			page = 1;
 		} else {
-			page = (int) Math.ceil((float) PublicDataConf.FANSNUM / 20F);
+			page = (int) Math.ceil((float) GlobalSettingConf.FANSNUM / 20F);
 			page = page > 5 ? 5 : page;
 		}
 		followConcurrentHashMap = new ConcurrentHashMap<Long, String>();
 		while (page > 0) {
 			headers = new HashMap<>(3);
-			headers.put("referer", "https://space.bilibili.com/{" + PublicDataConf.AUID + "}/");
+			headers.put("referer", "https://space.bilibili.com/{" + GlobalSettingConf.AUID + "}/");
 			headers.put("user-agent",
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-//			if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-//				headers.put("cookie", PublicDataConf.USERCOOKIE);
+//			if (StringUtils.isNotBlank(PublicDataConf.COOKIE_VALUE)) {
+//				headers.put("cookie", PublicDataConf.COOKIE_VALUE);
 //			}
 			datas = new HashMap<>(6);
-			datas.put("vmid", PublicDataConf.AUID.toString());
+			datas.put("vmid", GlobalSettingConf.AUID.toString());
 			datas.put("pn", String.valueOf(page));
 			datas.put("ps", "50");
 			datas.put("order", "desc");
@@ -255,7 +255,7 @@ public class HttpRoomData {
 			}
 
 			if (code == 0) {
-				PublicDataConf.FANSNUM = ((JSONObject) jsonObject.get("data")).getLong("total");
+				GlobalSettingConf.FANSNUM = ((JSONObject) jsonObject.get("data")).getLong("total");
 				jsonArray = ((JSONObject) jsonObject.get("data")).getJSONArray("list");
 				for (Object object : jsonArray) {
 					followConcurrentHashMap.put(((JSONObject) object).getLong("mid"),
@@ -281,18 +281,18 @@ public class HttpRoomData {
 		Map<String, String> headers = null;
 		Map<String, String> datas = null;
 		Long followersNum = 0L;
-		if (PublicDataConf.AUID == null) {
+		if (GlobalSettingConf.AUID == null) {
 			return followersNum;
 		}
 		headers = new HashMap<>(3);
-		headers.put("referer", "https://space.bilibili.com/{" + PublicDataConf.AUID + "}/");
+		headers.put("referer", "https://space.bilibili.com/{" + GlobalSettingConf.AUID + "}/");
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-//			if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-//				headers.put("cookie", PublicDataConf.USERCOOKIE);
+//			if (StringUtils.isNotBlank(PublicDataConf.COOKIE_VALUE)) {
+//				headers.put("cookie", PublicDataConf.COOKIE_VALUE);
 //			}
 		datas = new HashMap<>(2);
-		datas.put("vmid", PublicDataConf.AUID.toString());
+		datas.put("vmid", GlobalSettingConf.AUID.toString());
 		try {
 			data = OkHttp3Utils.getHttp3Utils().httpGet("https://api.bilibili.com/x/relation/stat", headers, datas)
 					.body().string();
@@ -335,13 +335,13 @@ public class HttpRoomData {
 			headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 			headers.put("user-agent",
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-//			if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-//				headers.put("cookie", PublicDataConf.USERCOOKIE);
+//			if (StringUtils.isNotBlank(PublicDataConf.COOKIE_VALUE)) {
+//				headers.put("cookie", PublicDataConf.COOKIE_VALUE);
 //			}
 			datas = new HashMap<>(4);
-			datas.put("roomid", PublicDataConf.ROOMID.toString());
+			datas.put("roomid", GlobalSettingConf.ROOMID.toString());
 			datas.put("page", String.valueOf(i));
-			datas.put("ruid", PublicDataConf.AUID.toString());
+			datas.put("ruid", GlobalSettingConf.AUID.toString());
 			datas.put("page_size", "29");
 			try {
 				data = OkHttp3Utils.getHttp3Utils()
@@ -392,13 +392,13 @@ public class HttpRoomData {
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-//		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-//			headers.put("cookie", PublicDataConf.USERCOOKIE);
+//		if (StringUtils.isNotBlank(PublicDataConf.COOKIE_VALUE)) {
+//			headers.put("cookie", PublicDataConf.COOKIE_VALUE);
 //		}
 		datas = new HashMap<>(5);
-		datas.put("roomid", PublicDataConf.ROOMID.toString());
+		datas.put("roomid", GlobalSettingConf.ROOMID.toString());
 		datas.put("page", String.valueOf(1));
-		datas.put("ruid", PublicDataConf.AUID.toString());
+		datas.put("ruid", GlobalSettingConf.AUID.toString());
 		datas.put("page_size", "29");
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
@@ -430,8 +430,8 @@ public class HttpRoomData {
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-//		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-//			headers.put("cookie", PublicDataConf.USERCOOKIE);
+//		if (StringUtils.isNotBlank(PublicDataConf.COOKIE_VALUE)) {
+//			headers.put("cookie", PublicDataConf.COOKIE_VALUE);
 //		}
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
@@ -468,13 +468,13 @@ public class HttpRoomData {
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
+			headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
 		}
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
 					.httpGet("https://api.live.bilibili.com/xlive/lottery-interface/v1/lottery/getLotteryInfoWeb?roomid="
-							+ PublicDataConf.ROOMID, headers, null)
+							+ GlobalSettingConf.ROOMID, headers, null)
 					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
@@ -586,10 +586,10 @@ public class HttpRoomData {
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
+			headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
 		}
-		datas.put("roomid",String.valueOf(PublicDataConf.ROOMID));
+		datas.put("roomid",String.valueOf(GlobalSettingConf.ROOMID));
 		datas.put("page",String.valueOf(page));
 		try {
 			data = OkHttp3Utils.getHttp3Utils()

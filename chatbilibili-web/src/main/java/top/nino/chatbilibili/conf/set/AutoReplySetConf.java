@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.component.ThreadComponent;
 import top.nino.chatbilibili.conf.base.StartThreadInterface;
 import top.nino.chatbilibili.conf.base.TimingLiveSetConf;
@@ -46,11 +46,11 @@ public class AutoReplySetConf extends TimingLiveSetConf implements Serializable,
 	//方法区
 	@Override
 	public void start(ThreadComponent threadComponent){
-		if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+		if(StringUtils.isBlank(GlobalSettingConf.COOKIE_VALUE)){
 			return;
 		}
 		if (is_live_open()) {
-			if (PublicDataConf.lIVE_STATUS != 1) {
+			if (GlobalSettingConf.lIVE_STATUS != 1) {
 				threadComponent.closeAutoReplyThread();
 			} else {
 				if (is_open()) {

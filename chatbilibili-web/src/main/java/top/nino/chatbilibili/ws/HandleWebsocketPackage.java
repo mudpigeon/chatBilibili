@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import struct.JavaStruct;
 import struct.StructException;
 import top.nino.api.model.welcome.BarrageHeadHandle;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.core.ByteUtils;
 
 
@@ -57,7 +57,7 @@ public class HandleWebsocketPackage {
 				if (data_type == 3) {
 					try {
 						//房间人气
-						PublicDataConf.ROOM_POPULARITY = ByteUtils.byteslong(bs);
+						GlobalSettingConf.ROOM_POPULARITY = ByteUtils.byteslong(bs);
 					} catch (Exception e) {
 						// TODO 自动生成的 catch 块
 						e.printStackTrace();
@@ -79,10 +79,10 @@ public class HandleWebsocketPackage {
 			} else if (data_ver == 0) {
 				try {
 					resultStr = new String(bs, "utf-8");
-					PublicDataConf.resultStrs.add(resultStr);
-					if (PublicDataConf.parseMessageThread != null && !PublicDataConf.parseMessageThread.FLAG) {
-						synchronized (PublicDataConf.parseMessageThread) {
-							PublicDataConf.parseMessageThread.notify();
+					GlobalSettingConf.resultStrs.add(resultStr);
+					if (GlobalSettingConf.parseMessageThread != null && !GlobalSettingConf.parseMessageThread.FLAG) {
+						synchronized (GlobalSettingConf.parseMessageThread) {
+							GlobalSettingConf.parseMessageThread.notify();
 						}
 					}
 				} catch (Exception e) {
@@ -147,7 +147,7 @@ public class HandleWebsocketPackage {
 			} else if (data_ver == 1) {
 				if (data_type == 3) {
 					try {
-						PublicDataConf.ROOM_POPULARITY = ByteUtils.byteslong(bs);
+						GlobalSettingConf.ROOM_POPULARITY = ByteUtils.byteslong(bs);
 					} catch (Exception e) {
 						// TODO 自动生成的 catch 块
 						e.printStackTrace();
@@ -161,10 +161,10 @@ public class HandleWebsocketPackage {
 			} else if (data_ver == 0) {
 				try {
 					resultStr = new String(bs, "utf-8");
-					PublicDataConf.resultStrs.add(resultStr);
-					if (PublicDataConf.parseMessageThread != null && !PublicDataConf.parseMessageThread.FLAG) {
-						synchronized (PublicDataConf.parseMessageThread) {
-							PublicDataConf.parseMessageThread.notify();
+					GlobalSettingConf.resultStrs.add(resultStr);
+					if (GlobalSettingConf.parseMessageThread != null && !GlobalSettingConf.parseMessageThread.FLAG) {
+						synchronized (GlobalSettingConf.parseMessageThread) {
+							GlobalSettingConf.parseMessageThread.notify();
 						}
 					}
 				} catch (Exception e) {

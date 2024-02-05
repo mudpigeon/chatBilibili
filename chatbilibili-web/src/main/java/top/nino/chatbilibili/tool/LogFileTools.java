@@ -1,7 +1,7 @@
 package top.nino.chatbilibili.tool;
 
 
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.core.FileTools;
 import top.nino.core.JodaTimeUtils;
 
@@ -10,7 +10,7 @@ import java.net.URLDecoder;
 
 
 /**
- * @author cengzhongjie
+ * @author nino
  */
 public class LogFileTools {
 	private volatile static LogFileTools logFileTools;
@@ -52,7 +52,7 @@ public class LogFileTools {
 				file.mkdirs();
 			stringBuilder.append(JodaTimeUtils.getCurrentDateString());
 			stringBuilder.append("(");
-			stringBuilder.append(PublicDataConf.ROOMID);
+			stringBuilder.append(GlobalSettingConf.ROOMID);
 			stringBuilder.append(")");
 			file = new File(path + stringBuilder.toString() + ".txt");
 //			file.setWritable(true, false);

@@ -1,15 +1,13 @@
 package top.nino.chatbilibili.http;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.util.CollectionUtils;
 import top.nino.api.model.apex.ApexMessage;
 import top.nino.api.model.apex.PredatorResult;
 import top.nino.api.model.heart.XData;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.core.OkHttp3Utils;
 
 import java.util.*;
@@ -29,8 +27,8 @@ public class HttpOtherData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         datas = new HashMap<>(4);
-        datas.put("roomid", PublicDataConf.centerSetConf.getRoomid().toString());
-        datas.put("edition", PublicDataConf.VERSION);
+        datas.put("roomid", GlobalSettingConf.centerSetConf.getRoomid().toString());
+        datas.put("edition", GlobalSettingConf.VERSION);
         datas.put("time", String.valueOf(System.currentTimeMillis()));
         try {
             data = OkHttp3Utils.getHttp3Utils()
@@ -42,7 +40,7 @@ public class HttpOtherData {
             code = jsonObject.getString("code");
             if (code.equals("200")) {
                 edition = ((JSONObject) jsonObject.get("result")).getString("value");
-                PublicDataConf.NEW_VERSION = edition;
+                GlobalSettingConf.NEW_VERSION = edition;
             } else {
                 LOGGER.error("未知错误,原因:" + jsonObject.getString("msg"));
             }
@@ -67,8 +65,8 @@ public class HttpOtherData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         datas = new HashMap<>(4);
-        datas.put("roomid", PublicDataConf.centerSetConf.getRoomid().toString());
-        datas.put("edition", PublicDataConf.VERSION);
+        datas.put("roomid", GlobalSettingConf.centerSetConf.getRoomid().toString());
+        datas.put("edition", GlobalSettingConf.VERSION);
         datas.put("time", String.valueOf(System.currentTimeMillis()));
         try {
             data = OkHttp3Utils.getHttp3Utils()
@@ -104,8 +102,8 @@ public class HttpOtherData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         datas = new HashMap<>(4);
-        datas.put("uid", PublicDataConf.USER.getUid().toString());
-        datas.put("edition", PublicDataConf.VERSION);
+        datas.put("uid", GlobalSettingConf.USER.getUid().toString());
+        datas.put("edition", GlobalSettingConf.VERSION);
         datas.put("time", String.valueOf(System.currentTimeMillis()));
         try {
             data = OkHttp3Utils.getHttp3Utils()
@@ -143,8 +141,8 @@ public class HttpOtherData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         datas = new HashMap<>(4);
-        datas.put("uid", PublicDataConf.USER.getUid().toString());
-        datas.put("edition", PublicDataConf.VERSION);
+        datas.put("uid", GlobalSettingConf.USER.getUid().toString());
+        datas.put("edition", GlobalSettingConf.VERSION);
         datas.put("time", String.valueOf(System.currentTimeMillis()));
         try {
             data = OkHttp3Utils.getHttp3Utils()
@@ -256,8 +254,8 @@ public class HttpOtherData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         datas = new HashMap<>(4);
-        datas.put("roomid", PublicDataConf.centerSetConf.getRoomid().toString());
-        datas.put("edition", PublicDataConf.VERSION);
+        datas.put("roomid", GlobalSettingConf.centerSetConf.getRoomid().toString());
+        datas.put("edition", GlobalSettingConf.VERSION);
         datas.put("time", String.valueOf(System.currentTimeMillis()));
         try {
             data = OkHttp3Utils.getHttp3Utils()
@@ -269,7 +267,7 @@ public class HttpOtherData {
             code = jsonObject.getString("code");
             if (code.equals("200")) {
                 url = jsonObject.getString("result");
-                PublicDataConf.SMALLHEART_ADRESS = url;
+                GlobalSettingConf.SMALLHEART_ADRESS = url;
             } else {
                 LOGGER.error("未知错误,原因:" + jsonObject.getString("msg"));
             }
@@ -296,7 +294,7 @@ public class HttpOtherData {
         String data = null;
         JSONObject jsonObject = null;
         String s = null;
-        String url = PublicDataConf.SMALLHEART_ADRESS;
+        String url = GlobalSettingConf.SMALLHEART_ADRESS;
         if (StringUtils.isBlank(url)) {
             return null;
         }
@@ -365,7 +363,7 @@ public class HttpOtherData {
             datas.put("type", type);
         }
         try {
-            datas.put("edition", PublicDataConf.VERSION);
+            datas.put("edition", GlobalSettingConf.VERSION);
             datas.put("time", String.valueOf(System.currentTimeMillis()));
             data = OkHttp3Utils.getHttp3Utils()
                     .httpGet("http://bilibili.acproject.xyz/apex_banked", headers, datas)
@@ -400,7 +398,7 @@ public class HttpOtherData {
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         datas = new HashMap<>(3);
         try {
-            datas.put("edition", PublicDataConf.VERSION);
+            datas.put("edition", GlobalSettingConf.VERSION);
             datas.put("time", String.valueOf(System.currentTimeMillis()));
             data = OkHttp3Utils.getHttp3Utils()
                     .httpGet("http://bilibili.acproject.xyz/apex_message", headers, datas)

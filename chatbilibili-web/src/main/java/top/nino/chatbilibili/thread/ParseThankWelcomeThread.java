@@ -3,10 +3,6 @@ package top.nino.chatbilibili.thread;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-import top.nino.chatbilibili.PublicDataConf;
-
-
-
 
 
 /**

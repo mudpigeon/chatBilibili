@@ -7,11 +7,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.component.ServerAddressComponent;
-import top.nino.chatbilibili.component.TaskRegisterComponent;
 import top.nino.chatbilibili.component.ThreadComponent;
 import top.nino.chatbilibili.conf.base.CenterSetConf;
-import top.nino.chatbilibili.PublicDataConf;
 import top.nino.chatbilibili.http.HttpOtherData;
 import top.nino.chatbilibili.service.ClientService;
 import top.nino.chatbilibili.service.SetService;
@@ -44,35 +43,35 @@ public class SetServiceImpl implements SetService {
         System.out.println("参考局域网浏览器进入设置页面地址: 1、" + serverAddressComponent.getAddress());
         System.out.println("参考远程(无代理)浏览器进入设置页面地址: 1、" + serverAddressComponent.getRemoteAddress());
         System.out.println();
-        PublicDataConf.ANNOUNCE = PublicDataConf.centerSetConf.getPrivacy().is_open()?"隐私模式下不会获取最新公告":HttpOtherData.httpGetNewAnnounce();
-        System.out.println("最新公告：" +  PublicDataConf.ANNOUNCE);
-        if(!PublicDataConf.centerSetConf.getPrivacy().is_open()) {
+        GlobalSettingConf.ANNOUNCE = GlobalSettingConf.centerSetConf.getPrivacy().is_open()?"隐私模式下不会获取最新公告":HttpOtherData.httpGetNewAnnounce();
+        System.out.println("最新公告：" +  GlobalSettingConf.ANNOUNCE);
+        if(!GlobalSettingConf.centerSetConf.getPrivacy().is_open()) {
             String edition = HttpOtherData.httpGetNewEdition();
             if (StringUtils.isNotBlank(edition)) {
-                if (!edition.equals(PublicDataConf.VERSION)) {
+                if (!edition.equals(GlobalSettingConf.VERSION)) {
                     System.out.println("查询最新版本：" + edition
                             + "目前脚本有可用更新哦，请到github官网查看更新https://github.com/BanqiJane/Bilibili_Danmuji");
                 } else {
                     System.out.println("查询最新版本：目前使用的版本为最新版本，暂无可用更新");
                 }
             } else {
-                System.out.println("查询最新版本失败,目前版本：" + PublicDataConf.VERSION);
+                System.out.println("查询最新版本失败,目前版本：" + GlobalSettingConf.VERSION);
             }
         }else{
-            System.out.println("隐私模式下不会从服务器获取最新版本信息,目前版本：" + PublicDataConf.VERSION);
+            System.out.println("隐私模式下不会从服务器获取最新版本信息,目前版本：" + GlobalSettingConf.VERSION);
         }
         System.out.println();
         // 自动连接
-        if (PublicDataConf.centerSetConf.is_auto() && PublicDataConf.centerSetConf.getRoomid() > 0) {
+        if (GlobalSettingConf.centerSetConf.is_auto() && GlobalSettingConf.centerSetConf.getRoomid() > 0) {
             try {
-                clientService.startConnService(PublicDataConf.centerSetConf.getRoomid());
+                clientService.startConnService(GlobalSettingConf.centerSetConf.getRoomid());
             } catch (Exception e) {
                 // TODO 自动生成的 catch 块
                 e.printStackTrace();
             }
         }
         // 默认浏览器打开网页
-        if(PublicDataConf.centerSetConf.isWin_auto_openSet()) {
+        if(GlobalSettingConf.centerSetConf.isWin_auto_openSet()) {
             try {
                 Runtime rt = Runtime.getRuntime();
                 if(SystemUtils.IS_OS_WINDOWS){
@@ -97,8 +96,8 @@ public class SetServiceImpl implements SetService {
         synchronized (centerSetConf) {
             Map<String, String> profileMap = new ConcurrentHashMap<>();
             BASE64Encoder base64Encoder = new BASE64Encoder();
-            if (PublicDataConf.USER != null) {
-                profileMap.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
+            if (GlobalSettingConf.USER != null) {
+                profileMap.put(cookies, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
             }
             profileMap.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
             ProFileTools.write(profileMap, "DanmujiProfile");
@@ -111,22 +110,22 @@ public class SetServiceImpl implements SetService {
     // 保存配置文件
     public void changeSet(CenterSetConf centerSetConf,boolean check) {
         synchronized (centerSetConf) {
-            if (centerSetConf.toJson().equals(PublicDataConf.centerSetConf.toJson())&&check) {
+            if (centerSetConf.toJson().equals(GlobalSettingConf.centerSetConf.toJson())&&check) {
                 LOGGER.info("保存配置文件成功");
                 return;
             }
-            if (PublicDataConf.ROOMID_LONG != null && PublicDataConf.ROOMID_LONG > 0) {
-                centerSetConf.setRoomid(PublicDataConf.ROOMID_LONG);
+            if (GlobalSettingConf.ROOMID_LONG != null && GlobalSettingConf.ROOMID_LONG > 0) {
+                centerSetConf.setRoomid(GlobalSettingConf.ROOMID_LONG);
             }
             Map<String, String> profileMap = new ConcurrentHashMap<>();
             BASE64Encoder base64Encoder = new BASE64Encoder();
-            if (PublicDataConf.USER != null) {
-                profileMap.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
+            if (GlobalSettingConf.USER != null) {
+                profileMap.put(cookies, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
             }
             profileMap.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
             ProFileTools.write(profileMap, "DanmujiProfile");
             try {
-                PublicDataConf.centerSetConf = JSONObject.parseObject(
+                GlobalSettingConf.centerSetConf = JSONObject.parseObject(
                         new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
                         CenterSetConf.class);
                 holdSet(centerSetConf);
@@ -144,17 +143,17 @@ public class SetServiceImpl implements SetService {
         synchronized (centerSetConf) {
             Map<String, String> profileMap = new ConcurrentHashMap<>();
             BASE64Encoder base64Encoder = new BASE64Encoder();
-            if (PublicDataConf.USER != null) {
-                profileMap.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
+            if (GlobalSettingConf.USER != null) {
+                profileMap.put(cookies, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
             }
             profileMap.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
             ProFileTools.write(profileMap, "DanmujiProfile");
             try {
-                PublicDataConf.centerSetConf = JSONObject.parseObject(
+                GlobalSettingConf.centerSetConf = JSONObject.parseObject(
                         new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
                         CenterSetConf.class);
-                PublicDataConf.centerSetConf = ParseSetStatusTools.initCenterChildConfig(PublicDataConf.centerSetConf);
-                if (PublicDataConf.ROOMID != null) {
+                GlobalSettingConf.centerSetConf = ParseSetStatusTools.initCenterChildConfig(GlobalSettingConf.centerSetConf);
+                if (GlobalSettingConf.ROOMID != null) {
                     holdSet(centerSetConf);
                 }
                 LOGGER.info("读取配置文件历史房间成功");
@@ -180,11 +179,11 @@ public class SetServiceImpl implements SetService {
             SchedulingRunnableUtil autoSendGiftTask = new SchedulingRunnableUtil("dosignTask", "autosendgift");
 
             // 每日签到
-            if (PublicDataConf.centerSetConf.is_dosign()) {
+            if (GlobalSettingConf.centerSetConf.is_dosign()) {
                 // 判断签到
                 boolean isSign = CurrencyTools.signNow();
                 if (isSign) {
-                    changeSet(PublicDataConf.centerSetConf);
+                    changeSet(GlobalSettingConf.centerSetConf);
                 }
 //                if (!taskRegisterComponent.hasTask(task)) {
 //                    taskRegisterComponent.addTask(task, CurrencyTools.dateStringToCron(centerSetConf.getSign_time()));
@@ -227,15 +226,15 @@ public class SetServiceImpl implements SetService {
             }
 
             // need roomid set
-            if (PublicDataConf.ROOMID == null || PublicDataConf.ROOMID <= 0) {
+            if (GlobalSettingConf.ROOMID == null || GlobalSettingConf.ROOMID <= 0) {
                 return;
             }
 
-            if (PublicDataConf.webSocketProxy == null) {
+            if (GlobalSettingConf.webSocketProxy == null) {
                 return;
             }
 
-            if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) return;
+            if (GlobalSettingConf.webSocketProxy != null && !GlobalSettingConf.webSocketProxy.isOpen()) return;
 
             // parsemessagethread start
             threadComponent.startParseMessageThread(centerSetConf);
@@ -248,7 +247,7 @@ public class SetServiceImpl implements SetService {
             }
 
             // need login
-            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+            if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
                 // advertthread
                 centerSetConf.getAdvert().start(threadComponent);
                 // autoreplythread
@@ -266,30 +265,30 @@ public class SetServiceImpl implements SetService {
 //                    threadComponent.closeUserOnlineThread();
 //                }
                 // sendbarragethread
-                if (PublicDataConf.advertThread == null
-                        && !PublicDataConf.centerSetConf.getFollow().is_followThank()
-                        && !PublicDataConf.centerSetConf.getWelcome().is_welcomeThank()
-                        && !PublicDataConf.centerSetConf.getThank_gift().is_giftThank()
-                        && PublicDataConf.autoReplyThread == null) {
+                if (GlobalSettingConf.advertThread == null
+                        && !GlobalSettingConf.centerSetConf.getFollow().is_followThank()
+                        && !GlobalSettingConf.centerSetConf.getWelcome().is_welcomeThank()
+                        && !GlobalSettingConf.centerSetConf.getThank_gift().is_giftThank()
+                        && GlobalSettingConf.autoReplyThread == null) {
                     threadComponent.closeSendBarrageThread();
-                    PublicDataConf.init_send();
+                    GlobalSettingConf.init_send();
                 } else {
                     threadComponent.startSendBarrageThread();
                 }
             } else {
                 //没有登录
-                PublicDataConf.init_user();
+                GlobalSettingConf.init_user();
                 threadComponent.closeUser(false);
             }
-            if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
+            if (GlobalSettingConf.webSocketProxy != null && !GlobalSettingConf.webSocketProxy.isOpen()) {
                 threadComponent.closeAll();
-                PublicDataConf.init_all();
+                GlobalSettingConf.init_all();
             }
         }
     }
 
     public void quit() {
-        PublicDataConf.init_user();
+        GlobalSettingConf.init_user();
         threadComponent.closeUser(true);
         // remove task all shutdown !!!!!!
         try {
@@ -298,8 +297,8 @@ public class SetServiceImpl implements SetService {
             // TODO 自动生成的 catch 块
             LOGGER.error("清理定时任务错误：" + e);
         }
-        PublicDataConf.init_send();
-        holdSet(PublicDataConf.centerSetConf);
+        GlobalSettingConf.init_send();
+        holdSet(GlobalSettingConf.centerSetConf);
         LOGGER.info("用户退出成功");
     }
 

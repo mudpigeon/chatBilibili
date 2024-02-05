@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.conf.base.ThankLiveSetConf;
 
 
@@ -29,13 +29,13 @@ public class ThankFollowSetConf extends ThankLiveSetConf implements Serializable
 	
 	// 方法区
 	public boolean is_followThank(){
-		if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+		if(StringUtils.isBlank(GlobalSettingConf.COOKIE_VALUE)){
 			return false;
 		}
 		//是否开启仅在直播中运行
 		if(is_live_open()) {
 			//没在直播
-			if(PublicDataConf.lIVE_STATUS !=1){
+			if(GlobalSettingConf.lIVE_STATUS !=1){
 				return false;
 			}else{
 				if(is_open()) {
@@ -54,7 +54,7 @@ public class ThankFollowSetConf extends ThankLiveSetConf implements Serializable
 	}
 
 	public boolean is_followThank(short live_status){
-		if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+		if(StringUtils.isBlank(GlobalSettingConf.COOKIE_VALUE)){
 			return false;
 		}
 		//是否开启仅在直播中运行

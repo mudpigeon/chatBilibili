@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import top.nino.api.model.auto_reply.AutoReply;
 import top.nino.api.model.danmu.Gift;
 import top.nino.api.model.danmu.Interact;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 
 
 @Component
@@ -16,8 +16,8 @@ public class BlackParseComponent {
     private static Logger LOGGER = LogManager.getLogger(BlackParseComponent.class);
     public boolean autoReplay_parse(AutoReply autoReply) {
         //全局开启
-        if(PublicDataConf.centerSetConf.getBlack()!=null) {
-            if (PublicDataConf.centerSetConf.getBlack().isAuto_reply() || PublicDataConf.centerSetConf.getBlack().isAll()) {
+        if(GlobalSettingConf.centerSetConf.getBlack()!=null) {
+            if (GlobalSettingConf.centerSetConf.getBlack().isAuto_reply() || GlobalSettingConf.centerSetConf.getBlack().isAll()) {
                 return this.parse(autoReply);
             }
         }else{
@@ -35,8 +35,8 @@ public class BlackParseComponent {
 //        } else if (interact.getMsg_type() == 2) {
 //
 //        }
-        if(PublicDataConf.centerSetConf.getBlack()!=null) {
-            if (PublicDataConf.centerSetConf.getBlack().isThank_follow() || PublicDataConf.centerSetConf.getBlack().isThank_welcome() || PublicDataConf.centerSetConf.getBlack().isAll()) {
+        if(GlobalSettingConf.centerSetConf.getBlack()!=null) {
+            if (GlobalSettingConf.centerSetConf.getBlack().isThank_follow() || GlobalSettingConf.centerSetConf.getBlack().isThank_welcome() || GlobalSettingConf.centerSetConf.getBlack().isAll()) {
                 return this.parse(interact);
             }
         }else{
@@ -47,8 +47,8 @@ public class BlackParseComponent {
 
     public boolean gift_parse(Gift gift) {
         //全局开启
-        if(PublicDataConf.centerSetConf.getBlack()!=null) {
-            if (PublicDataConf.centerSetConf.getBlack().isThank_gift() || PublicDataConf.centerSetConf.getBlack().isAll()) {
+        if(GlobalSettingConf.centerSetConf.getBlack()!=null) {
+            if (GlobalSettingConf.centerSetConf.getBlack().isThank_gift() || GlobalSettingConf.centerSetConf.getBlack().isAll()) {
                 return this.parse(gift);
             }
         }else{
@@ -60,8 +60,8 @@ public class BlackParseComponent {
 
     public <T> boolean global_parse(T t) {
         //全局开启
-        if(PublicDataConf.centerSetConf.getBlack()!=null) {
-            if (PublicDataConf.centerSetConf.getBlack().isAll()) {
+        if(GlobalSettingConf.centerSetConf.getBlack()!=null) {
+            if (GlobalSettingConf.centerSetConf.getBlack().isAll()) {
                 return this.parse(t);
             }
         }
@@ -70,12 +70,12 @@ public class BlackParseComponent {
 
 
     public <T> boolean parse(T t) {
-        if(PublicDataConf.centerSetConf.getBlack()==null)return true;
+        if(GlobalSettingConf.centerSetConf.getBlack()==null)return true;
         boolean nameFlag = true;
         boolean uidFlag = true;
         //名称规则
         String name = "";
-        for (String s : PublicDataConf.centerSetConf.getBlack().getNames()) {
+        for (String s : GlobalSettingConf.centerSetConf.getBlack().getNames()) {
             if (t instanceof AutoReply) {   //自动回复
                 AutoReply autoReply = (AutoReply) t;
                 name = autoReply.getName();
@@ -89,7 +89,7 @@ public class BlackParseComponent {
             //判断
             String replaced_s = s.replace("%", "");
             //非模糊模式
-            if(!PublicDataConf.centerSetConf.getBlack().isFuzzy_query()) {
+            if(!GlobalSettingConf.centerSetConf.getBlack().isFuzzy_query()) {
                 if (s.startsWith("%") && s.endsWith("%")) {
                     if (StringUtils.contains(name, replaced_s)) {
                         nameFlag = false;
@@ -120,7 +120,7 @@ public class BlackParseComponent {
         }
         String uid = "";
         //uid规则
-        for (String s : PublicDataConf.centerSetConf.getBlack().getUids()) {
+        for (String s : GlobalSettingConf.centerSetConf.getBlack().getUids()) {
             if (t instanceof AutoReply) {   //自动回复
                 AutoReply autoReply = (AutoReply) t;
                 uid = autoReply.getUid() + "";

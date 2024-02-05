@@ -3,7 +3,7 @@ package top.nino.chatbilibili.thread;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.http.HttpUserData;
 
 
@@ -20,16 +20,16 @@ public class SendBarrageThread extends Thread {
             if (FLAG) {
                 return;
             }
-            if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
+            if (GlobalSettingConf.webSocketProxy != null && !GlobalSettingConf.webSocketProxy.isOpen()) {
                 return;
             }
-            if (null != PublicDataConf.barrageString && !PublicDataConf.barrageString.isEmpty()
-                    && StringUtils.isNotBlank(PublicDataConf.barrageString.get(0))) {
-                barrageStr = PublicDataConf.barrageString.get(0);
+            if (null != GlobalSettingConf.barrageString && !GlobalSettingConf.barrageString.isEmpty()
+                    && StringUtils.isNotBlank(GlobalSettingConf.barrageString.get(0))) {
+                barrageStr = GlobalSettingConf.barrageString.get(0);
                 int strLength = barrageStr.length();
                 int maxLength = 20;
-                if (PublicDataConf.USERBARRAGEMESSAGE != null) {
-                    maxLength = PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getLength();
+                if (GlobalSettingConf.USERBARRAGEMESSAGE != null) {
+                    maxLength = GlobalSettingConf.USERBARRAGEMESSAGE.getDanmu().getLength();
                 }
                 //大于就分割发送
                 if (strLength > maxLength) {
@@ -37,7 +37,7 @@ public class SendBarrageThread extends Thread {
                     for (int i = 0; i < num; i++) {
                         try {
                             String barrageStr_split = StringUtils.substring(barrageStr, i * maxLength, strLength > maxLength * (i + 1) ? maxLength * (i + 1) : strLength);
-                            if (!PublicDataConf.TEST_MODE) {
+                            if (!GlobalSettingConf.TEST_MODE) {
                                 if (HttpUserData.httpPostSendBarrage(barrageStr_split) != 0) {
                                     break;
                                 }
@@ -52,7 +52,7 @@ public class SendBarrageThread extends Thread {
                     }
                 } else {
 
-                    if (!PublicDataConf.TEST_MODE) {
+                    if (!GlobalSettingConf.TEST_MODE) {
                         try {
                             // TODO 自动生成的方法存根
                             HttpUserData.httpPostSendBarrage(barrageStr);
@@ -66,7 +66,7 @@ public class SendBarrageThread extends Thread {
                         LOGGER.info(barrageStr);
                     }
                 }
-                PublicDataConf.barrageString.remove(0);
+                GlobalSettingConf.barrageString.remove(0);
                 try {
                     Thread.sleep(1455);
                 } catch (InterruptedException e) {
@@ -75,9 +75,9 @@ public class SendBarrageThread extends Thread {
                 }
 
             } else {
-                synchronized (PublicDataConf.sendBarrageThread) {
+                synchronized (GlobalSettingConf.sendBarrageThread) {
                     try {
-                        PublicDataConf.sendBarrageThread.wait();
+                        GlobalSettingConf.sendBarrageThread.wait();
                     } catch (InterruptedException e) {
                         // TODO 自动生成的 catch 块
 //						LOGGER.info("发送弹幕线程关闭:" + e);

@@ -1,7 +1,7 @@
 package top.nino.chatbilibili.thread;
 
 
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.service.impl.ClientServiceImpl;
 import top.nino.core.SpringUtils;
 
@@ -34,7 +34,7 @@ public class ReConnThread extends Thread {
 //				num=0;
 //				return;
 			}
-			if (!PublicDataConf.webSocketProxy.isOpen()) {
+			if (!GlobalSettingConf.webSocketProxy.isOpen()) {
 				try {
 					clientService.reConnService();
 				} catch (Exception e) {

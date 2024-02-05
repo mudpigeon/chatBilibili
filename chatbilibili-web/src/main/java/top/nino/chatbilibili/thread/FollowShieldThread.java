@@ -2,7 +2,7 @@ package top.nino.chatbilibili.thread;
 
 import lombok.Getter;
 import lombok.Setter;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 
 
 @Getter
@@ -20,17 +20,17 @@ public class FollowShieldThread extends Thread{
 		if (FLAG) {
 			return;
 		}
-		if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
+		if(GlobalSettingConf.webSocketProxy!=null&&!GlobalSettingConf.webSocketProxy.isOpen()) {
 			return;
 		}
-		PublicDataConf.ISSHIELDFOLLOW = true;
+		GlobalSettingConf.ISSHIELDFOLLOW = true;
 		try {
 			Thread.sleep(time * 1000);
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
 //			e.printStackTrace();
 		}
-		PublicDataConf.ISSHIELDFOLLOW = false;
+		GlobalSettingConf.ISSHIELDFOLLOW = false;
 	}
 
 

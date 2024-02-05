@@ -7,7 +7,7 @@ import top.nino.api.model.danmu.Gift;
 import top.nino.api.model.enums.ListGiftShieldStatus;
 import top.nino.api.model.enums.ListPeopleShieldStatus;
 import top.nino.api.model.enums.ShieldGift;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.conf.base.ThankGiftRuleSet;
 
 
@@ -30,15 +30,15 @@ public class ShieldGiftTools {
 //			case ALL:
 //				break;
 			case MEDAL:
-				if(PublicDataConf.MEDALINFOANCHOR!=null){
-					if(StringUtils.isBlank(PublicDataConf.MEDALINFOANCHOR.getMedal_name())){
+				if(GlobalSettingConf.MEDALINFOANCHOR!=null){
+					if(StringUtils.isBlank(GlobalSettingConf.MEDALINFOANCHOR.getMedal_name())){
 						break;
 					}
 					//舰长的这里是空的
 					if(gift.getMedal_info()==null){
 						break;
 					}
-					if(!PublicDataConf.MEDALINFOANCHOR.getMedal_name().equals(gift.getMedal_info().getMedal_name())){
+					if(!GlobalSettingConf.MEDALINFOANCHOR.getMedal_name().equals(gift.getMedal_info().getMedal_name())){
 /*						LOGGER.info("礼物感谢姬人员屏蔽[勋章模式]:{}", gift.getMedal_info().getMedal_name());*/
 						return null;
 					}

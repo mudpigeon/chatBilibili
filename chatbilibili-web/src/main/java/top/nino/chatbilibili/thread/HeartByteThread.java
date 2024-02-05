@@ -1,7 +1,7 @@
 package top.nino.chatbilibili.thread;
 
 
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.core.HexUtils;
 
 /**
@@ -28,10 +28,10 @@ public class HeartByteThread extends Thread {
 			if (HFLAG) {
 				return;
 			}
-			if(PublicDataConf.webSocketProxy.isOpen()) {
+			if(GlobalSettingConf.webSocketProxy.isOpen()) {
 				try {
 					Thread.sleep(30000);
-					PublicDataConf.webSocketProxy.send(HexUtils.fromHexString(PublicDataConf.heartByte));
+					GlobalSettingConf.webSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.heartByte));
 				} catch (Exception e) {
 					// TODO: handle exception
 //					LOGGER.info("心跳线程关闭:"+e);

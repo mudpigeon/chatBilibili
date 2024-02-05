@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import top.nino.api.model.danmu.Interact;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 
 import java.util.Vector;
 
@@ -28,7 +28,7 @@ public class ParseThankFollowThread extends Thread {
 				if (FLAG) {
 					return;
 				}
-				if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
+				if(GlobalSettingConf.webSocketProxy!=null&&!GlobalSettingConf.webSocketProxy.isOpen()) {
 					return;
 				}
 				try {
@@ -40,8 +40,8 @@ public class ParseThankFollowThread extends Thread {
 				if (nowTime - getTimestamp() < getDelaytime()) {
 				} else {
 					//do something
-					if(PublicDataConf.interacts.size()>0) {
-						interacts.addAll(PublicDataConf.interacts);
+					if(GlobalSettingConf.interacts.size()>0) {
+						interacts.addAll(GlobalSettingConf.interacts);
 						for (int i = 0; i < interacts.size(); i += getNum()) {
 							for (int j = i; j < i + getNum(); j++) {
 								if (j >= interacts.size()) {
@@ -53,18 +53,18 @@ public class ParseThankFollowThread extends Thread {
 							
 							thankFollowStr =StringUtils.replace(handleThankStr(getThankFollowString()), "%uNames%", stringBuilder.toString());
 							stringBuilder.delete(0, stringBuilder.length());
-							if (PublicDataConf.sendBarrageThread != null
-									&& !PublicDataConf.sendBarrageThread.FLAG) {
-								PublicDataConf.barrageString.add(thankFollowStr);
-								synchronized (PublicDataConf.sendBarrageThread) {
-									PublicDataConf.sendBarrageThread.notify();
+							if (GlobalSettingConf.sendBarrageThread != null
+									&& !GlobalSettingConf.sendBarrageThread.FLAG) {
+								GlobalSettingConf.barrageString.add(thankFollowStr);
+								synchronized (GlobalSettingConf.sendBarrageThread) {
+									GlobalSettingConf.sendBarrageThread.notify();
 								}
 							}
 							thankFollowStr = null;
 						}
 					}
 					interacts.clear();
-					PublicDataConf.interacts.clear();
+					GlobalSettingConf.interacts.clear();
 					break;
 				}
 			}

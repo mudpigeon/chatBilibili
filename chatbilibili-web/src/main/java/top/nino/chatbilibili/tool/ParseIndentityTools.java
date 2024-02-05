@@ -3,7 +3,7 @@ package top.nino.chatbilibili.tool;
 
 import org.apache.commons.lang3.StringUtils;
 import top.nino.api.model.danmu.Barrage;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 
 public class ParseIndentityTools {
 
@@ -39,7 +39,7 @@ public class ParseIndentityTools {
 		if (type == 1) {
 			return "[房管]";
 		}
-		if (uid.equals(PublicDataConf.AUID)) {
+		if (uid.equals(GlobalSettingConf.AUID)) {
 			return "[主播]";
 		}
 		return "";

@@ -20,6 +20,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>javastruct</groupId>
+            <artifactId>javastruct</artifactId>
+            <version>0.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/javastruct-0.1.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>

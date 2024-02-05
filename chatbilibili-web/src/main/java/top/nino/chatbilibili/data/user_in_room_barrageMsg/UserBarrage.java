@@ -2,7 +2,7 @@ package top.nino.chatbilibili.data.user_in_room_barrageMsg;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 
 
 import java.io.Serializable;
@@ -18,5 +18,5 @@ public class UserBarrage implements Serializable{
 	private Short mode;
 	private Long color;
 	private Short length = 20;
-	private Long room_id = PublicDataConf.ROOMID;
+	private Long room_id = GlobalSettingConf.ROOMID;
 }

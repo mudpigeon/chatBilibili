@@ -2,7 +2,7 @@ package top.nino.chatbilibili.tool;
 
 import org.apache.commons.lang3.StringUtils;
 import top.nino.api.model.enums.*;
-import top.nino.chatbilibili.PublicDataConf;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.conf.base.CenterSetConf;
 import top.nino.chatbilibili.conf.set.*;
 
@@ -143,7 +143,7 @@ public class ParseSetStatusTools {
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_welcome_all, false);
 		}
-		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+		if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
 			//礼物码模式
 			if (centerSetConf.getThank_gift().is_gift_code()) {
 				messageConcurrentHashMap.put(ShieldMessage.is_giftCode, true);
