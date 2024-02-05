@@ -89,15 +89,8 @@ public class HandleWebsocketPackage {
 					// TODO 自动生成的 catch 块
 					e.printStackTrace();
 				}
-//				resultStr = ByteUtils.unicodeToString(resultStr);
 			}
-//			else {
-//				resultStr = HexUtils.toHexString(bs);
-//				LOGGER.info("！！！！！！！！！！未知数据(1):" + resultStr);
-//			}
-//			if (resultStr == null) {
-//				LOGGER.info("空数据(1):"+resultStr);
-//			}
+
 		}
 		bytes = null;
 		resultStr = null;
