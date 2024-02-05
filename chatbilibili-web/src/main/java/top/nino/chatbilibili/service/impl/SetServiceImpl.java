@@ -1,14 +1,13 @@
 package top.nino.chatbilibili.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.nino.chatbilibili.GlobalSettingConf;
-import top.nino.chatbilibili.component.ServerAddressComponent;
+import top.nino.service.componect.ServerAddressComponent;
 import top.nino.chatbilibili.component.ThreadComponent;
 import top.nino.chatbilibili.conf.base.CenterSetConf;
 import top.nino.chatbilibili.http.HttpOtherData;
@@ -24,73 +23,23 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * @author nino
+ */
+@Slf4j
 @Service
 public class SetServiceImpl implements SetService {
-    private final Logger LOGGER = LogManager.getLogger(SetServiceImpl.class);
+
     private final String cookies = "ySZL4SBB";
+
+    @Autowired
     private ClientService clientService;
+    @Autowired
     private ThreadComponent threadComponent;
+    @Autowired
     private ServerAddressComponent serverAddressComponent;
 
 
-    public void init() {
-        // 公告和检查更新
-        System.out.println();
-        System.out.println();
-        System.out.println(
-                "参考本地浏览器进入设置页面地址: 1、http://127.0.0.1:" + serverAddressComponent.getPort() + ";2、http://localhost:"
-                        + serverAddressComponent.getPort() + ";3、" + serverAddressComponent.getAddress());
-        System.out.println("参考局域网浏览器进入设置页面地址: 1、" + serverAddressComponent.getAddress());
-        System.out.println("参考远程(无代理)浏览器进入设置页面地址: 1、" + serverAddressComponent.getRemoteAddress());
-        System.out.println();
-        GlobalSettingConf.ANNOUNCE = GlobalSettingConf.centerSetConf.getPrivacy().is_open()?"隐私模式下不会获取最新公告":HttpOtherData.httpGetNewAnnounce();
-        System.out.println("最新公告：" +  GlobalSettingConf.ANNOUNCE);
-        if(!GlobalSettingConf.centerSetConf.getPrivacy().is_open()) {
-            String edition = HttpOtherData.httpGetNewEdition();
-            if (StringUtils.isNotBlank(edition)) {
-                if (!edition.equals(GlobalSettingConf.VERSION)) {
-                    System.out.println("查询最新版本：" + edition
-                            + "目前脚本有可用更新哦，请到github官网查看更新https://github.com/BanqiJane/Bilibili_Danmuji");
-                } else {
-                    System.out.println("查询最新版本：目前使用的版本为最新版本，暂无可用更新");
-                }
-            } else {
-                System.out.println("查询最新版本失败,目前版本：" + GlobalSettingConf.VERSION);
-            }
-        }else{
-            System.out.println("隐私模式下不会从服务器获取最新版本信息,目前版本：" + GlobalSettingConf.VERSION);
-        }
-        System.out.println();
-        // 自动连接
-        if (GlobalSettingConf.centerSetConf.is_auto() && GlobalSettingConf.centerSetConf.getRoomid() > 0) {
-            try {
-                clientService.startConnService(GlobalSettingConf.centerSetConf.getRoomid());
-            } catch (Exception e) {
-                // TODO 自动生成的 catch 块
-                e.printStackTrace();
-            }
-        }
-        // 默认浏览器打开网页
-        if(GlobalSettingConf.centerSetConf.isWin_auto_openSet()) {
-            try {
-                Runtime rt = Runtime.getRuntime();
-                if(SystemUtils.IS_OS_WINDOWS){
-                    rt.exec("rundll32 url.dll,FileProtocolHandler " + serverAddressComponent.getLocalAddress());
-                }else if(SystemUtils.IS_OS_MAC){
-                    rt.exec("open " +  serverAddressComponent.getLocalAddress());
-                }else if(SystemUtils.IS_OS_UNIX) {
-                    rt.exec("xdg-open " + serverAddressComponent.getLocalAddress());
-                }else{
-                    System.out.println(
-                            "自动打开浏览器错误:当前系统未知，无法自动启动默认浏览器打开配置页面，请手动打开浏览器地址栏输入http://127.0.0.1:23333进行配置");
-                    LOGGER.error("自动打开浏览器错误:当前系统未知,打印系统:{}",System.getProperty("os.name").toLowerCase());
-
-                }
-            } catch (IOException e) {
-                LOGGER.error("自动打开浏览器错误: 错误信息为: ",e);
-            }
-        }
-    }
 
     public void changeSet(CenterSetConf centerSetConf) {
         synchronized (centerSetConf) {
@@ -101,7 +50,7 @@ public class SetServiceImpl implements SetService {
             }
             profileMap.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
             ProFileTools.write(profileMap, "DanmujiProfile");
-            LOGGER.info("保存配置文件成功");
+            log.info("保存配置文件成功");
             base64Encoder = null;
             profileMap.clear();
         }
@@ -111,7 +60,7 @@ public class SetServiceImpl implements SetService {
     public void changeSet(CenterSetConf centerSetConf,boolean check) {
         synchronized (centerSetConf) {
             if (centerSetConf.toJson().equals(GlobalSettingConf.centerSetConf.toJson())&&check) {
-                LOGGER.info("保存配置文件成功");
+                log.info("保存配置文件成功");
                 return;
             }
             if (GlobalSettingConf.ROOMID_LONG != null && GlobalSettingConf.ROOMID_LONG > 0) {
@@ -129,10 +78,10 @@ public class SetServiceImpl implements SetService {
                         new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
                         CenterSetConf.class);
                 holdSet(centerSetConf);
-                LOGGER.info("保存配置文件成功");
+                log.info("保存配置文件成功");
             } catch (Exception e) {
                 // TODO: handle exception
-                LOGGER.error("保存配置文件失败:" + e);
+                log.error("保存配置文件失败:" + e);
             }
             base64Encoder = null;
             profileMap.clear();
@@ -156,10 +105,10 @@ public class SetServiceImpl implements SetService {
                 if (GlobalSettingConf.ROOMID != null) {
                     holdSet(centerSetConf);
                 }
-                LOGGER.info("读取配置文件历史房间成功");
+                log.info("读取配置文件历史房间成功");
             } catch (Exception e) {
                 // TODO: handle exception
-                LOGGER.error("读取配置文件历史房间失败:" + e);
+                log.error("读取配置文件历史房间失败:" + e);
             }
             base64Encoder = null;
             profileMap.clear();
@@ -193,7 +142,7 @@ public class SetServiceImpl implements SetService {
 //                    taskRegisterComponent.removeTask(task);
                 } catch (Exception e) {
                     // TODO 自动生成的 catch 块
-                    LOGGER.error("清理定时任务错误：" + e);
+                    log.error("清理定时任务错误：" + e);
                 }
             }
 
@@ -207,7 +156,7 @@ public class SetServiceImpl implements SetService {
 //                    taskRegisterComponent.removeTask(dakatask);
                 } catch (Exception e) {
                     // TODO 自动生成的 catch 块
-                    LOGGER.error("清理定时任务错误：" + e);
+                    log.error("清理定时任务错误：" + e);
                 }
             }
 
@@ -221,7 +170,7 @@ public class SetServiceImpl implements SetService {
 //                    taskRegisterComponent.removeTask(autoSendGiftTask);
                 } catch (Exception e) {
                     // TODO 自动生成的 catch 块
-                    LOGGER.error("清理定时任务错误：" + e);
+                    log.error("清理定时任务错误：" + e);
                 }
             }
 
@@ -295,27 +244,13 @@ public class SetServiceImpl implements SetService {
 //            taskRegisterComponent.destroy();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error("清理定时任务错误：" + e);
+            log.error("清理定时任务错误：" + e);
         }
         GlobalSettingConf.init_send();
         holdSet(GlobalSettingConf.centerSetConf);
-        LOGGER.info("用户退出成功");
+        log.info("用户退出成功");
     }
 
-    @Autowired
-    public void setClientService(ClientService clientService) {
-        this.clientService = clientService;
-    }
-
-    @Autowired
-    public void setThreadComponent(ThreadComponent threadComponent) {
-        this.threadComponent = threadComponent;
-    }
-
-    @Autowired
-    public void setServerAddressComponent(ServerAddressComponent serverAddressComponent) {
-        this.serverAddressComponent = serverAddressComponent;
-    }
 
 
 

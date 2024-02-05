@@ -15,7 +15,7 @@ import top.nino.chatbilibili.http.HttpUserData;
 import top.nino.chatbilibili.tool.CurrencyTools;
 import top.nino.core.JodaTimeUtils;
 import top.nino.core.SpringUtils;
-import top.nino.service.chatgpt.ApiService;
+import top.nino.service.api.ApiService;
 
 
 import java.math.BigDecimal;

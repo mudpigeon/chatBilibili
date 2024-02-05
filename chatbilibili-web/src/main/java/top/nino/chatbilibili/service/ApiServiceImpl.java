@@ -4,11 +4,7 @@ import org.springframework.stereotype.Service;
 import top.nino.api.model.apex.ApexMessage;
 import top.nino.api.model.apex.PredatorResult;
 import top.nino.chatbilibili.http.HttpOtherData;
-import top.nino.service.chatgpt.ApiService;
-
-
-import java.util.List;
-import java.util.Map;
+import top.nino.service.api.ApiService;
 
 @Service
 public class ApiServiceImpl implements ApiService {

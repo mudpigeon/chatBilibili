@@ -201,10 +201,7 @@ public class CurrencyTools {
         if (GlobalSettingConf.centerSetConf.getPrivacy().getClockInDay() == nowDay) {
             return 0;
         }
-        if (!GlobalSettingConf.centerSetConf.getPrivacy().is_open()) {
-            Long uid = HttpOtherData.httpGetClockInRecord();
-            if (uid != null && uid > 0) return 0;
-        }
+
 
         //逻辑开始
         if (StringUtils.isBlank(GlobalSettingConf.centerSetConf.getClock_in().getBarrage())) return 0;

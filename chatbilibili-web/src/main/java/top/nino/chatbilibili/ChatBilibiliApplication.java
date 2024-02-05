@@ -8,6 +8,8 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.nino.chatbilibili.hook.GlobalViewInterceptor;
+import top.nino.chatbilibili.service.SetService;
+import top.nino.service.command.CommandService;
 
 
 /**
@@ -20,6 +22,9 @@ public class ChatBilibiliApplication implements WebMvcConfigurer, CommandLineRun
 	@Autowired
 	private GlobalViewInterceptor globalViewInterceptor;
 
+	@Autowired
+	private CommandService commandService;
+
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(globalViewInterceptor).addPathPatterns("/**");
@@ -29,9 +34,9 @@ public class ChatBilibiliApplication implements WebMvcConfigurer, CommandLineRun
 		SpringApplication.run(ChatBilibiliApplication.class, args);
 	}
 
-
 	@Override
 	public void run(String... args) throws Exception {
+		commandService.startApplication();
 	}
 
 

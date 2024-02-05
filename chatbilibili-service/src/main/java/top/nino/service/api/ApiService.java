@@ -1,4 +1,4 @@
-package top.nino.service.chatgpt;
+package top.nino.service.api;
 
 
 import top.nino.api.model.apex.ApexMessage;

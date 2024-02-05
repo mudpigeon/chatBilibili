@@ -15,11 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @Controller
 @RequestMapping
-public class TestFrontController {
+public class IndexController {
 
     @GetMapping(value = {"/", "/index"})
     public String index(HttpServletRequest req, Model model) {
-        log.info("日志打印");
         return "index";
     }
 }
