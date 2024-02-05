@@ -8,8 +8,8 @@ import top.nino.api.model.vo.Response;
 import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.http.HttpUserData;
 import top.nino.chatbilibili.service.ClientService;
-import top.nino.chatbilibili.service.SetService;
-import top.nino.chatbilibili.service.impl.DanmujiInitService;
+import top.nino.chatbilibili.service.GlobalSettingFileService;
+import top.nino.chatbilibili.service.SettingService;
 import top.nino.core.CookieUtils;
 
 import javax.annotation.Resource;
@@ -24,12 +24,9 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/rest/login")
 public class WebLoginRestController {
 
-    private SetService checkService;
-
-    private ClientService clientService;
 
     @Resource
-    private DanmujiInitService danmujiInitService;
+    private GlobalSettingFileService globalSettingFileService;
 
 
     /**
@@ -45,9 +42,12 @@ public class WebLoginRestController {
         if(userCookieInfo.isValidFlag()){
             GlobalSettingConf.COOKIE_VALUE = cookieValue;
             GlobalSettingConf.USER_COOKIE_INFO = userCookieInfo;
-
-            danmujiInitService.init();
-            //弹幕长度刷新
+            boolean loadFlag = globalSettingFileService.createAndValidateCookieAndLoadAndWrite();
+            if(loadFlag) {
+                // 因为新的用户信息来了，所以要重新连接直播间
+                globalSettingFileService.reConnectRoom();
+            }
+            // 弹幕长度刷新
             if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
                 HttpUserData.httpGetUserBarrageMsg();
             }

@@ -57,26 +57,16 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	}
 
+
 	/**
-	 * O
-	 * 
 	 * 开启弹幕处理线程
-	 *
+	 * @param centerSetConf
+	 * @return
 	 */
 	@Override
 	public boolean startParseMessageThread(CenterSetConf centerSetConf) {
 
-		// TODO 自动生成的方法存根
 		HashSet<ThankGiftRuleSet> thankGiftRuleSets = new HashSet<>();
-
-		// thankGiftRuleSets
-//		for (Iterator<ThankGiftRuleSet> iterator = centerSetConf.getThank_gift().getThankGiftRuleSets()
-//				.iterator(); iterator.hasNext();) {
-//			ThankGiftRuleSet thankGiftRuleSet = iterator.next();
-//			if (thankGiftRuleSet.is_open()) {
-//				thankGiftRuleSets.add(thankGiftRuleSet);
-//			}
-//		}
 
 		if (GlobalSettingConf.parseMessageThread != null && !GlobalSettingConf.parseMessageThread.getState().toString().equals("TERMINATED")) {
 			GlobalSettingConf.parseMessageThread.setCenterSetConf(centerSetConf);
@@ -545,26 +535,15 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public void closeAdvertThread() {
-		// TODO 自动生成的方法存根
 		if (GlobalSettingConf.advertThread != null) {
 			GlobalSettingConf.advertThread.FLAG = true;
 			GlobalSettingConf.advertThread.interrupt();
 			GlobalSettingConf.advertThread = null;
 		}
-		if (GlobalSettingConf.ROOMID != null) {
-			if (!GlobalSettingConf.centerSetConf.getFollow().is_open()
-					&& !GlobalSettingConf.centerSetConf.getThank_gift().is_open()
-					&& null == GlobalSettingConf.autoReplyThread) {
-				closeSendBarrageThread();
-			}
-		} else {
-			closeSendBarrageThread();
-		}
 	}
 
 	@Override
 	public void closeAutoReplyThread() {
-		// TODO 自动生成的方法存根
 		if (GlobalSettingConf.autoReplyThread != null) {
 			GlobalSettingConf.autoReplyThread.FLAG = true;
 			GlobalSettingConf.autoReplyThread.interrupt();
@@ -574,7 +553,6 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public void closeSendBarrageThread() {
-		// TODO 自动生成的方法存根
 		if (GlobalSettingConf.sendBarrageThread != null) {
 			GlobalSettingConf.sendBarrageThread.FLAG = true;
 			GlobalSettingConf.sendBarrageThread.interrupt();
@@ -584,7 +562,6 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public void closeGiftShieldThread() {
-		// TODO 自动生成的方法存根
 		if (GlobalSettingConf.giftShieldThread != null
 				&& !GlobalSettingConf.giftShieldThread.getState().toString().equals("TERMINATED")) {
 			GlobalSettingConf.giftShieldThread.FLAG = false;

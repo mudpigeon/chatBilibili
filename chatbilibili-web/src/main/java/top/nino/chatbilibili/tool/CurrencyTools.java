@@ -197,14 +197,9 @@ public class CurrencyTools {
     public synchronized static int clockIn(List<UserMedal> userMedals) {
         //判定是否有签到
         Date date = new Date();
-        int nowDay = JodaTimeUtils.formatToInt(date, "yyyyMMdd");
-        if (GlobalSettingConf.centerSetConf.getPrivacy().getClockInDay() == nowDay) {
-            return 0;
-        }
 
 
         //逻辑开始
-        if (StringUtils.isBlank(GlobalSettingConf.centerSetConf.getClock_in().getBarrage())) return 0;
         int max = 0;
         RoomInit roomInit;
         if (!CollectionUtils.isEmpty(userMedals)) {
@@ -217,16 +212,13 @@ public class CurrencyTools {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    String barrge = handleEnterStr(GlobalSettingConf.centerSetConf.getClock_in().getBarrage());
                     //   short code = 0;
-                    short code = HttpUserData.httpPostSendBarrage(barrge, roomInit.getRoom_id());
                     try {
                         Thread.sleep(2050);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
 
-                    log.info("第{}次打卡{},直播间:{},up主:{},发送弹幕:{}", max + 1, code == 0 ? "成功" : "失败", userMedal.getRoomid(), userMedal.getTarget_name(), barrge);
                     max++;
                 } catch (Exception e) {
                     log.info("第{}次打卡{},直播间:{},up主:{},发送弹幕:{}", max + 1, "异常", userMedal.getRoomid(), userMedal.getTarget_name(), "未能成功发送");
@@ -240,119 +232,13 @@ public class CurrencyTools {
 
     public static String sendGiftCode(short guardLevel) {
         String code = "";
-        //默认随机发送
-        if (!CollectionUtils.isEmpty(GlobalSettingConf.centerSetConf.getThank_gift().getCodeStrings())) {
-            synchronized (GlobalSettingConf.centerSetConf.getThank_gift().getCodeStrings()) {
-                //分组
-                HashSet<String> codeStrings = GlobalSettingConf.centerSetConf.getThank_gift().getCodeStrings();
-                Map<String, HashSet<String>> codeMap = codeStrings.stream().map(s -> {
-                    if (!StringUtils.startsWithAny(s, "舰长-", "总督-", "提督-")) {
-                        return "全部-" + s;
-                    }
-                    return s;
-                }).collect(Collectors.groupingBy(s -> s.substring(0, 2), Collectors.toCollection(HashSet::new)));
-                //循环处理去除前缀
-                for (Map.Entry<String, HashSet<String>> entry : codeMap.entrySet()) {
-                    codeMap.put(entry.getKey(), entry.getValue().stream().map(s -> {
-                        if (StringUtils.startsWithAny(s, "舰长-", "总督-", "提督-", "全部-")) {
-                            return s.substring(3);
-                        }
-                        return s;
-                    }).collect(Collectors.toCollection(HashSet::new)));
-                }
-                boolean onlyHasAll = false;
-                if (CollectionUtils.isEmpty(codeMap.get("舰长")) && CollectionUtils.isEmpty(codeMap.get("总督")) && CollectionUtils.isEmpty(codeMap.get("提督"))) {
-                    onlyHasAll = true;
-                }
-                //根据舰长等级获取对应的礼物码
-                if (onlyHasAll) {
-                    int random = (int) Math.ceil(Math.random() * GlobalSettingConf.centerSetConf.getThank_gift().getCodeStrings().size()) - 1;
-                    int i = 0;
-                    for (Iterator<String> iterator = GlobalSettingConf.centerSetConf.getThank_gift().getCodeStrings().iterator(); iterator.hasNext(); ) {
-                        if (i == random) {
-                            code = new String(iterator.next());
-                            break;
-                        }
-                        i++;
-                    }
-                } else {//其他处理
-                    if (guardLevel == 1) {
-                        HashSet<String> codes = codeMap.get("总督");
-                        if (!CollectionUtils.isEmpty(codes)) {
-                            int random = (int) Math.ceil(Math.random() *codes.size()) - 1;
-                            int i = 0;
-                            for (Iterator<String> iterator =codes.iterator(); iterator.hasNext(); ) {
-                                if (i == random) {
-                                    code = new String(iterator.next());
-                                    break;
-                                }
-                                i++;
-                            }
-                        }
-                    } else if (guardLevel == 2) {
-                        HashSet<String> codes = codeMap.get("提督");
-                        if (!CollectionUtils.isEmpty(codes)) {
-                            int random = (int) Math.ceil(Math.random() *codes.size()) - 1;
-                            int i = 0;
-                            for (Iterator<String> iterator = codes.iterator(); iterator.hasNext(); ) {
-                                if (i == random) {
-                                    code = new String(iterator.next());
-                                    break;
-                                }
-                                i++;
-                            }
-                        }
-                    } else if (guardLevel == 3) {
-                        HashSet<String> codes = codeMap.get("舰长");
-                        if (!CollectionUtils.isEmpty(codes)) {
-                            int random = (int) Math.ceil(Math.random() * codes.size()) - 1;
-                            int i = 0;
-                            for (Iterator<String> iterator = codes.iterator();
-                                 iterator.hasNext(); ) {
-                                if (i == random) {
-                                    code = new String(iterator.next());
-                                    break;
-                                }
-                                i++;
-                            }
-                        }
-                    }
-                    //全部处理
-                    if(StringUtils.isBlank(code)) {
-                        HashSet<String> codes = codeMap.get("全部");
-                        if (!CollectionUtils.isEmpty(codes)) {
-                            int random = (int) Math.ceil(Math.random() * codes.size()) - 1;
-                            int i = 0;
-                            for (Iterator<String> iterator = codes.iterator(); iterator.hasNext(); ) {
-                                if (i == random) {
-                                    code = new String(iterator.next());
-                                    break;
-                                }
-                                i++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
         return code;
     }
 
     public static CenterSetConf codeRemove(String code) {
         CenterSetConf centerSetConf = GlobalSettingConf.centerSetConf;
-        HashSet<String> codeStrings = centerSetConf.getThank_gift().getCodeStrings();
         if(StringUtils.isNotBlank(code)) {
-            Iterator<String> it = codeStrings.iterator();
-            while (it.hasNext()) {
-                String next = it.next();
-                if (next.endsWith(code)) {
-                    it.remove();
-                    log.info("gift code移除:{}",next);
-                }
-            }
         }
-        log.info("gift code移除:{}",codeStrings);
-        centerSetConf.getThank_gift().setCodeStrings(codeStrings);
         return  centerSetConf;
     }
 
@@ -456,8 +342,6 @@ public class CurrencyTools {
             log.info("自动给送礼 -> 未登录");
             return;
         }
-        if (!GlobalSettingConf.centerSetConf.getAuto_gift().is_open() || StringUtils.isBlank(GlobalSettingConf.centerSetConf.getAuto_gift().getRoom_id()))
-            return;
         List<UserMedal> userMedals = HttpUserData.httpGetMedalList();
         List<UserMedal> wait_send_rooms = new LinkedList<>();
         if (CollectionUtils.isEmpty(userMedals)) {
@@ -475,37 +359,7 @@ public class CurrencyTools {
             log.info("自动给送礼 -> 获取礼物列表失败");
             return;
         }
-        String[] roomidStrs = GlobalSettingConf.centerSetConf.getAuto_gift().getRoom_id().split("，");
-        log.info("自动给送礼pre -> 配置文件:{} ; 发送房间:{} ;", FastJsonUtils.toJson(GlobalSettingConf.centerSetConf.getAuto_gift()), roomidStrs);
-        for (String roomidStr : roomidStrs) {
-            if (StringUtils.isNumeric(roomidStr)) {
-                long roomid = Long.valueOf(roomidStr);
-                //先查找  如果不是短号 就去获取
-                Optional<UserMedal> userMedalOptional = userMedals.stream().filter(um ->
-                        roomid == um.getRoomid()
-                ).findFirst();
-                if (userMedalOptional.isPresent()) {
-                    wait_send_rooms.add(userMedalOptional.get());
-                    log.info("自动送礼ing -> 添加房间1:{}", roomid);
-                } else {
-                    RoomInit roomInit = HttpRoomData.httpGetRoomInit(roomid);
-                    try {
-                        Integer short_id = Optional.ofNullable(roomInit).map(RoomInit::getShort_id).orElse(null);
-                        if (short_id != null && short_id != 0) {
-                            userMedalOptional = userMedals.stream().filter(um ->
-                                    short_id.intValue() == um.getRoomid()
-                            ).findFirst();
-                            if (userMedalOptional.isPresent()) {
-                                wait_send_rooms.add(userMedalOptional.get());
-                                log.info("自动送礼ing -> 添加房间2:{}", roomid);
-                            }
-                        }
-                    } catch (Exception e) {
-                        log.error("自动送礼异常：{}", e);
-                    }
-                }
-            }
-        }
+
         //拿到房间号开始算了（姑且排除舰长的勋章？）
         userBagList = userBagList.stream()
                 .map(userBag -> {
@@ -571,13 +425,7 @@ public class CurrencyTools {
     }
 
     public static boolean signNow() {
-        Date date = new Date();
-        int nowDay = JodaTimeUtils.formatToInt(date, "yyyyMMdd");
-        if (GlobalSettingConf.centerSetConf.getPrivacy().getSignDay() != nowDay) {
-            HttpUserData.httpGetDoSign();
-            GlobalSettingConf.centerSetConf.getPrivacy().setSignDay(nowDay);
-            return true;
-        }
+
         return false;
     }
 

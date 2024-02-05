@@ -3,7 +3,6 @@ package top.nino.chatbilibili.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.nino.api.model.room.LotteryInfoWeb;
 import top.nino.api.model.room.Room;
 import top.nino.api.model.room.RoomInfoAnchor;
 import top.nino.api.model.room.RoomInit;
@@ -16,22 +15,19 @@ import top.nino.chatbilibili.component.ThreadComponent;
 import top.nino.chatbilibili.http.HttpRoomData;
 import top.nino.chatbilibili.http.HttpUserData;
 import top.nino.chatbilibili.service.ClientService;
-import top.nino.chatbilibili.service.SetService;
+import top.nino.chatbilibili.service.SettingService;
 import top.nino.chatbilibili.ws.HandleWebsocketPackage;
 import top.nino.core.ByteUtils;
 import top.nino.chatbilibili.tool.CurrencyTools;
-import top.nino.chatbilibili.tool.GuardFileTools;
 import top.nino.core.HexUtils;
 
 
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 
 @Service
 public class ClientServiceImpl implements ClientService {
-    private SetService setService;
+    private SettingService settingService;
     private ThreadComponent threadComponent;
 
     public void startConnService(long roomid) throws Exception {
@@ -92,87 +88,13 @@ public class ClientServiceImpl implements ClientService {
         GlobalSettingConf.webSocketProxy.send(req);
         GlobalSettingConf.webSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.heartByte));
         threadComponent.startHeartByteThread();
-        setService.holdSet(GlobalSettingConf.centerSetConf);
-        //检查红包+天选
-        LotteryInfoWeb lotteryInfoWeb =null;
-        //检查红包
-        if((GlobalSettingConf.centerSetConf.getThank_gift().hasRdShield())
-                ||(GlobalSettingConf.centerSetConf.getWelcome().hasRdShield())
-                ||(GlobalSettingConf.centerSetConf.getFollow().hasRdShield())) {
-            lotteryInfoWeb = HttpRoomData.httpGetLotteryInfoWeb();
-            CurrencyTools.handleLotteryInfoWebByRedPackage(GlobalSettingConf.ROOMID, lotteryInfoWeb);
-        }
-        if(GlobalSettingConf.centerSetConf.getThank_gift().hasTxShield()
-                || GlobalSettingConf.centerSetConf.getWelcome().hasTxShield()
-                || GlobalSettingConf.centerSetConf.getFollow().hasTxShield()) {
-            //检查天选
-            if(lotteryInfoWeb==null) {
-                lotteryInfoWeb = HttpRoomData.httpGetLotteryInfoWeb();
-            }
-            CurrencyTools.handleLotteryInfoWebByTx(GlobalSettingConf.ROOMID, lotteryInfoWeb);
-        }
+        settingService.holdSet(GlobalSettingConf.centerSetConf);
 
-//        //检查天选
-//        CheckTx checkTx = null;
-//        // 登录发现天选屏蔽礼物
-//        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getThank_gift().is_tx_shield()) {
-//            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-//               checkTx = HttpRoomData.httpGetCheckTX();
-//                if (checkTx != null) {
-//                    if (StringUtils.isNotBlank(checkTx.getGift_name())) {
-//                        if (checkTx.getTime() > 0) {
-//                            threadComponent.startGiftShieldThread(checkTx.getGift_name(), checkTx.getTime());
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        // 登录发现天选屏蔽关注
-//        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getFollow().is_tx_shield()) {
-//            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-//                if(checkTx==null) {
-//                    checkTx = HttpRoomData.httpGetCheckTX();
-//                }
-//                if (checkTx != null) {
-//                    if (checkTx.getTime() > 0) {
-//                        // do something
-//                        threadComponent.startFollowShieldThread(checkTx.getTime());
-//                    }
-//                }
-//            }
-//        }
-//        // 登录发现天选屏蔽欢迎
-//        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getWelcome().is_tx_shield()) {
-//            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-//                if(checkTx==null) {
-//                   checkTx = HttpRoomData.httpGetCheckTX();
-//                }
-//                if (checkTx != null) {
-//                    if (checkTx.getTime() > 0) {
-//                        // do something
-//                        threadComponent.startWelcomeShieldThread(checkTx.getTime());
-//                    }
-//                }
-//            }
-//        }
+
+
         //舰长本地存储处理
         if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-            if (GlobalSettingConf.centerSetConf != null
-                    && GlobalSettingConf.centerSetConf.getThank_gift().is_guard_local()) {
-                if (GuardFileTools.read() != null && GuardFileTools.read().size() > 0) {
-                } else {
-                    Map<Long, String> guards = HttpRoomData.httpGetGuardList();
-                    if (guards != null && guards.size() > 0) {
-                        for (Entry<Long, String> entry : guards.entrySet()) {
-                            GuardFileTools.write(entry.getKey() + "," + entry.getValue());
-                        }
-                    }
-                    if (guards != null) {
-                        guards.clear();
-                    }
-                }
-            }
+
         }
     }
 
@@ -228,7 +150,7 @@ public class ClientServiceImpl implements ClientService {
             GlobalSettingConf.webSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.heartByte));
             threadComponent.startHeartByteThread();
             if (GlobalSettingConf.webSocketProxy.isOpen()) {
-                setService.holdSet(GlobalSettingConf.centerSetConf);
+                settingService.holdSet(GlobalSettingConf.centerSetConf);
             }
         }
     }
@@ -261,8 +183,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Autowired
-    public void setSetService(SetService setService) {
-        this.setService = setService;
+    public void setSetService(SettingService settingService) {
+        this.settingService = settingService;
     }
     @Autowired
     public void setThreadComponent(ThreadComponent threadComponent) {

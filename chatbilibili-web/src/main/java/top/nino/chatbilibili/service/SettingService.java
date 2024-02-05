@@ -6,10 +6,9 @@ import top.nino.chatbilibili.conf.base.CenterSetConf;
 /**
  * @author nino
  */
-public interface SetService {
+public interface SettingService {
 	void changeSet(CenterSetConf centerSetConf);
 	void changeSet(CenterSetConf centerSetConf,boolean check);
 	void connectSet(CenterSetConf centerSetConf);
-	void holdSet(CenterSetConf centerSetConf);
 	void quit();
 }

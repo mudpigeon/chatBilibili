@@ -1,13 +1,17 @@
 package top.nino.chatbilibili.http;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
 import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import top.nino.api.model.http.HttpBibilibiliUrl;
+import top.nino.api.model.http.HttpHeader;
 import top.nino.api.model.login.LoginData;
 import top.nino.api.model.login.Qrcode;
 import top.nino.api.model.user.User;
@@ -17,6 +21,7 @@ import top.nino.api.model.user.UserMedal;
 import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.data.user_in_room_barrageMsg.UserBarrageMsg;
 import top.nino.chatbilibili.tool.CurrencyTools;
+import top.nino.core.HttpConstructUtil;
 import top.nino.core.JodaTimeUtils;
 import top.nino.core.OkHttp3Utils;
 import top.nino.core.UrlUtils;
@@ -24,9 +29,9 @@ import top.nino.core.UrlUtils;
 
 import java.util.*;
 
-
+@Slf4j
 public class HttpUserData {
-    private static Logger LOGGER = LogManager.getLogger(HttpUserData.class);
+
 
     /**
      * 初始化 获取用户信息+判断是否登陆状态
@@ -43,7 +48,7 @@ public class HttpUserData {
                     .body().string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -51,11 +56,11 @@ public class HttpUserData {
         jsonObject = JSONObject.parseObject(data);
         short code = jsonObject.getShort("code");
         if (code == 0) {
-            LOGGER.info("已经登录:" + jsonObject.toString());
+            log.info("已经登录:" + jsonObject.toString());
         } else if (code == -101) {
-            LOGGER.info("未登录:" + jsonObject.toString());
+            log.info("未登录:" + jsonObject.toString());
         } else {
-            LOGGER.error("未知错误,原因未知" + jsonObject.toString());
+            log.error("未知错误,原因未知" + jsonObject.toString());
         }
     }
 
@@ -75,7 +80,7 @@ public class HttpUserData {
                     .httpGet("https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-fe-header", headers, null).body().string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -85,7 +90,7 @@ public class HttpUserData {
         if (code == 0) {
             qrcode = JSONObject.parseObject(jsonObject.getString("data"), Qrcode.class);
         } else {
-            LOGGER.error("获取二维码失败,未知错误,原因未知" + jsonObject.toString());
+            log.error("获取二维码失败,未知错误,原因未知" + jsonObject.toString());
         }
         return qrcode;
     }
@@ -138,12 +143,12 @@ public class HttpUserData {
                     if (GlobalSettingConf.ROOMID != null) {
                         httpGetUserBarrageMsg();
                     }
-                    LOGGER.info("扫码登录成功");
+                    log.info("扫码登录成功");
                 }
             }
         } catch (Exception e1) {
             // TODO 自动生成的 catch 块
-            LOGGER.error("扫码登录失败抛出异常:" + e1);
+            log.error("扫码登录失败抛出异常:" + e1);
         }
 
         return data;
@@ -197,12 +202,11 @@ public class HttpUserData {
                     if (GlobalSettingConf.ROOMID != null) {
                         httpGetUserBarrageMsg();
                     }
-                    LOGGER.info("扫码登录成功");
+                    log.info("扫码登录成功");
                 }
             }
         } catch (Exception e) {
-            // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         return data;
@@ -230,8 +234,7 @@ public class HttpUserData {
             data = OkHttp3Utils.getHttp3Utils().httpPostForm("https://passport.bilibili.com/x/passport-login/web/sso/list", headers, null)
                     .body().string();
         } catch (Exception e) {
-            // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -242,44 +245,6 @@ public class HttpUserData {
         return ssos!=null?ssos:ssoList;
     }
 
-    /**
-     * 获取用户信息 需要cookie 初始化
-     */
-    public static void httpGetUserInfo() {
-        String data = null;
-        JSONObject jsonObject = null;
-        Map<String, String> headers = null;
-        headers = new HashMap<>(3);
-        headers.put("user-agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-        if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-            headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
-        }
-        try {
-            data = OkHttp3Utils.getHttp3Utils().httpGet("https://api.live.bilibili.com/User/getUserInfo", headers, null)
-                    .body().string();
-        } catch (Exception e) {
-            // TODO 自动生成的 catch 块
-            LOGGER.error(e);
-            data = null;
-        }
-        if (data == null)
-            return;
-        jsonObject = JSONObject.parseObject(data);
-        if (jsonObject.getString("code").equals("REPONSE_OK")) {
-            GlobalSettingConf.USER = new User();
-            GlobalSettingConf.USER = JSONObject.parseObject(jsonObject.getString("data"), User.class);
-            LOGGER.info("已经登录，获取信息成功");
-        } else if (jsonObject.getShort("code") == -500) {
-            LOGGER.info("未登录，请登录:{}", jsonObject.toString());
-            GlobalSettingConf.COOKIE_VALUE = null;
-            GlobalSettingConf.USER = null;
-        } else {
-            LOGGER.error("未知错误,原因未知:{}" , jsonObject.toString());
-            GlobalSettingConf.COOKIE_VALUE = null;
-            GlobalSettingConf.USER = null;
-        }
-    }
 
     /**
      * 获取用户所在房间是否是房管
@@ -302,7 +267,7 @@ public class HttpUserData {
                     .body().string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -310,7 +275,7 @@ public class HttpUserData {
         jsonObject = JSONObject.parseObject(data);
         short code = jsonObject.getShort("code");
         if (code == 0) {
-            LOGGER.info("获取本房间自身管理信息成功");
+            log.info("获取本房间自身管理信息成功");
             if (GlobalSettingConf.ROOMID != null && GlobalSettingConf.ROOMID > 0) {
                 Boolean manager = jsonObject.getJSONObject("data").getJSONObject("badge").getBoolean("is_room_admin");
                 GlobalSettingConf.USERMANAGER = new UserManager();
@@ -319,11 +284,11 @@ public class HttpUserData {
                 GlobalSettingConf.USERMANAGER.setShort_roomid(CurrencyTools.parseRoomId());
             }
         } else if (code == -101) {
-            LOGGER.info("未登录，请登录:" + jsonObject.toString());
+            log.info("未登录，请登录:" + jsonObject.toString());
         } else if (code == -400) {
-            LOGGER.info("房间号不存在或者未输入房间号:" + jsonObject.toString());
+            log.info("房间号不存在或者未输入房间号:" + jsonObject.toString());
         } else {
-            LOGGER.error("未知错误,原因未知" + jsonObject.toString());
+            log.error("未知错误,原因未知" + jsonObject.toString());
         }
     }
 
@@ -349,7 +314,7 @@ public class HttpUserData {
                     .body().string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -357,7 +322,7 @@ public class HttpUserData {
         jsonObject = JSONObject.parseObject(data);
         short code = jsonObject.getShort("code");
         if (code == 0) {
-            LOGGER.info("获取本房间可发送弹幕长度+是否是管理员 成功");
+            log.info("获取本房间可发送弹幕长度+是否是管理员 成功");
             GlobalSettingConf.USERBARRAGEMESSAGE = JSONObject
                     .parseObject((((JSONObject) jsonObject.get("data")).getString("property")), UserBarrageMsg.class);
             Boolean manager = jsonObject.getJSONObject("data").getJSONObject("badge").getBoolean("is_room_admin");
@@ -369,11 +334,11 @@ public class HttpUserData {
                 GlobalSettingConf.USERMANAGER.set_manager(true);
             }
         } else if (code == -101) {
-            LOGGER.info("未登录，请登录:" + jsonObject.toString());
+            log.info("未登录，请登录:" + jsonObject.toString());
         } else if (code == -400) {
-            LOGGER.info("房间号不存在或者未输入房间号:" + jsonObject.toString());
+            log.info("房间号不存在或者未输入房间号:" + jsonObject.toString());
         } else {
-            LOGGER.error("未知错误,原因未知" + jsonObject.toString());
+            log.error("未知错误,原因未知" + jsonObject.toString());
         }
     }
 
@@ -398,7 +363,7 @@ public class HttpUserData {
                     .body().string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -406,16 +371,16 @@ public class HttpUserData {
         jsonObject = JSONObject.parseObject(data);
         short code = jsonObject.getShort("code");
         if (code == 0) {
-            LOGGER.info("获取本房间可发送弹幕长度成功");
+            log.info("获取本房间可发送弹幕长度成功");
             UserBarrageMsg barrageMsg = JSONObject
                     .parseObject((((JSONObject) jsonObject.get("data")).getString("property")), UserBarrageMsg.class);
             return barrageMsg;
         } else if (code == -101) {
-            LOGGER.info("未登录，请登录:" + jsonObject.toString());
+            log.info("未登录，请登录:" + jsonObject.toString());
         } else if (code == -400) {
-            LOGGER.info("房间号不存在或者未输入房间号:" + jsonObject.toString());
+            log.info("房间号不存在或者未输入房间号:" + jsonObject.toString());
         } else {
-            LOGGER.error("未知错误,原因未知" + jsonObject.toString());
+            log.error("未知错误,原因未知" + jsonObject.toString());
         }
         return null;
     }
@@ -442,7 +407,7 @@ public class HttpUserData {
             headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
         }
         if(StringUtils.isBlank(msg)){
-            LOGGER.error("发送弹幕失败,原因:弹幕非空");
+            log.error("发送弹幕失败,原因:弹幕非空");
             return -400;
         }
         params = new HashMap<>(10);
@@ -460,7 +425,7 @@ public class HttpUserData {
                     .body().string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -471,29 +436,29 @@ public class HttpUserData {
             code = jsonObject.getShort("code");
             if (code == 0) {
                 if (StringUtils.isBlank(jsonObject.getString("message").trim())) {
-//				LOGGER.info("发送弹幕成功");
+//				log.info("发送弹幕成功");
                 } else if (jsonObject.getString("message").equals("msg in 1s")
                         || jsonObject.getString("message").equals("msg repeat")) {
-                    LOGGER.info("发送弹幕失败，尝试重新发送" + jsonObject.getString("message"));
+                    log.info("发送弹幕失败，尝试重新发送" + jsonObject.getString("message"));
                     GlobalSettingConf.barrageString.add(msg);
                     synchronized (GlobalSettingConf.sendBarrageThread) {
                         GlobalSettingConf.sendBarrageThread.notify();
                     }
                 } else {
-                    LOGGER.info(jsonObject.toString());
+                    log.info(jsonObject.toString());
                     String message = jsonObject.getString("message");
                     if("f".equals(message)||"k".equals(message)) message="触发破站关键字，请检查发送弹幕是否含有破站屏蔽词或者非法词汇";
-                    LOGGER.error("发送弹幕失败,原因:" + message);
+                    log.error("发送弹幕失败,原因:" + message);
                     code = -402;
                 }
             } else if (code == -111) {
-                LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
+                log.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
             } else if (code == -500) {
-                LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
+                log.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
             } else if (code == 11000) {
-                LOGGER.error("发送弹幕失败,原因:弹幕含有关键字或者弹幕颜色不存在:" + jsonObject.getString("message"));
+                log.error("发送弹幕失败,原因:弹幕含有关键字或者弹幕颜色不存在:" + jsonObject.getString("message"));
             } else {
-                LOGGER.error("发送弹幕失败,未知错误,原因未知" + jsonObject.toString());
+                log.error("发送弹幕失败,未知错误,原因未知" + jsonObject.toString());
             }
         } else {
             return code;
@@ -538,7 +503,7 @@ public class HttpUserData {
                     .body().string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -549,23 +514,23 @@ public class HttpUserData {
             code = jsonObject.getShort("code");
             if (code == 0) {
                 if (StringUtils.isBlank(jsonObject.getString("message").trim())) {
-//				LOGGER.info("发送弹幕成功");
+//				log.info("发送弹幕成功");
                 } else if (jsonObject.getString("message").equals("msg in 1s")
                         || jsonObject.getString("message").equals("msg repeat")) {
-                    LOGGER.info("发送弹幕失败，尝试重新发送" + jsonObject.getString("message"));
+                    log.info("发送弹幕失败，尝试重新发送" + jsonObject.getString("message"));
                 } else {
-                    LOGGER.info(jsonObject.toString());
-                    LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
+                    log.info(jsonObject.toString());
+                    log.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
                     code = -402;
                 }
             } else if (code == -111) {
-                LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
+                log.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
             } else if (code == -500) {
-                LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
+                log.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
             } else if (code == 11000) {
-                LOGGER.error("发送弹幕失败,原因:弹幕含有关键字或者弹幕颜色不存在:" + jsonObject.getString("message"));
+                log.error("发送弹幕失败,原因:弹幕含有关键字或者弹幕颜色不存在:" + jsonObject.getString("message"));
             } else {
-                LOGGER.error("发送弹幕失败,未知错误,原因未知" + jsonObject.toString());
+                log.error("发送弹幕失败,未知错误,原因未知" + jsonObject.toString());
             }
         } else {
             return code;
@@ -618,7 +583,7 @@ public class HttpUserData {
                     .string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -628,7 +593,7 @@ public class HttpUserData {
         if (code == 0) {
             // 发送私聊成功
         } else {
-            LOGGER.error("发送私聊失败,未知错误,原因未知" + jsonObject.toString());
+            log.error("发送私聊失败,未知错误,原因未知" + jsonObject.toString());
         }
         return code;
     }
@@ -681,7 +646,7 @@ public class HttpUserData {
                     .string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -690,11 +655,11 @@ public class HttpUserData {
         code = jsonObject.getShort("code");
         if (code == 0) {
             // 发送私聊成功
-            LOGGER.info("赠送礼物成功,赠送房间:{},赠送主播id:{},送出礼物:{},个数:{},亲密度:{}",roomid,ruid,userBag.getGift_name(),userBag.getGift_num(),userBag.getFeed()*userBag.getGift_num());
+            log.info("赠送礼物成功,赠送房间:{},赠送主播id:{},送出礼物:{},个数:{},亲密度:{}",roomid,ruid,userBag.getGift_name(),userBag.getGift_num(),userBag.getFeed()*userBag.getGift_num());
         } else {
-            LOGGER.error("赠送礼物失败,未知错误,原因未知" + jsonObject.toString());
+            log.error("赠送礼物失败,未知错误,原因未知" + jsonObject.toString());
         }
-//        LOGGER.info("赠送礼物成功,赠送房间:{},赠送主播:{},送出礼物:{},个数:{},亲密度:{}",roomid,ruid,userBag.getGift_name(),userBag.getGift_num(),userBag.getFeed()*userBag.getGift_num());
+//        log.info("赠送礼物成功,赠送房间:{},赠送主播:{},送出礼物:{},个数:{},亲密度:{}",roomid,ruid,userBag.getGift_name(),userBag.getGift_num(),userBag.getFeed()*userBag.getGift_num());
         return 1;
     }
 
@@ -740,7 +705,7 @@ public class HttpUserData {
                     .body().string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -751,7 +716,7 @@ public class HttpUserData {
             // 禁言成功
 //			System.out.println(jsonObject.getString("data"));
         } else {
-            LOGGER.error("禁言失败,原因" + jsonObject.getString("msg"));
+            log.error("禁言失败,原因" + jsonObject.getString("msg"));
         }
         return code;
     }
@@ -770,7 +735,7 @@ public class HttpUserData {
                     .body().string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -780,7 +745,7 @@ public class HttpUserData {
         if (code == 0) {
             faceUrl = ((JSONObject) jsonObject.get("data")).getString("face");
         } else {
-            LOGGER.error("获取头像错误,未知错误,原因未知" + jsonObject.toString());
+            log.error("获取头像错误,未知错误,原因未知" + jsonObject.toString());
         }
         return faceUrl;
     }
@@ -802,7 +767,7 @@ public class HttpUserData {
             OkHttp3Utils.getHttp3Utils().httpGet("https://passport.bilibili.com/login?act=exit", headers, null);
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
         }
     }
 
@@ -827,7 +792,7 @@ public class HttpUserData {
                     .body().string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -835,11 +800,11 @@ public class HttpUserData {
         jsonObject = JSONObject.parseObject(data);
         int code = jsonObject.getShort("code");
         if (code == 0) {
-            LOGGER.info(((JSONObject) jsonObject.get("data")).getString("specialText"));
+            log.info(((JSONObject) jsonObject.get("data")).getString("specialText"));
         } else if (code == 1011040) {
-            LOGGER.info(jsonObject.get("message"));
+            log.info((String) jsonObject.get("message"));
         } else {
-            LOGGER.error("签到失败，原因：" + jsonObject.toString());
+            log.error("签到失败，原因：" + jsonObject.toString());
         }
     }
 
@@ -883,14 +848,14 @@ public class HttpUserData {
                         break;
                     }
                 } else {
-                    LOGGER.error("获取勋章失败，原因：" + jsonObject.toString());
+                    log.error("获取勋章失败，原因：" + jsonObject.toString());
                     break;
                 }
                 nowPage++;
             }
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         return userMedals;
@@ -920,7 +885,7 @@ public class HttpUserData {
                     .body().string();
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -934,7 +899,7 @@ public class HttpUserData {
                 return userBagList;
             }
         } else {
-            LOGGER.error("获取礼物包失败，原因：" + jsonObject.toString());
+            log.error("获取礼物包失败，原因：" + jsonObject.toString());
         }
         return null;
     }
@@ -973,8 +938,7 @@ public class HttpUserData {
                             params)
                     .body().string();
         } catch (Exception e) {
-            // TODO 自动生成的 catch 块
-            LOGGER.error(e);
+            log.error(String.valueOf(e));
             data = null;
         }
         if (data == null)
@@ -985,7 +949,7 @@ public class HttpUserData {
             // 解禁成功
 //			System.out.println(jsonObject.getString("data"));
         } else {
-            LOGGER.error("解除禁言失败,原因" + jsonObject.getString("msg"));
+            log.error("解除禁言失败,原因" + jsonObject.getString("msg"));
         }
         return code;
     }

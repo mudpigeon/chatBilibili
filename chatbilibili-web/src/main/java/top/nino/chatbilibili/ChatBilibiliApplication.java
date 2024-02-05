@@ -8,7 +8,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.nino.chatbilibili.hook.GlobalViewInterceptor;
-import top.nino.chatbilibili.service.SetService;
+import top.nino.chatbilibili.service.GlobalSettingFileService;
 import top.nino.service.command.CommandService;
 
 
@@ -20,6 +20,9 @@ import top.nino.service.command.CommandService;
 public class ChatBilibiliApplication implements WebMvcConfigurer, CommandLineRunner{
 
 	@Autowired
+	private GlobalSettingFileService globalSettingFileService;
+
+	@Autowired
 	private GlobalViewInterceptor globalViewInterceptor;
 
 	@Autowired
@@ -27,6 +30,7 @@ public class ChatBilibiliApplication implements WebMvcConfigurer, CommandLineRun
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
+		globalSettingFileService.createAndValidateCookieAndLoadAndWrite();
 		registry.addInterceptor(globalViewInterceptor).addPathPatterns("/**");
 	}
 

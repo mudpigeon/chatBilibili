@@ -1,6 +1,5 @@
 package top.nino.chatbilibili;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import top.nino.api.model.auto_reply.AutoReply;
 import top.nino.api.model.user.UserCookieInfo;
@@ -24,25 +23,40 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 public class GlobalSettingConf {
 
+	//------------- 1.基本预设好的常量-----------开始----------------------
+	public final static String GLOBAL_SETTING_FILE_NAME = "chatBilibili-globalSetting";
+	public final static String FILE_COOKIE_PREFIX = "validCookie";
+	public final static String FILE_SETTING_PREFIX = "setting";
+
+	//------------- 基本预设好的常量-----------结束----------------------
+
+
+	//------------- 2.运行中加载/缓存的数据-----------开始----------------------
+
+	// 房间号
+	public static Long ROOMID;
+
 	// cookie String串
-	public static String COOKIE_VALUE = null;
+	public static String COOKIE_VALUE;
 
-	// cookie 解析后 的最小有效pojo存储
-	public static UserCookieInfo USER_COOKIE_INFO = null;
+	// cookie parse 解析后 的最小有效pojo存储（还没有进行网络验证该cookie是否有效）
+	public static UserCookieInfo USER_COOKIE_INFO;
 
-	// user信息
-	public static User USER = null;
+	// user信息（应该是验证cookie有效后才有数值）
+	public static User USER;
 
+	// 设置
+	public static CenterSetConf centerSetConf;
 
-	public static String VERSION ="";
+	//websocket客户端主线程
+	public static WebSocketProxy webSocketProxy;
 
-	public static String NEW_VERSION ="";
+	//------------- 运行中加载/缓存的数据-----------结束----------------------
+
 
 	// url 直播弹幕websocket地址
 	public static String URL = "wss://broadcastlv.chat.bilibili.com:2245/sub";
 
-	// 房间号
-	public static Long ROOMID = null;
 
 	// 短号
 	public static Integer SHORTROOMID = null;
@@ -86,8 +100,7 @@ public class GlobalSettingConf {
 	// 天选是否正在屏蔽欢迎
 	public static Boolean ISSHIELDWELCOME = false;
 
-	// 设置
-	public static CenterSetConf centerSetConf;
+
 	
 	//心跳包 16进制
 	public final static String heartByte="0000001f0010000100000002000000015b6f626a656374204f626a6563745d";
@@ -106,8 +119,6 @@ public class GlobalSettingConf {
     //心跳包&验证包的尾巴其他
 	public final static int packageOther = 1;
 	
-	//websocket客户端主线程
-	public static WebSocketProxy webSocketProxy;
 
 	//心跳线程
 	public static HeartByteThread heartByteThread;
@@ -195,11 +206,11 @@ public class GlobalSettingConf {
 
 	public static String ANNOUNCE = null;
 
-	public final static String PROFILE_NAME = "DanmujiProfile";
 
-	public final static String PROFILE_SET_NAME = "set";
 
-	public final static String PROFILE_COOKIE_NAME = "ySZL4SBB";
+
+
+
 
 	public static boolean INIT_CHECK_EDITION = false;
 

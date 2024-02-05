@@ -13,12 +13,12 @@ public class ApiServiceImpl implements ApiService {
 
     public PredatorResult getApexPredator(String key, String type) {
         PredatorResult predatorResult=null;
-        predatorResult = HttpOtherData.httpGetApexPredator(key, type);
+
         return predatorResult;
     }
     public ApexMessage getApexMessage() {
         ApexMessage apexMessage=null;
-        apexMessage = HttpOtherData.httpGetApexMessage();
+
         return apexMessage;
     }
 }
