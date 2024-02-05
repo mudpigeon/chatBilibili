@@ -232,10 +232,10 @@ public class GlobalSettingConf {
 
 	//方法区
 
-	public static void init_user(){
+	public static void clearUserCache(){
+		GlobalSettingConf.COOKIE_VALUE = null;
 		GlobalSettingConf.USER_COOKIE_INFO = null;
 		GlobalSettingConf.USER = null;
-		GlobalSettingConf.COOKIE_VALUE = null;
 		GlobalSettingConf.USER_BARRAGE_MESSAGE = null;
 	}
 

@@ -7,9 +7,7 @@ import top.nino.api.model.user.UserCookieInfo;
 import top.nino.api.model.vo.Response;
 import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.http.HttpUserData;
-import top.nino.chatbilibili.service.ClientService;
 import top.nino.chatbilibili.service.GlobalSettingFileService;
-import top.nino.chatbilibili.service.SettingService;
 import top.nino.core.CookieUtils;
 
 import javax.annotation.Resource;
@@ -22,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @RestController
 @RequestMapping("/rest/login")
-public class WebLoginRestController {
+public class RestLoginController {
 
 
     @Resource
@@ -54,4 +52,6 @@ public class WebLoginRestController {
         }
         return Response.success(userCookieInfo.isValidFlag(), req);
     }
+
+
 }

@@ -229,7 +229,7 @@ public class HttpUserData {
 
         Map<String, String> headers = new HashMap<>(4);
         headers.put(HttpHeader.USER_AGENT_KEY, HttpHeader.USER_AGENT_KEY);
-        headers.put(HttpHeader.REFER, HttpBibilibiliUrl.REFER_PARAM_NONE_ROOM_ID + CurrencyTools.parseRoomId());
+        headers.put(HttpHeader.REFER_KEY, HttpHeader.REFER_PARAM_NONE_ROOM_ID + CurrencyTools.parseRoomId());
 
         if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
             headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);

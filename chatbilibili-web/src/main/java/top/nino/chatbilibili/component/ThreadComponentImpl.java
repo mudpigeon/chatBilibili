@@ -42,13 +42,8 @@ public class ThreadComponentImpl implements ThreadComponent {
 	public void closeUser(boolean close){
 
 		closeUserOnlineThread();
-		closeAdvertThread();
 		closeSendBarrageThread();
 		closeLogThread();
-		closeGiftShieldThread();
-		closeFollowShieldThread();
-		closeWelcomeShieldThread();
-		closeAutoReplyThread();
 		closeSmallHeartThread();
 		if (close) {
 			closeHeartByteThread();
@@ -337,7 +332,6 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public void closeUserOnlineThread() {
-		// TODO 自动生成的方法存根
 		if (GlobalSettingConf.userOnlineHeartThread != null) {
 			GlobalSettingConf.userOnlineHeartThread.FLAG = true;
 			GlobalSettingConf.userOnlineHeartThread.interrupt();
@@ -505,7 +499,6 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public void closeParseMessageThread() {
-		// TODO 自动生成的方法存根
 		if (GlobalSettingConf.parseMessageThread != null) {
 			GlobalSettingConf.parseMessageThread.FLAG = true;
 			GlobalSettingConf.parseMessageThread.interrupt();
@@ -515,7 +508,6 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public void closeHeartByteThread() {
-		// TODO 自动生成的方法存根
 		if (GlobalSettingConf.heartByteThread != null) {
 			GlobalSettingConf.heartByteThread.HFLAG = true;
 			GlobalSettingConf.heartByteThread.interrupt();
@@ -525,7 +517,6 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public void closeLogThread() {
-		// TODO 自动生成的方法存根
 		if (GlobalSettingConf.logThread != null) {
 			GlobalSettingConf.logThread.FLAG = true;
 			GlobalSettingConf.logThread.interrupt();

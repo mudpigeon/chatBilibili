@@ -8,18 +8,17 @@ import java.io.Serializable;
 
 
 /**
+ * B站登录成功后返回结果
  * @author nino
  */
 @Data
 @NoArgsConstructor
 public class User implements Serializable{
-	/**
-	 * B站登录成功后返回结果
-	 */
+
 	private static final long serialVersionUID = 4638128918041411710L;
 	private Long uid;
 	private String uname;
-	private String face;
+	private String face; // 头像地址
 	private Long silver;
 	private Integer gold;
 	private Integer achieve;
@@ -31,7 +30,7 @@ public class User implements Serializable{
 	private Long user_next_Integerimacy;
 	private String user_level_rank;
 	private Short user_charged;
-	private Integer billCoin;
+	private Integer billCoin; // 硬币数
 	
 	
 }

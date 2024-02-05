@@ -22,4 +22,16 @@ public class HttpConstructUtil {
         }
         return headers;
     }
+
+    public static Map<String, String> constructHeader(String cookieValue, String refere) {
+        Map<String, String> headers = new HashMap<>(3);
+        // 放入请求头
+        headers.put(HttpHeader.USER_AGENT_KEY, HttpHeader.USER_AGENT_VALUE);
+        if (StringUtils.isNotBlank(cookieValue)) {
+            // 有cookie就放
+            headers.put(HttpHeader.COOKIE_KEY, cookieValue);
+        }
+        headers.put(HttpHeader.REFER_KEY, refere);
+        return headers;
+    }
 }

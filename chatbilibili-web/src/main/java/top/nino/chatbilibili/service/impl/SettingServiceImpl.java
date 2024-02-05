@@ -112,18 +112,10 @@ public class SettingServiceImpl implements SettingService {
         }
     }
 
-    public void quit() {
-        GlobalSettingConf.init_user();
+    @Override
+    public void clearLoginCache() {
+        GlobalSettingConf.clearUserCache();
         threadComponent.closeUser(true);
-        // remove task all shutdown !!!!!!
-        try {
-//            taskRegisterComponent.destroy();
-        } catch (Exception e) {
-            // TODO 自动生成的 catch 块
-            log.error("清理定时任务错误：" + e);
-        }
-        GlobalSettingConf.init_send();
-        globalSettingFileService.reConnectRoom();
         log.info("用户退出成功");
     }
 

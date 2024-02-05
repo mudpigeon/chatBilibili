@@ -10,5 +10,5 @@ public interface SettingService {
 	void changeSet(CenterSetConf centerSetConf);
 	void changeSet(CenterSetConf centerSetConf,boolean check);
 	void connectSet(CenterSetConf centerSetConf);
-	void quit();
+	void clearLoginCache();
 }

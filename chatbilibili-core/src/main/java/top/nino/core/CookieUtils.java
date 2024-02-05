@@ -59,6 +59,7 @@ public class CookieUtils {
             }
         }
         if (haveNum >= 2) {
+            userCookieInfo.setValidFlag(true);
             log.info("cookie装载成功,userCookie:{}", JSON.toJSONString(userCookieInfo));
             return userCookieInfo;
         }

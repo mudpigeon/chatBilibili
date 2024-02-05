@@ -9,21 +9,21 @@
 </head>
 <body>
 
-<div class="ui fixed inverted menu">
-    <div class="ui container">
-        <a href="#" class="header item"  target="_blank">chatBilibili</a>
-        <a href="https://live.bilibili.com/?spm_id_from=333.337.0.0" class="item" target="_blank">B站直播区</a>
-        <button class=" ui top attached pink color  button loginButton" th:if="!(${loginUser}?exists)">
-            登录
-        </button>
+    <div class="ui fixed inverted menu">
+        <div class="ui container">
+            <a href="#" class="header item"  target="_blank">chatBilibili</a>
+            <a href="https://live.bilibili.com/?spm_id_from=333.337.0.0" class="item" target="_blank">B站直播区</a>
+            <button class=" ui top attached pink color  button loginButton" th:if="!(${loginUser}?exists)">
+                登录
+            </button>
 
+        </div>
     </div>
-</div>
 
-<br><br><br>
+    <br><br><br>
 
-<!--非互动，会隐藏的元素-->
-<div class="ui page dimmer pageDimmer">
+    <!--非互动，会隐藏的元素-->
+    <div class="ui page dimmer pageDimmer">
     <div class="ui container">
         <div class="ui two column centered grid">
             <div class="ui column">
@@ -61,7 +61,7 @@
         </div>
     </div>
 </div>
-<div class="ui modal setNewChatGPTCharacterModal">
+    <div class="ui modal setNewChatGPTCharacterModal">
     <i class="close icon"></i>
     <div class="header">
         新增角色Prompt
@@ -79,558 +79,558 @@
         </div>
     </div>
 </div>
-<!---->
+    <!---->
 
-<div class="ui container">
+    <div class="ui container">
 
 
-    <div class="ui attached segments">
+        <div class="ui attached segments">
 
-        <div class="ui pink segment " th:if="${loginUser}?exists">
+            <div class="ui pink segment " th:if="${loginUser}?exists">
+                    <span class="" th:if="${loginUser}?exists">
+                        uid：<span class="" th:text="${loginUser.uid}"></span>
+                    </span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
                 <span class="" th:if="${loginUser}?exists">
-                    uid：<span class="" th:text="${loginUser.uid}"></span>
-                </span>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <span class="" th:if="${loginUser}?exists">
-                    用户名：<a class="" th:href="@{'https://space.bilibili.com/'+${loginUser.uid}}" th:text="${loginUser.uname}" target="_blank"></a>
-                </span>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <a th:href="@{/loginOut}" class = "ui red button loginOutButton" th:if="${loginUser}?exists">
-                退出登录
-            </a>
-        </div>
-        <div class="ui pink segment">
-            B站直播房间
-            <span th:if="${ROOMID}!=null">
-                    :
-                </span>
-            <a class="" th:if="${ROOMID}!=null" th:text="${ROOMID}"  th:href="@{'https://live.bilibili.com/'+${ROOMID}}" target="_blank">232134</a>
-            &nbsp;
-            <span class="" th:if="${ROOMID}!=null">
-                    主播：<a th:href="@{'https://space.bilibili.com/'+${AUID}}" th:text="${ANAME}" class="ar-name window-open-x" target="_blank">会</a>
-                </span>
-        </div>
-        <div class="ui secondary segment connectStatusContentSegment">
-                <span class="ui connectStatusSpan">
-                    <span th:if="${ROOMID}==null">当前未连接到任何房间...</span>
-                    <span th:if="${ROOMID}!=null">已连接至目标直播间。</span>
-                </span>
-        </div>
-        <div class="ui dimmer segment danmuSegment" style="height:850px">
-            <div class="ui container" style="  overflow-y: auto; overflow-anchor: auto; height:100%">
+                        用户名：<a class="" th:href="@{'https://space.bilibili.com/'+${loginUser.uid}}" th:text="${loginUser.uname}" target="_blank"></a>
+                    </span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a th:href="@{/view/loginOut}" class = "ui red button loginOutButton" th:if="${loginUser}?exists">
+                    退出登录
+                </a>
+            </div>
+            <div class="ui segment">
+                B站直播房间
+                <span th:if="${ROOMID}!=null">
+                        :
+                    </span>
+                <a class="" th:if="${ROOMID}!=null" th:text="${ROOMID}"  th:href="@{'https://live.bilibili.com/'+${ROOMID}}" target="_blank">232134</a>
+                &nbsp;
+                <span class="" th:if="${ROOMID}!=null">
+                        主播：<a th:href="@{'https://space.bilibili.com/'+${AUID}}" th:text="${ANAME}" class="ar-name window-open-x" target="_blank">会</a>
+                    </span>
+            </div>
+            <div class="ui secondary segment connectStatusContentSegment">
+                    <span class="ui connectStatusSpan">
+                        <span th:if="${ROOMID}==null">当前未连接到任何房间...</span>
+                        <span th:if="${ROOMID}!=null">已连接至目标直播间。</span>
+                    </span>
+            </div>
+            <div class="ui dimmer segment danmuSegment" style="height:850px">
+                <div class="ui container" style="  overflow-y: auto; overflow-anchor: auto; height:100%">
 
-                <div >
-                    <div class="ui visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui red visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui blue visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui red visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui blue visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui red visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui blue visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui red visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui blue visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui red visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui blue visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui red visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui blue visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui red visible message">
-                        <p>You can always see me</p>
-                    </div>
-                    <div class="ui blue visible message">
-                        <p>You can always see me</p>
-                    </div>
+                    <div >
+                        <div class="ui visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui red visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui blue visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui red visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui blue visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui red visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui blue visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui red visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui blue visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui red visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui blue visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui red visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui blue visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui red visible message">
+                            <p>You can always see me</p>
+                        </div>
+                        <div class="ui blue visible message">
+                            <p>You can always see me</p>
+                        </div>
 
 
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui segment connectSegment">
+                <div class="ui fluid action input ">
+                    <input type="text" placeholder="输入直播间号码，不登录无法发送弹幕。">
+                    <button class="ui green button connectButton">连接</button>
+                </div>
+            </div>
+
+            <div class="ui dimmer segment afterConnectSegment">
+                <div class="ui two column grid ">
+                    <div class="ui column ">
+                        <button class="ui fluid blue button showDanmuButton">显示弹幕</button>
+                    </div>
+                    <div class="ui column">
+                        <button class="ui fluid red button closeConnectButton">断开连接</button>
+                    </div>
+                </div>
+            </div>
+            <button class = "ui fluid bottom attached button">一键应用以下所有配置</button>
+
+
+
+
+        </div>
+
+        <br>
+
+
+        <span>
+                <span class="ui pink color header">弹幕设置</span>
+                <button class="circular ui icon button">保存</button>
+                <button class="circular ui icon button">应用</button>
+            </span>
+        <div class="ui segments">
+            <div class="ui  pink segment">
+                <h3 style="color: black;">弹幕显示</h3>
+                <div class="ui slider checkbox">
+                    <input type="checkbox" name="newsletter" checked="checked">
+                    <label>普通</label>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="ui slider checkbox">
+                    <input type="checkbox" name="newsletter" checked="checked">
+                    <label>舰长</label>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="ui slider checkbox">
+                    <input type="checkbox" name="newsletter" checked="checked">
+                    <label>老爷</label>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="ui slider checkbox">
+                    <input type="checkbox" name="newsletter" checked="checked">
+                    <label>房管</label>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="ui slider checkbox">
+                    <input type="checkbox" name="newsletter">
+                    <label>勋章</label>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="ui slider checkbox">
+                    <input type="checkbox" name="newsletter">
+                    <label>等级</label>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="ui slider checkbox">
+                    <input type="checkbox" name="newsletter">
+                    <label>勋章屏蔽</label>
+                </div>
+            </div>
+            <div class="ui  segment">
+                <h3>礼物显示</h3>
+                <div class="ui slider checkbox">
+                    <input type="checkbox" name="newsletter" checked="checked">
+                    <label>礼物</label>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="ui slider checkbox">
+                    <input type="checkbox" name="newsletter" checked="checked">
+                    <label>免费</label>
+                </div>
+            </div>
+            <div class="ui  segment">
+                <h3>其他</h3>
+                <div class="ui slider checkbox">
+                    <input type="checkbox" name="newsletter" checked="checked">
+                    <label>弹幕记录</label>
                 </div>
             </div>
         </div>
 
-        <div class="ui segment connectSegment">
-            <div class="ui fluid action input ">
-                <input type="text" placeholder="输入直播间号码，不登录无法发送弹幕。">
-                <button class="ui green button connectButton">连接</button>
+        <span>
+                <span class="ui yellow color header">ChatGPT设置</span>
+                <button class="circular ui icon button">保存</button>
+                <button class="circular ui icon button">应用</button>
+                <button class="circular ui icon button">删除所有性格</button>
+            </span>
+        <div class="ui segments">
+
+            <div class="ui yellow segment">
+                <h3>性格选择</h3>
+                <div class="ui grid">
+                    <div class="four wide column">
+                        <div class="ui vertical fluid tabular menu chatGPTCharacterMenu">
+                            <a class="item">
+                                Bio
+                            </a>
+                            <a class="item">
+                                Pics
+                            </a>
+                            <a class="item">
+                                Companies
+                            </a>
+                            <a class="item">
+                                Links
+                            </a>
+                            <a class="item makeNewChatGPTCharacter">
+                                自定义
+                            </a>
+                        </div>
+                    </div>
+                    <div class="twelve wide stretched column">
+                        <div class="ui segment chatGPTCharacterContentSegment">
+                            This is an stretched grid column. This segment will always match the tab height
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui  segment">
+                <h3>回答频率（每过多少句弹幕，调用AI回答一句）</h3>
+                <div class="ui form">
+                    <div class="inline fields">
+                        <div class="ui slider checkbox">
+                            <input type="checkbox" name="newsletter" checked="checked">
+                            <label>普通弹幕</label>
+                        </div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency" checked="checked">
+                                <label>1句</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency">
+                                <label>5句</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency">
+                                <label>10句</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency">
+                                <label>20句</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency">
+                                <label>30句</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency">
+                                <label>40句</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency">
+                                <label>50句</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui form">
+                    <div class="inline fields">
+                        <div class="ui slider checkbox">
+                            <input type="checkbox" name="newsletter" checked="checked">
+                            <label>舰长</label>
+                        </div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency" checked="checked">
+                                <label>1句</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency">
+                                <label>5句</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency">
+                                <label>10句</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui form">
+                    <div class="inline fields">
+                        <div class="ui slider checkbox">
+                            <input type="checkbox" name="newsletter" checked="checked">
+                            <label>老爷</label>
+                        </div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency" checked="checked">
+                                <label>1句</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency">
+                                <label>5句</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="frequency">
+                                <label>10句</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="ui dimmer segment afterConnectSegment">
-            <div class="ui two column grid ">
-                <div class="ui column ">
-                    <button class="ui fluid blue button showDanmuButton">显示弹幕</button>
-                </div>
-                <div class="ui column">
-                    <button class="ui fluid red button closeConnectButton">断开连接</button>
-                </div>
-            </div>
-        </div>
-        <button class = "ui fluid bottom attached button">一键应用以下所有配置</button>
-
-
-
-
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     </div>
+    <!--二维码相关脚本-->
+    <script type="text/javascript">
 
-    <br>
-
-
-    <span>
-            <span class="ui pink color header">弹幕设置</span>
-            <button class="circular ui icon button">保存</button>
-            <button class="circular ui icon button">应用</button>
-        </span>
-    <div class="ui segments">
-        <div class="ui  pink segment">
-            <h3 style="color: black;">弹幕显示</h3>
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
-                <label>普通</label>
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
-                <label>舰长</label>
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
-                <label>老爷</label>
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
-                <label>房管</label>
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter">
-                <label>勋章</label>
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter">
-                <label>等级</label>
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter">
-                <label>勋章屏蔽</label>
-            </div>
-        </div>
-        <div class="ui  segment">
-            <h3>礼物显示</h3>
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
-                <label>礼物</label>
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
-                <label>免费</label>
-            </div>
-        </div>
-        <div class="ui  segment">
-            <h3>其他</h3>
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
-                <label>弹幕记录</label>
-            </div>
-        </div>
-    </div>
-
-    <span>
-            <span class="ui yellow color header">ChatGPT设置</span>
-            <button class="circular ui icon button">保存</button>
-            <button class="circular ui icon button">应用</button>
-            <button class="circular ui icon button">删除所有性格</button>
-        </span>
-    <div class="ui segments">
-
-        <div class="ui yellow segment">
-            <h3>性格选择</h3>
-            <div class="ui grid">
-                <div class="four wide column">
-                    <div class="ui vertical fluid tabular menu chatGPTCharacterMenu">
-                        <a class="item">
-                            Bio
-                        </a>
-                        <a class="item">
-                            Pics
-                        </a>
-                        <a class="item">
-                            Companies
-                        </a>
-                        <a class="item">
-                            Links
-                        </a>
-                        <a class="item makeNewChatGPTCharacter">
-                            自定义
-                        </a>
-                    </div>
-                </div>
-                <div class="twelve wide stretched column">
-                    <div class="ui segment chatGPTCharacterContentSegment">
-                        This is an stretched grid column. This segment will always match the tab height
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ui  segment">
-            <h3>回答频率（每过多少句弹幕，调用AI回答一句）</h3>
-            <div class="ui form">
-                <div class="inline fields">
-                    <div class="ui slider checkbox">
-                        <input type="checkbox" name="newsletter" checked="checked">
-                        <label>普通弹幕</label>
-                    </div>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency" checked="checked">
-                            <label>1句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>5句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>10句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>20句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>30句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>40句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>50句</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ui form">
-                <div class="inline fields">
-                    <div class="ui slider checkbox">
-                        <input type="checkbox" name="newsletter" checked="checked">
-                        <label>舰长</label>
-                    </div>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency" checked="checked">
-                            <label>1句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>5句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>10句</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ui form">
-                <div class="inline fields">
-                    <div class="ui slider checkbox">
-                        <input type="checkbox" name="newsletter" checked="checked">
-                        <label>老爷</label>
-                    </div>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency" checked="checked">
-                            <label>1句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>5句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>10句</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-</div>
-<!--二维码相关脚本-->
-<script type="text/javascript">
-
-            function getQrCodeImg(init){
-                $.ajax({
-                    url: '../web/qrCodeUrl',
-                    async: false,
-                    cache: false,
-                    type: 'POST',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data.code == "200") {
-                            var url = data.result;
-                            $('#qrCodeImg').attr('src', '../qrcode?url=' + encodeURIComponent(url));
-                            $('.imageLoaderDiv').removeClass('loader');
-                            // 显示刷新成功的消息
-                            if(!init) {
-                                // showMessage("二维码刷新成功！", "success",2);
-                                console.log("二维码刷新成功!");
-                            }// 显示消息，然后在2秒后消失
-                        }else{
-                            // showMessage("二维码请求错误！", "danger",2);
+                function getQrCodeImg(init){
+                    $.ajax({
+                        url: '../web/qrCodeUrl',
+                        async: false,
+                        cache: false,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.code == "200") {
+                                var url = data.result;
+                                $('#qrCodeImg').attr('src', '../qrcode?url=' + encodeURIComponent(url));
+                                $('.imageLoaderDiv').removeClass('loader');
+                                // 显示刷新成功的消息
+                                if(!init) {
+                                    // showMessage("二维码刷新成功！", "success",2);
+                                    console.log("二维码刷新成功!");
+                                }// 显示消息，然后在2秒后消失
+                            }else{
+                                // showMessage("二维码请求错误！", "danger",2);
+                                console.log("二维码请求错误!");
+                            }
+                        },
+                        error: function () {
+                            // $('.imageLoaderDiv').removeClass('loader');  // 当AJAX请求失败时，隐藏载入图标
                             console.log("二维码请求错误!");
+                            // showMessage("二维码请求错误！", "danger",2);
                         }
-                    },
-                    error: function () {
-                        // $('.imageLoaderDiv').removeClass('loader');  // 当AJAX请求失败时，隐藏载入图标
-                        console.log("二维码请求错误!");
-                        // showMessage("二维码请求错误！", "danger",2);
-                    }
-                });
-            }
+                    });
+                }
 
-            function checkScanQrCodeStatus() {
-                //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
-                $.ajax({
-                    url: '../web/checkScanQrCodeStatus',
-                    async: false,
-                    cache: false,
-                    type: 'POST',
-                    dataType: 'json',
-                    success: function (data) {
-                        var code = data.data.code;
-                        if (code == 0) {
-                            clearInterval(time);
-                            window.location.replace("/");
-                            //二维码失效
-                        }else if(code == 86038){
-                            // showMessage("二维码过期自动刷新！", "warning",2);
-                            getQrImg(0)
-                        }else if(code == 86101){
-                            console.log("未扫码");
-                        }else if(code == 86090){
-                            console.log("已扫码,请在手机上确认登录");
-                        }else{
-                            // showMessage("二维码请求错误！"+code, "danger",2);
+                function checkScanQrCodeStatus() {
+                    //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
+                    $.ajax({
+                        url: '../web/checkScanQrCodeStatus',
+                        async: false,
+                        cache: false,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (data) {
+                            var code = data.data.code;
+                            if (code == 0) {
+                                clearInterval(time);
+                                window.location.replace("/");
+                                //二维码失效
+                            }else if(code == 86038){
+                                // showMessage("二维码过期自动刷新！", "warning",2);
+                                getQrImg(0)
+                            }else if(code == 86101){
+                                console.log("未扫码");
+                            }else if(code == 86090){
+                                console.log("已扫码,请在手机上确认登录");
+                            }else{
+                                // showMessage("二维码请求错误！"+code, "danger",2);
+                            }
                         }
-                    }
-                })
-            }
+                    })
+                }
+            </script>
+
+    <!-- 显示登录页面 -->
+    <script type="text/javascript">
+            $(document).on('click', '.loginButton', function (e) {
+                $('.pageDimmer').dimmer('show');
+                // 开始获取二维码 以及 持续判断二维码扫描情况
+               getQrCodeImg(1);
+               time = setInterval(checkScanQrCodeStatus, 3000);
+            });
+
+            $(document).on('click', '.loginFailCloseIcon', function (e) {
+                $(this).closest('.loginFailMessage').transition('fade');
+            });
         </script>
 
-<!-- 显示登录页面 -->
-<script type="text/javascript">
-        $(document).on('click', '.loginButton', function (e) {
-            $('.pageDimmer').dimmer('show');
-            // 开始获取二维码 以及 持续判断二维码扫描情况
-           getQrCodeImg(1);
-           time = setInterval(checkScanQrCodeStatus, 3000);
-        });
+    <!-- 连接相关 -->
+    <script type="text/javascript">
+            $(document).on('click', '.connectButton', function (e) {
+                if (!$('#connect').hasClass('disabled')) {
+                $('#connect').addClass('disabled');
+                var roomid = $('#room_id').val();
+                if (roomid !== null && roomid !== "") {
+                    $('.notice-message').html("<span>连接中<img src='../img/loading-1.gif'></span>");
+                    $.when(connect_method.connectRoom(roomid)).done(function(data) {
+                        if (data.code === "200") {
+                            if (data.result) {
+                                $('#connect').addClass('disabled');
+                                $('.notice-message').html("连接成功");
+                                $('#disconnect').removeClass('disabled');
+                                alert("成功连接");
+                                window.location.replace("/");
+                            } else {
+                                $('.notice-message').html("连接失败");
+                                $('#disconnect').addClass('disabled');
+                                $('#connect').removeClass('disabled');
+                                alert("连接失败");
+                            }
+                        }
 
-        $(document).on('click', '.loginFailCloseIcon', function (e) {
-            $(this).closest('.loginFailMessage').transition('fade');
-        });
-    </script>
-
-<!-- 连接相关 -->
-<script type="text/javascript">
-        $(document).on('click', '.connectButton', function (e) {
-            if (!$('#connect').hasClass('disabled')) {
-			$('#connect').addClass('disabled');
-			var roomid = $('#room_id').val();
-			if (roomid !== null && roomid !== "") {
-				$('.notice-message').html("<span>连接中<img src='../img/loading-1.gif'></span>");
-				$.when(connect_method.connectRoom(roomid)).done(function(data) {
-					if (data.code === "200") {
-						if (data.result) {
-							$('#connect').addClass('disabled');
-							$('.notice-message').html("连接成功");
-							$('#disconnect').removeClass('disabled');
-							alert("成功连接");
-							window.location.replace("/");
-						} else {
-							$('.notice-message').html("连接失败");
-							$('#disconnect').addClass('disabled');
-							$('#connect').removeClass('disabled');
-							alert("连接失败");
-						}
-					}
-
-				});
-			} else {
-				$('.notice-message').html("还没输入房间号");
-				setTimeout(function() {
-					$('.notice-message').html("");
-				}, 1000);
-			}
-		}
-
-            // ajax 成功的话执行以下语句
-            $('.connectSegment').addClass('dimmer');
-            $('.afterConnectSegment').removeClass('dimmer');
-        });
-
-        $(document).on('click', '.closeConnectButton', function (e) {
-            console.log("关闭连接");
-
-            if (!$(this).hasClass('disabled')) {
-			    if (connect_method.disconnectRoom()) {
-				    $('#disconnect').addClass('disabled');
-				    $('#connect').removeClass('disabled');
-				    alert("断开成功");
-			} else {
-				$('#connect').addClass('disabled');
-				$('#disconnect').removeClass('disabled');
-		    }
-
-            // ajax 成功的话执行以下语句
-
-            $('.connectSegment').removeClass('dimmer');
-            $('.afterConnectSegment').addClass('dimmer');
-            $('.danmuSegment').addClass('dimmer');
-            $('.showDanmuButton').text('显示弹幕');
-            $('.connectStatusContentSegment').removeClass('dimmer');
-        });
-
-        $(document).on('click', '.showDanmuButton', function (e) {
-            console.log("显示弹幕");
-
-            $('.connectSegment').addClass('dimmer');
-            $('.connectStatusContentSegment').addClass('dimmer');
-            $('.danmuSegment').removeClass('dimmer');
-            $('.showDanmuButton').text('刷新');
-        });
-
-    const connect_method = {
-        connectRoom : function(roomid) {
-            "use strict";
-            var deferred = $.Deferred();
-            $.ajax({
-                url : './connectRoom',
-                data : {
-                    roomid : roomid,
-                },
-                async : true,
-                cache : false,
-                type : 'GET',
-                dataType : 'json',
-                success : function(data) {
-                    deferred.resolve(data);
+                    });
+                } else {
+                    $('.notice-message').html("还没输入房间号");
+                    setTimeout(function() {
+                        $('.notice-message').html("");
+                    }, 1000);
                 }
+            }
+
+                // ajax 成功的话执行以下语句
+                $('.connectSegment').addClass('dimmer');
+                $('.afterConnectSegment').removeClass('dimmer');
             });
-            return deferred.promise();
-        },
-        disconnectRoom : function() {
-            "use strict";
-            var flag = false;
-            $.ajax({
-                url : './disconnectRoom',
-                async : false,
-                cache : false,
-                type : 'GET',
-                dataType : 'json',
-                success : function(data) {
-                    if (data.code === "200") {
-                        flag = data.result;
+
+            $(document).on('click', '.closeConnectButton', function (e) {
+                console.log("关闭连接");
+
+                if (!$(this).hasClass('disabled')) {
+                    if (connect_method.disconnectRoom()) {
+                        $('#disconnect').addClass('disabled');
+                        $('#connect').removeClass('disabled');
+                        alert("断开成功");
+                } else {
+                    $('#connect').addClass('disabled');
+                    $('#disconnect').removeClass('disabled');
+                }
+
+                // ajax 成功的话执行以下语句
+
+                $('.connectSegment').removeClass('dimmer');
+                $('.afterConnectSegment').addClass('dimmer');
+                $('.danmuSegment').addClass('dimmer');
+                $('.showDanmuButton').text('显示弹幕');
+                $('.connectStatusContentSegment').removeClass('dimmer');
+            });
+
+            $(document).on('click', '.showDanmuButton', function (e) {
+                console.log("显示弹幕");
+
+                $('.connectSegment').addClass('dimmer');
+                $('.connectStatusContentSegment').addClass('dimmer');
+                $('.danmuSegment').removeClass('dimmer');
+                $('.showDanmuButton').text('刷新');
+            });
+
+        const connect_method = {
+            connectRoom : function(roomid) {
+                "use strict";
+                var deferred = $.Deferred();
+                $.ajax({
+                    url : './connectRoom',
+                    data : {
+                        roomid : roomid,
+                    },
+                    async : true,
+                    cache : false,
+                    type : 'GET',
+                    dataType : 'json',
+                    success : function(data) {
+                        deferred.resolve(data);
                     }
-                }
-            });
-            return flag;
-        },
-        connectCheck : function() {
-            "use strict";
-            var flag = false;
-            $.ajax({
-                url : './connectCheck',
-                async : false,
-                cache : false,
-                type : 'GET',
-                dataType : 'json',
-                success : function(data) {
-                    if (data.code === "200") {
-                        flag = data.result;
+                });
+                return deferred.promise();
+            },
+            disconnectRoom : function() {
+                "use strict";
+                var flag = false;
+                $.ajax({
+                    url : './disconnectRoom',
+                    async : false,
+                    cache : false,
+                    type : 'GET',
+                    dataType : 'json',
+                    success : function(data) {
+                        if (data.code === "200") {
+                            flag = data.result;
+                        }
                     }
-                }
-            });
-            return flag
-        },
-    };
-    </script>
+                });
+                return flag;
+            },
+            connectCheck : function() {
+                "use strict";
+                var flag = false;
+                $.ajax({
+                    url : './connectCheck',
+                    async : false,
+                    cache : false,
+                    type : 'GET',
+                    dataType : 'json',
+                    success : function(data) {
+                        if (data.code === "200") {
+                            flag = data.result;
+                        }
+                    }
+                });
+                return flag
+            },
+        };
+        </script>
 
     <!-- 通过cookie登录 -->
     <script type="text/javascript">
@@ -650,7 +650,7 @@
                         $(".cookieValue").val("");
                         $('.loginSuccessMessage').removeClass('hidden');
                         // 延迟1秒后执行页面刷新
-                        setTimeout(function(){window.location.reload();}, 1000);
+                        setTimeout(function(){window.location.href = "/";}, 1000);
                     } else {
                         $('.loginFailMessage').removeClass('hidden');
                     }
@@ -664,7 +664,6 @@
         });
 
     </script>
-
 
     <!--设置-->
     <script type="text/javascript">
