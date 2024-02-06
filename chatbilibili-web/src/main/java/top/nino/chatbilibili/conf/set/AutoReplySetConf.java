@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AutoReplySetConf extends TimingLiveSetConf implements Serializable, StartThreadInterface {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6387301110915854706L;
 	//是否开启本人
@@ -50,7 +50,7 @@ public class AutoReplySetConf extends TimingLiveSetConf implements Serializable,
 			return;
 		}
 		if (is_live_open()) {
-			if (GlobalSettingConf.lIVE_STATUS != 1) {
+			if (GlobalSettingConf.LIVE_STATUS != 1) {
 				threadComponent.closeAutoReplyThread();
 			} else {
 				if (is_open()) {
