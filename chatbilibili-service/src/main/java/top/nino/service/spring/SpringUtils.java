@@ -1,4 +1,4 @@
-package top.nino.core;
+package top.nino.service.spring;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -31,7 +31,7 @@ public class RestRoomController {
     public Response<?> connectRoom(HttpServletRequest req, @RequestParam("roomId") Long roomId) {
         if (ObjectUtils.isEmpty(GlobalSettingConf.webSocketProxy) || !GlobalSettingConf.webSocketProxy.isOpen()) {
             try {
-                clientService.startConnService(roomId);
+                clientService.loadRoomInfoAndOpenWebSocket(roomId);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -39,7 +39,7 @@ public class RestRoomController {
                 GlobalSettingConf.ALL_SETTING_CONF.setRoomId(GlobalSettingConf.ROOM_ID);
                 GlobalSettingConf.ROOMID_LONG = GlobalSettingConf.ROOM_ID;
             }
-            settingService.connectSet();
+            settingService.writeAndReadSettingAndStartReceive();
         }
 
         return Response.success(ObjectUtils.isNotEmpty(GlobalSettingConf.webSocketProxy) && GlobalSettingConf.webSocketProxy.isOpen(), req);

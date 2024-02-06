@@ -59,6 +59,7 @@ public class AllSettingConfig implements Serializable {
     // 信息是否显示礼物消息
     @JSONField(name = "is_gift")
     private boolean is_gift = true;
+
     // 信息是否显示免费礼物消息
     @JSONField(name = "is_gift_free")
     private boolean is_gift_free = true;
@@ -66,6 +67,7 @@ public class AllSettingConfig implements Serializable {
     // 是否开启日志线程
     @JSONField(name = "is_log")
     private boolean is_log = false;
+
     // 是否控制台打印
     @JSONField(name = "is_cmd")
     private boolean is_cmd = true;
@@ -74,20 +76,8 @@ public class AllSettingConfig implements Serializable {
     @JSONField(name = "win_auto_openSet")
     private boolean win_auto_openSet = true;
 
-    //123
+    // 123
     private String manager_key = "202cb962ac59075b964b07152d234b70";
-    // 每次登录最大尝试次数
-    private int manager_maxSize = 10;
-
-    @JSONField(name = "edition",serialize = false)
-    private String edition = "";
-
-    public static AllSettingConfig getInitCenterSetConf(){
-        AllSettingConfig allSettingConfig = new AllSettingConfig();
-
-        return allSettingConfig;
-    }
-
 
 
     public String toJson() {

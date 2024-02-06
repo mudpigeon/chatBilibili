@@ -9,7 +9,6 @@ public interface GlobalSettingFileService {
 
     boolean createAndValidateCookieAndLoadAndWrite();
 
-
     void startReceiveDanmuThread();
 
 }

@@ -59,16 +59,6 @@ public class DanmuUserRoleInfo implements Serializable, Cloneable {
     private Short uguard;
 
 
-    @Override
-    protected Object clone() {
-        try {
-            return (DanmuUserRoleInfo) danmuUserRoleInfo.clone();
-        } catch (Exception e) {
-            log.error("克隆异常", e);
-        }
-        return new DanmuUserRoleInfo();
-    }
-
 
     public static DanmuUserRoleInfo getDanmuUserRoleInfo(Long uid, String uname, String msg, Long timestamp, Short manager, Short vip, Short svip,
                                                          Short medal_level, String medal_name, String medal_anchor, Long medal_room, Short ulevel, Short uguard) {

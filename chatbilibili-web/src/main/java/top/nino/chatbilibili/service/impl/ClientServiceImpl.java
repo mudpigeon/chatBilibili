@@ -33,13 +33,15 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class ClientServiceImpl implements ClientService {
+
     @Autowired
     private SettingService settingService;
+
     @Autowired
     private ThreadComponent threadComponent;
 
     @Override
-    public void startConnService(Long roomId) throws Exception {
+    public void loadRoomInfoAndOpenWebSocket(Long roomId) throws Exception {
 
         if(ObjectUtils.isEmpty(roomId) || roomId <= 0L) {
             return;
@@ -106,7 +108,7 @@ public class ClientServiceImpl implements ClientService {
 
         // 启动心跳线程
         threadComponent.startHeartCheckBilibiliDanmuServerThread();
-        settingService.connectSet();
+
     }
 
     @Override
@@ -163,7 +165,7 @@ public class ClientServiceImpl implements ClientService {
             GlobalSettingConf.webSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.HEART_BYTE));
             threadComponent.startHeartCheckBilibiliDanmuServerThread();
             if (GlobalSettingConf.webSocketProxy.isOpen()) {
-                settingService.connectSet();
+                settingService.writeAndReadSettingAndStartReceive();
             }
         }
     }
@@ -178,7 +180,6 @@ public class ClientServiceImpl implements ClientService {
                     try {
                         GlobalSettingConf.webSocketProxy.closeBlocking();
                     } catch (InterruptedException e) {
-                        // TODO 自动生成的 catch 块
                         e.printStackTrace();
                     }
                     GlobalSettingConf.webSocketProxy.closeConnection(1000, "手动关闭");

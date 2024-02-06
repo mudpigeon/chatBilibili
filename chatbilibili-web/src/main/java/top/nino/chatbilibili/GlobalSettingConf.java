@@ -145,6 +145,9 @@ public class GlobalSettingConf {
 	// 日志线程
 	public static LogThread logThread;
 
+	// 重新连接线程
+	public static ReConnThread reConnThread;
+
 	//------------- 4.线程-----------结束----------------------
 
 
@@ -165,8 +168,7 @@ public class GlobalSettingConf {
 	//心跳包&验证包的尾巴其他
 	public final static int packageOther = 1;
 
-	//重新连接线程
-	public static ReConnThread reConnThread;
+
 
 
 	//礼物感谢集

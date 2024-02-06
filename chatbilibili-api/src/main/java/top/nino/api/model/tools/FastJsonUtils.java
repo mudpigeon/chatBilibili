@@ -12,9 +12,11 @@ import java.util.List;
 
 /**
  * 依赖于fastjson包
+ * @author nino
  * @version fastjsonTools v1.0
  */
 public class FastJsonUtils {
+
 	private static final SerializeConfig CONFIG = new SerializeConfig();
 
 	private static final String FORMAT_TIME = "yyyy-MM-dd HH:mm:ss";

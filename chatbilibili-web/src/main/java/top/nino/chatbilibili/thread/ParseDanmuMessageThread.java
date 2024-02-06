@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import top.nino.api.model.superchat.MedalInfo;
 import top.nino.api.model.vo.WsPackage;
 import top.nino.chatbilibili.GlobalSettingConf;
-import top.nino.chatbilibili.conf.base.AllSettingConfig;
 import top.nino.api.model.danmu.*;
 import top.nino.api.model.superchat.SuperChat;
 import top.nino.chatbilibili.component.BlackParseComponent;
@@ -18,7 +17,7 @@ import top.nino.chatbilibili.service.SettingService;
 import top.nino.chatbilibili.tool.*;
 import top.nino.core.JodaTimeUtils;
 import top.nino.core.ParseDanmuUserRoleUtils;
-import top.nino.core.SpringUtils;
+import top.nino.service.spring.SpringUtils;
 import top.nino.service.chatgpt.ChatGPTService;
 
 import java.util.Vector;
@@ -938,17 +937,6 @@ public class ParseDanmuMessageThread extends Thread {
         }
     }
 
-    //获取发送礼物code
-    public String sendCode(short guardLevel) {
-        String code = CurrencyTools.sendGiftCode(guardLevel);
-        AllSettingConfig allSettingConfig = CurrencyTools.codeRemove(code);
-        settingService.changeSet(allSettingConfig, true);
-        return code;
-    }
-
-    public boolean parseAutoReplySetting(DanmuMessage danmuMessage) {
-        return false;
-    }
 
 
     public void DelayGiftTimeSetting() {

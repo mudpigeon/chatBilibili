@@ -3,7 +3,7 @@ package top.nino.chatbilibili.thread;
 
 import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.service.impl.ClientServiceImpl;
-import top.nino.core.SpringUtils;
+import top.nino.service.spring.SpringUtils;
 
 /**
  * @author nino

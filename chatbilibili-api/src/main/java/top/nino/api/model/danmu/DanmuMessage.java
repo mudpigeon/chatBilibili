@@ -146,14 +146,5 @@ public class DanmuMessage implements Serializable,Cloneable {
     }
 
 
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		try {
-			return (DanmuMessage) danmuMessage.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		return new DanmuMessage();
-	}
 
 }

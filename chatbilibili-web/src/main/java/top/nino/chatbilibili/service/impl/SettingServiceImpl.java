@@ -30,8 +30,10 @@ public class SettingServiceImpl implements SettingService {
 
     @Autowired
     private ClientService clientService;
+
     @Autowired
     private ThreadComponent threadComponent;
+
     @Autowired
     private ServerAddressComponent serverAddressComponent;
 
@@ -40,63 +42,23 @@ public class SettingServiceImpl implements SettingService {
 
 
 
-    public void changeSet(AllSettingConfig allSettingConfig) {
-        synchronized (allSettingConfig) {
-            Map<String, String> profileMap = new ConcurrentHashMap<>();
-            BASE64Encoder base64Encoder = new BASE64Encoder();
-            if (GlobalSettingConf.USER != null) {
-                profileMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
-            }
-            profileMap.put("set", base64Encoder.encode(allSettingConfig.toJson().getBytes()));
-            LocalGlobalSettingFileUtil.writeFile("DanmujiProfile", profileMap);
-            log.info("保存配置文件成功");
-            profileMap.clear();
-        }
-    }
 
-    // 保存配置文件
-    public void changeSet(AllSettingConfig allSettingConfig, boolean check) {
-        synchronized (allSettingConfig) {
-            if (allSettingConfig.toJson().equals(GlobalSettingConf.ALL_SETTING_CONF.toJson())&&check) {
-                log.info("保存配置文件成功");
-                return;
-            }
-            if (GlobalSettingConf.ROOMID_LONG != null && GlobalSettingConf.ROOMID_LONG > 0) {
-                allSettingConfig.setRoomId(GlobalSettingConf.ROOMID_LONG);
-            }
-            Map<String, String> profileMap = new ConcurrentHashMap<>();
-            BASE64Encoder base64Encoder = new BASE64Encoder();
-            if (GlobalSettingConf.USER != null) {
-                profileMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
-            }
-            profileMap.put("set", base64Encoder.encode(allSettingConfig.toJson().getBytes()));
-            LocalGlobalSettingFileUtil.writeFile("DanmujiProfile", profileMap);
-            try {
-                GlobalSettingConf.ALL_SETTING_CONF = JSONObject.parseObject(
-                        new String(base64Encoder.decode(LocalGlobalSettingFileUtil.readFile("DanmujiProfile").get("set"))),
-                        AllSettingConfig.class);
-                globalSettingFileService.startReceiveDanmuThread();
-                log.info("保存配置文件成功");
-            } catch (Exception e) {
-                // TODO: handle exception
-                log.error("保存配置文件失败:" + e);
-            }
-            profileMap.clear();
-        }
-    }
 
     @Override
-    public void connectSet() {
+    public void writeAndReadSettingAndStartReceive() {
         synchronized (GlobalSettingConf.ALL_SETTING_CONF) {
 
             Map<String, String> localGlobalSettingMap = new HashMap<>();
 
-            // 将当前的全局配置写到本地
             if (ObjectUtils.isNotEmpty(GlobalSettingConf.USER)) {
                 // cookie字符串放入map
                 localGlobalSettingMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, BASE64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
             }
+
+            // 页面上的所有配置
             localGlobalSettingMap.put(GlobalSettingConf.FILE_SETTING_PREFIX, BASE64Encoder.encode(GlobalSettingConf.ALL_SETTING_CONF.toJson().getBytes()));
+
+            // 将当前的全局配置写到本地
             LocalGlobalSettingFileUtil.writeFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME, localGlobalSettingMap);
 
             try {
@@ -104,13 +66,12 @@ public class SettingServiceImpl implements SettingService {
                 GlobalSettingConf.ALL_SETTING_CONF = JSONObject.parseObject(
                         new String(BASE64Encoder.decode(LocalGlobalSettingFileUtil.readFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME).get(GlobalSettingConf.FILE_SETTING_PREFIX))),
                         AllSettingConfig.class);
-
-                if (ObjectUtils.isNotEmpty(GlobalSettingConf.ROOM_ID)) {
-                    globalSettingFileService.startReceiveDanmuThread();
-                }
-                log.info("读取配置文件历史房间成功");
             } catch (Exception e) {
                 log.error("读取配置文件历史房间失败:" + e);
+            }
+
+            if (ObjectUtils.isNotEmpty(GlobalSettingConf.ROOM_ID)) {
+                globalSettingFileService.startReceiveDanmuThread();
             }
             localGlobalSettingMap.clear();
         }
