@@ -14,7 +14,8 @@ public class HttpHeader {
 
     public static final String REFER_KEY = "referer";
     public static final String REFER_BILIBILI = "https://www.bilibili.com/";
-    public static final String REFER_PARAM_NONE_ROOM_ID =  "https://live.bilibili.com/";
+    public static final String REFER_SPACE_BILIBILI = "https://space.bilibili.com/";
+    public static final String REFER_LIVE_BILIBILI =  "https://live.bilibili.com/";
 
 
 }

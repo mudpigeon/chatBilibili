@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import top.nino.api.model.room.Room;
+import top.nino.api.model.room.RoomAnchorInfo;
 import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.thread.ReConnThread;
 import top.nino.chatbilibili.ws.HandleWebsocketPackage;
@@ -17,9 +17,9 @@ import java.nio.ByteBuffer;
 public class Websocket extends WebSocketClient {
 
 
-	public Websocket(String url, Room room) throws URISyntaxException {
+	public Websocket(String url, RoomAnchorInfo roomAnchorInfo) throws URISyntaxException {
 		super(new URI(url));
-		log.info("已尝试连接至服务器地址:" + url + ";真实房间号为:" + room.getRoomid() + ";主播名字为:" + room.getUname());
+		log.info("已尝试连接至服务器地址:" + url + ";真实房间号为:" + roomAnchorInfo.getRoomid() + ";主播名字为:" + roomAnchorInfo.getUname());
 		// TODO 自动生成的构造函数存根
 	}
 
@@ -32,7 +32,7 @@ public class Websocket extends WebSocketClient {
 	@Override
 	public void onMessage(ByteBuffer message) {
 		// TODO 自动生成的方法存根
-		if(GlobalSettingConf.parseMessageThread !=null && ! GlobalSettingConf.parseMessageThread.FLAG) {
+		if(GlobalSettingConf.parseDanmuMessageThread !=null && ! GlobalSettingConf.parseDanmuMessageThread.FLAG) {
 		try {
 			HandleWebsocketPackage.handleMessage(message);
 		} catch (Exception e) {
@@ -47,10 +47,9 @@ public class Websocket extends WebSocketClient {
 
 	@Override
 	public void onClose(int code, String reason, boolean remote) {
-		// TODO 自动生成的方法存根
 		log.info("websocket connect close(连接已经断开)，纠错码:" + code);
-		GlobalSettingConf.heartByteThread.HFLAG = true;
-		GlobalSettingConf.parseMessageThread.FLAG = true;
+		GlobalSettingConf.heartCheckBilibiliDanmuServerThread.HFLAG = true;
+		GlobalSettingConf.parseDanmuMessageThread.FLAG = true;
 		if (code != 1000) {
 			log.info("websocket connect close(连接意外断开，正在尝试重连)，错误码:" + code);
 			if (!GlobalSettingConf.webSocketProxy.isOpen()) {

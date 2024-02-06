@@ -1,10 +1,7 @@
 package top.nino.chatbilibili.tool;
 
-import org.apache.commons.lang3.StringUtils;
 import top.nino.api.model.enums.*;
-import top.nino.chatbilibili.GlobalSettingConf;
-import top.nino.chatbilibili.conf.base.CenterSetConf;
-import top.nino.chatbilibili.conf.set.*;
+import top.nino.chatbilibili.conf.base.AllSettingConfig;
 
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -79,48 +76,48 @@ public class ParseSetStatusTools {
 	 * 等待移除 2.4.9
 	 */
 	@Deprecated
-	public static ConcurrentHashMap<ShieldMessage, Boolean> getMessageConcurrentHashMap(CenterSetConf centerSetConf,
+	public static ConcurrentHashMap<ShieldMessage, Boolean> getMessageConcurrentHashMap(AllSettingConfig allSettingConfig,
 																						short live_status) {
 		ConcurrentHashMap<ShieldMessage, Boolean> messageConcurrentHashMap = new ConcurrentHashMap<ShieldMessage, Boolean>(
 				18);
-		if (centerSetConf.is_barrage_guard()) {
+		if (allSettingConfig.is_barrage_guard()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_guard, true);
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_guard, false);
 		}
-		if(centerSetConf.is_cmd()) {
+		if(allSettingConfig.is_cmd()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_cmd, true);
 		}else {
 			messageConcurrentHashMap.put(ShieldMessage.is_cmd, false);
 		}
-		if (centerSetConf.is_barrage_vip()) {
+		if (allSettingConfig.is_barrage_vip()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_vip, true);
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_vip, false);
 		}
-		if (centerSetConf.is_barrage_manager()) {
+		if (allSettingConfig.is_barrage_manager()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_manager, true);
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_manager, false);
 		}
-		if (centerSetConf.is_barrage_medal()) {
+		if (allSettingConfig.is_barrage_medal()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_medal, true);
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_medal, false);
 		}
-		if (centerSetConf.is_barrage_ul()) {
+		if (allSettingConfig.is_barrage_ul()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_ul, true);
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_ul, false);
 		}
-		if(centerSetConf.is_barrage_anchor_shield()){
+		if(allSettingConfig.is_barrage_anchor_shield()){
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_anchor_shield,true);
 		}else{
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_anchor_shield,false);
 		}
 
 
-		if (centerSetConf.is_gift()) {
+		if (allSettingConfig.is_gift()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_gift, true);
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_gift, false);
@@ -130,7 +127,7 @@ public class ParseSetStatusTools {
 		return messageConcurrentHashMap;
 	}
 
-	public static CenterSetConf initCenterChildConfig(CenterSetConf centerSetConf){
-		return centerSetConf;
+	public static AllSettingConfig initCenterChildConfig(AllSettingConfig allSettingConfig){
+		return allSettingConfig;
 	}
 }

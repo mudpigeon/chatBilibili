@@ -36,7 +36,7 @@ public class RestRoomController {
                 e.printStackTrace();
             }
             if (ObjectUtils.isNotEmpty(GlobalSettingConf.ROOM_ID)) {
-                GlobalSettingConf.centerSetConf.setRoomId(GlobalSettingConf.ROOM_ID);
+                GlobalSettingConf.ALL_SETTING_CONF.setRoomId(GlobalSettingConf.ROOM_ID);
                 GlobalSettingConf.ROOMID_LONG = GlobalSettingConf.ROOM_ID;
             }
             settingService.connectSet();

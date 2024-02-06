@@ -2,7 +2,7 @@ package top.nino.chatbilibili.tool;
 
 
 import org.apache.commons.lang3.StringUtils;
-import top.nino.api.model.danmu.Barrage;
+import top.nino.api.model.danmu.DanmuMessage;
 import top.nino.chatbilibili.GlobalSettingConf;
 
 public class ParseIndentityTools {
@@ -48,11 +48,11 @@ public class ParseIndentityTools {
 	/**
 	 * 判断老爷类型 vip1 svip1 0 0
 	 *
-	 * @param barrage 弹幕对象
+	 * @param danmuMessage 弹幕对象
 	 * @return 类型字符串
 	 */
-	public static String parseVip(Barrage barrage) {
-		if (barrage.getVip() == 1 || barrage.getSvip() == 1) {
+	public static String parseVip(DanmuMessage danmuMessage) {
+		if (danmuMessage.getVip() == 1 || danmuMessage.getSvip() == 1) {
 			return "[爷]";
 		} else {
 			return "";

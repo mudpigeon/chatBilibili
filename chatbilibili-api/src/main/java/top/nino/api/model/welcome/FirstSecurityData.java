@@ -1,6 +1,5 @@
 package top.nino.api.model.welcome;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import top.nino.api.model.tools.FastJsonUtils;
@@ -9,10 +8,12 @@ import top.nino.api.model.tools.FastJsonUtils;
 import java.io.Serializable;
 
 
+/**
+ * @author nino
+ */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class FristSecurityData implements Serializable {
+public class FirstSecurityData implements Serializable {
 
 	private static final long serialVersionUID = -7201841645277556079L;
 
@@ -41,13 +42,13 @@ public class FristSecurityData implements Serializable {
 	private String key;
 
 
-	public FristSecurityData(Long roomid, String key) {
+	public FirstSecurityData(Long roomid, String key) {
 		super();
 		this.roomid = roomid;
 		this.key = key;
 	}
 
-	public FristSecurityData(Long uid, Long roomid, String key) {
+	public FirstSecurityData(Long uid, Long roomid, String key) {
 		super();
 		this.uid = uid;
 		this.roomid = roomid;

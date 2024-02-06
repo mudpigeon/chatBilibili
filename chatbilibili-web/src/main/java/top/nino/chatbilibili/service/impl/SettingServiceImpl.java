@@ -3,7 +3,6 @@ package top.nino.chatbilibili.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.nino.chatbilibili.GlobalSettingConf;
@@ -11,9 +10,8 @@ import top.nino.chatbilibili.service.GlobalSettingFileService;
 import top.nino.chatbilibili.service.SettingService;
 import top.nino.service.componect.ServerAddressComponent;
 import top.nino.chatbilibili.component.ThreadComponent;
-import top.nino.chatbilibili.conf.base.CenterSetConf;
+import top.nino.chatbilibili.conf.base.AllSettingConfig;
 import top.nino.chatbilibili.service.ClientService;
-import top.nino.chatbilibili.tool.ParseSetStatusTools;
 import top.nino.core.*;
 
 
@@ -42,14 +40,14 @@ public class SettingServiceImpl implements SettingService {
 
 
 
-    public void changeSet(CenterSetConf centerSetConf) {
-        synchronized (centerSetConf) {
+    public void changeSet(AllSettingConfig allSettingConfig) {
+        synchronized (allSettingConfig) {
             Map<String, String> profileMap = new ConcurrentHashMap<>();
             BASE64Encoder base64Encoder = new BASE64Encoder();
             if (GlobalSettingConf.USER != null) {
                 profileMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
             }
-            profileMap.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
+            profileMap.put("set", base64Encoder.encode(allSettingConfig.toJson().getBytes()));
             LocalGlobalSettingFileUtil.writeFile("DanmujiProfile", profileMap);
             log.info("保存配置文件成功");
             profileMap.clear();
@@ -57,27 +55,27 @@ public class SettingServiceImpl implements SettingService {
     }
 
     // 保存配置文件
-    public void changeSet(CenterSetConf centerSetConf,boolean check) {
-        synchronized (centerSetConf) {
-            if (centerSetConf.toJson().equals(GlobalSettingConf.centerSetConf.toJson())&&check) {
+    public void changeSet(AllSettingConfig allSettingConfig, boolean check) {
+        synchronized (allSettingConfig) {
+            if (allSettingConfig.toJson().equals(GlobalSettingConf.ALL_SETTING_CONF.toJson())&&check) {
                 log.info("保存配置文件成功");
                 return;
             }
             if (GlobalSettingConf.ROOMID_LONG != null && GlobalSettingConf.ROOMID_LONG > 0) {
-                centerSetConf.setRoomId(GlobalSettingConf.ROOMID_LONG);
+                allSettingConfig.setRoomId(GlobalSettingConf.ROOMID_LONG);
             }
             Map<String, String> profileMap = new ConcurrentHashMap<>();
             BASE64Encoder base64Encoder = new BASE64Encoder();
             if (GlobalSettingConf.USER != null) {
                 profileMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
             }
-            profileMap.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
+            profileMap.put("set", base64Encoder.encode(allSettingConfig.toJson().getBytes()));
             LocalGlobalSettingFileUtil.writeFile("DanmujiProfile", profileMap);
             try {
-                GlobalSettingConf.centerSetConf = JSONObject.parseObject(
+                GlobalSettingConf.ALL_SETTING_CONF = JSONObject.parseObject(
                         new String(base64Encoder.decode(LocalGlobalSettingFileUtil.readFile("DanmujiProfile").get("set"))),
-                        CenterSetConf.class);
-                globalSettingFileService.reConnectRoom();
+                        AllSettingConfig.class);
+                globalSettingFileService.startReceiveDanmuThread();
                 log.info("保存配置文件成功");
             } catch (Exception e) {
                 // TODO: handle exception
@@ -89,7 +87,7 @@ public class SettingServiceImpl implements SettingService {
 
     @Override
     public void connectSet() {
-        synchronized (GlobalSettingConf.centerSetConf) {
+        synchronized (GlobalSettingConf.ALL_SETTING_CONF) {
 
             Map<String, String> localGlobalSettingMap = new HashMap<>();
 
@@ -98,17 +96,17 @@ public class SettingServiceImpl implements SettingService {
                 // cookie字符串放入map
                 localGlobalSettingMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, BASE64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
             }
-            localGlobalSettingMap.put(GlobalSettingConf.FILE_SETTING_PREFIX, BASE64Encoder.encode(GlobalSettingConf.centerSetConf.toJson().getBytes()));
+            localGlobalSettingMap.put(GlobalSettingConf.FILE_SETTING_PREFIX, BASE64Encoder.encode(GlobalSettingConf.ALL_SETTING_CONF.toJson().getBytes()));
             LocalGlobalSettingFileUtil.writeFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME, localGlobalSettingMap);
 
             try {
                 // 再读出来
-                GlobalSettingConf.centerSetConf = JSONObject.parseObject(
+                GlobalSettingConf.ALL_SETTING_CONF = JSONObject.parseObject(
                         new String(BASE64Encoder.decode(LocalGlobalSettingFileUtil.readFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME).get(GlobalSettingConf.FILE_SETTING_PREFIX))),
-                        CenterSetConf.class);
+                        AllSettingConfig.class);
 
                 if (ObjectUtils.isNotEmpty(GlobalSettingConf.ROOM_ID)) {
-                    globalSettingFileService.reConnectRoom();
+                    globalSettingFileService.startReceiveDanmuThread();
                 }
                 log.info("读取配置文件历史房间成功");
             } catch (Exception e) {

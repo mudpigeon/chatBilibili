@@ -80,22 +80,22 @@ public class Hbarrage implements Serializable, Cloneable {
         return new Hbarrage();
     }
 
-    public static Hbarrage copyHbarrage(Barrage barrage) {
+    public static Hbarrage copyHbarrage(DanmuMessage danmuMessage) {
         try {
             Hbarrage h = (Hbarrage) hbarrage.clone();
-            h.setUid(barrage.getUid());
-            h.setUname(barrage.getUname());
-            h.setMsg(barrage.getMsg());
-            h.setTimestamp(barrage.getTimestamp());
-            h.setManager(barrage.getManager());
-            h.setVip(barrage.getVip());
-            h.setSvip(barrage.getSvip());
-            h.setMedal_level(barrage.getMedal_level());
-            h.setMedal_name(barrage.getMedal_name());
-            h.setMedal_anchor(barrage.getMedal_anchor());
-            h.setMedal_room(barrage.getMedal_room());
-            h.setUlevel(barrage.getUlevel());
-            h.setUguard(barrage.getUguard());
+            h.setUid(danmuMessage.getUid());
+            h.setUname(danmuMessage.getUname());
+            h.setMsg(danmuMessage.getMsg());
+            h.setTimestamp(danmuMessage.getTimestamp());
+            h.setManager(danmuMessage.getManager());
+            h.setVip(danmuMessage.getVip());
+            h.setSvip(danmuMessage.getSvip());
+            h.setMedal_level(danmuMessage.getMedal_level());
+            h.setMedal_name(danmuMessage.getMedal_name());
+            h.setMedal_anchor(danmuMessage.getMedal_anchor());
+            h.setMedal_room(danmuMessage.getMedal_room());
+            h.setUlevel(danmuMessage.getUlevel());
+            h.setUguard(danmuMessage.getUguard());
             return h;
         } catch (Exception e) {
             // TODO 自动生成的 catch 块

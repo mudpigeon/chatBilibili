@@ -79,10 +79,10 @@ public class HandleWebsocketPackage {
 			} else if (data_ver == 0) {
 				try {
 					resultStr = new String(bs, "utf-8");
-					GlobalSettingConf.resultStrs.add(resultStr);
-					if (GlobalSettingConf.parseMessageThread != null && !GlobalSettingConf.parseMessageThread.FLAG) {
-						synchronized (GlobalSettingConf.parseMessageThread) {
-							GlobalSettingConf.parseMessageThread.notify();
+					GlobalSettingConf.danmuList.add(resultStr);
+					if (GlobalSettingConf.parseDanmuMessageThread != null && !GlobalSettingConf.parseDanmuMessageThread.FLAG) {
+						synchronized (GlobalSettingConf.parseDanmuMessageThread) {
+							GlobalSettingConf.parseDanmuMessageThread.notify();
 						}
 					}
 				} catch (Exception e) {
@@ -154,10 +154,10 @@ public class HandleWebsocketPackage {
 			} else if (data_ver == 0) {
 				try {
 					resultStr = new String(bs, "utf-8");
-					GlobalSettingConf.resultStrs.add(resultStr);
-					if (GlobalSettingConf.parseMessageThread != null && !GlobalSettingConf.parseMessageThread.FLAG) {
-						synchronized (GlobalSettingConf.parseMessageThread) {
-							GlobalSettingConf.parseMessageThread.notify();
+					GlobalSettingConf.danmuList.add(resultStr);
+					if (GlobalSettingConf.parseDanmuMessageThread != null && !GlobalSettingConf.parseDanmuMessageThread.FLAG) {
+						synchronized (GlobalSettingConf.parseDanmuMessageThread) {
+							GlobalSettingConf.parseDanmuMessageThread.notify();
 						}
 					}
 				} catch (Exception e) {

@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @Slf4j
-public class CenterSetConf implements Serializable {
+public class AllSettingConfig implements Serializable {
 
     private static final long serialVersionUID = 1162255349476806991L;
 
@@ -79,10 +79,10 @@ public class CenterSetConf implements Serializable {
     @JSONField(name = "edition",serialize = false)
     private String edition = "";
 
-    public static CenterSetConf getInitCenterSetConf(){
-        CenterSetConf centerSetConf = new CenterSetConf();
+    public static AllSettingConfig getInitCenterSetConf(){
+        AllSettingConfig allSettingConfig = new AllSettingConfig();
 
-        return centerSetConf;
+        return allSettingConfig;
     }
 
 
@@ -96,19 +96,19 @@ public class CenterSetConf implements Serializable {
      * @param base64 将json字符串base64编码的内容
      * @return is not null
      */
-    public static CenterSetConf of(String base64){
+    public static AllSettingConfig of(String base64){
         Assert.notNull(base64, "Base64 must cannot be null");
         try {
             //fastjson没有完善的javadoc, 方法抛出的异常也未明确指出. 是否考虑更换较规范的库?
             // {@link JSONObject#parseObject} 方法调用的异常捕获并未完全覆盖
-            return JSONObject.parseObject(new String(BASE64Encoder.decode(base64)), CenterSetConf.class);
+            return JSONObject.parseObject(new String(BASE64Encoder.decode(base64)), AllSettingConfig.class);
         } catch (IOException|JSONException e) {
             // 因用户非法操作导致的,记录等级为warn;开发者使用方法不当导致的,记录等级为error.(不那么准确,但是warn级别确定是用户非法操作导致)
             // 在数据模型中的方法面向开发者,故给予error级别记录. 其实此处的异常也会因为用户非法修改profile文件内容导致异常.
             // 解析失败
             log.error(e.getMessage(), e);
             // 在异常时提供默认对象, 避免反复处理解析失败异常
-            return new CenterSetConf();
+            return new AllSettingConfig();
         }
     }
 }

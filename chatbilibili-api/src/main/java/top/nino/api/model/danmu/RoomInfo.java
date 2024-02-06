@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 
+/**
+ * @author cengzhongjie
+ */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class RoomInfo implements Serializable{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 782231567104445143L;
 	private Long uid;
 	private Integer short_id;
@@ -28,6 +28,4 @@ public class RoomInfo implements Serializable{
 	private String parent_area_name;
 	private String area_name;
 
-	
-	
 }

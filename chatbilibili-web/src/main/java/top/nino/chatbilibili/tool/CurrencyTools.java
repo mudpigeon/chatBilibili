@@ -9,9 +9,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 
 import top.nino.api.model.room.LotteryInfoWeb;
-import top.nino.api.model.room.RoomInit;
-import top.nino.api.model.server.HostServer;
-import top.nino.api.model.tools.FastJsonUtils;
+import top.nino.api.model.room.RoomStatusInfo;
+import top.nino.api.model.server.DanmuServerInfo;
 import top.nino.api.model.user.AutoSendGift;
 import top.nino.api.model.user.UserBag;
 import top.nino.api.model.user.UserCookieInfo;
@@ -19,8 +18,7 @@ import top.nino.api.model.user.UserMedal;
 import top.nino.api.model.welcome.BarrageHeadHandle;
 import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.conf.CacheConf;
-import top.nino.chatbilibili.conf.base.CenterSetConf;
-import top.nino.chatbilibili.http.HttpOtherData;
+import top.nino.chatbilibili.conf.base.AllSettingConfig;
 import top.nino.chatbilibili.http.HttpRoomData;
 import top.nino.chatbilibili.http.HttpUserData;
 import top.nino.chatbilibili.ws.HandleWebsocketPackage;
@@ -38,23 +36,23 @@ public class CurrencyTools {
     /**
      * 获取随机破站弹幕服务器地址 20201218优化获取
      *
-     * @param hostServers
+     * @param danmuServerInfos
      * @return
      */
-    public static String GetWsUrl(List<HostServer> hostServers) {
+    public static String GetWsUrl(List<DanmuServerInfo> danmuServerInfos) {
         StringBuilder stringBuilder = new StringBuilder();
         String wsUrl = null;
         int control = 0;
-        if (hostServers.size() > 0) {
+        if (danmuServerInfos.size() > 0) {
             while (!(GlobalSettingConf.ROOM_DANMU_WEBSOCKET_URL).equals(wsUrl)) {
                 if (control > 5) {
                     break;
                 }
-                HostServer hostServer = hostServers.get((int) (Math.random() * hostServers.size()));
+                DanmuServerInfo danmuServerInfo = danmuServerInfos.get((int) (Math.random() * danmuServerInfos.size()));
                 stringBuilder.append("wss://");
-                stringBuilder.append(hostServer.getHost());
+                stringBuilder.append(danmuServerInfo.getHost());
                 stringBuilder.append(":");
-                stringBuilder.append(hostServer.getWss_port());
+                stringBuilder.append(danmuServerInfo.getWss_port());
                 stringBuilder.append("/sub");
                 wsUrl = stringBuilder.toString();
                 stringBuilder.delete(0, stringBuilder.length());
@@ -95,8 +93,8 @@ public class CurrencyTools {
     public static byte[] heartBytes() {
         return ByteUtils.byteMerger(
                 HandleWebsocketPackage.BEhandle(BarrageHeadHandle.getBarrageHeadHandle(
-                        "[object Object]".getBytes().length + 16, GlobalSettingConf.packageHeadLength,
-                        GlobalSettingConf.packageVersion, GlobalSettingConf.heartPackageType, GlobalSettingConf.packageOther)),
+                        "[object Object]".getBytes().length + 16, GlobalSettingConf.PACKAGE_HEAD_LENGTH,
+                        GlobalSettingConf.PACKAGE_VERSION, GlobalSettingConf.heartPackageType, GlobalSettingConf.packageOther)),
                 "[object Object]".getBytes());
     }
 
@@ -200,12 +198,12 @@ public class CurrencyTools {
 
         //逻辑开始
         int max = 0;
-        RoomInit roomInit;
+        RoomStatusInfo roomStatusInfo;
         if (!CollectionUtils.isEmpty(userMedals)) {
             for (UserMedal userMedal : userMedals) {
                 try {
                     log.info("第{}次打卡开始,勋章数据", max + 1, userMedal);
-                    roomInit = HttpRoomData.httpGetRoomInit(userMedal.getRoomid());
+                    roomStatusInfo = HttpRoomData.httpGetRoomInit(userMedal.getRoomid());
                     try {
                         Thread.sleep(4050);
                     } catch (InterruptedException e) {
@@ -234,11 +232,11 @@ public class CurrencyTools {
         return code;
     }
 
-    public static CenterSetConf codeRemove(String code) {
-        CenterSetConf centerSetConf = GlobalSettingConf.centerSetConf;
+    public static AllSettingConfig codeRemove(String code) {
+        AllSettingConfig allSettingConfig = GlobalSettingConf.ALL_SETTING_CONF;
         if(StringUtils.isNotBlank(code)) {
         }
-        return  centerSetConf;
+        return allSettingConfig;
     }
 
     public static void codeRemove(HashSet<String> codes,String code) {

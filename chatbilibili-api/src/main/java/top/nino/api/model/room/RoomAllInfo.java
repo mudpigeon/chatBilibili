@@ -8,7 +8,7 @@ import top.nino.api.model.danmu.RoomInfo;
  * @author nino
  */
 @Data
-public class RoomInfoAnchor {
+public class RoomAllInfo {
     private RoomInfo roomInfo;
-    private MedalInfoAnchor medalInfoAnchor;
+    private AnchorMedalInfo anchorMedalInfo;
 }

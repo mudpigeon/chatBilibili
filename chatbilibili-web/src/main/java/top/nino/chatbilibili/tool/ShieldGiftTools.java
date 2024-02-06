@@ -30,15 +30,15 @@ public class ShieldGiftTools {
 //			case ALL:
 //				break;
 			case MEDAL:
-				if(GlobalSettingConf.MEDALINFOANCHOR!=null){
-					if(StringUtils.isBlank(GlobalSettingConf.MEDALINFOANCHOR.getMedal_name())){
+				if(GlobalSettingConf.ANCHOR_MEDAL_INFO!=null){
+					if(StringUtils.isBlank(GlobalSettingConf.ANCHOR_MEDAL_INFO.getMedal_name())){
 						break;
 					}
 					//舰长的这里是空的
 					if(gift.getMedal_info()==null){
 						break;
 					}
-					if(!GlobalSettingConf.MEDALINFOANCHOR.getMedal_name().equals(gift.getMedal_info().getMedal_name())){
+					if(!GlobalSettingConf.ANCHOR_MEDAL_INFO.getMedal_name().equals(gift.getMedal_info().getMedal_name())){
 /*						LOGGER.info("礼物感谢姬人员屏蔽[勋章模式]:{}", gift.getMedal_info().getMedal_name());*/
 						return null;
 					}

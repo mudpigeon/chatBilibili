@@ -47,12 +47,12 @@ public class RestLoginController {
             boolean loadFlag = globalSettingFileService.createAndValidateCookieAndLoadAndWrite();
             if(loadFlag) {
                 // 因为新的用户信息来了，所以要重新连接直播间
-                globalSettingFileService.reConnectRoom();
+                globalSettingFileService.startReceiveDanmuThread();
             }
             // 弹幕长度 和管理员信息 刷新
             if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
                 GlobalSettingConf.USER_BARRAGE_MESSAGE = HttpBilibiliServer.httpGetUserBarrageMsg(GlobalSettingConf.SHORT_ROOM_ID, GlobalSettingConf.COOKIE_VALUE);
-                GlobalSettingConf.USERMANAGER = HttpBilibiliServer.httpGetUserManagerMsg(GlobalSettingConf.ROOM_ID, GlobalSettingConf.SHORT_ROOM_ID, GlobalSettingConf.COOKIE_VALUE);
+                GlobalSettingConf.USER_MANAGER = HttpBilibiliServer.httpGetUserManagerMsg(GlobalSettingConf.ROOM_ID, GlobalSettingConf.SHORT_ROOM_ID, GlobalSettingConf.COOKIE_VALUE);
             }
         }
         return Response.success(userCookieInfo.isValidFlag(), req);
@@ -90,11 +90,11 @@ public class RestLoginController {
             GlobalSettingConf.USER_COOKIE_INFO = CookieUtils.parseCookie(GlobalSettingConf.COOKIE_VALUE);
             // 弹幕长度 和管理员信息 刷新
             GlobalSettingConf.USER_BARRAGE_MESSAGE = HttpBilibiliServer.httpGetUserBarrageMsg(GlobalSettingConf.SHORT_ROOM_ID, GlobalSettingConf.COOKIE_VALUE);
-            GlobalSettingConf.USERMANAGER = HttpBilibiliServer.httpGetUserManagerMsg(GlobalSettingConf.ROOM_ID, GlobalSettingConf.SHORT_ROOM_ID, GlobalSettingConf.COOKIE_VALUE);
+            GlobalSettingConf.USER_MANAGER = HttpBilibiliServer.httpGetUserManagerMsg(GlobalSettingConf.ROOM_ID, GlobalSettingConf.SHORT_ROOM_ID, GlobalSettingConf.COOKIE_VALUE);
             boolean loadFlag = globalSettingFileService.createAndValidateCookieAndLoadAndWrite();
             if(loadFlag) {
                 // 因为新的用户信息来了，所以要重新连接直播间
-                globalSettingFileService.reConnectRoom();
+                globalSettingFileService.startReceiveDanmuThread();
             }
         }
         return response;

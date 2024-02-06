@@ -4,16 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import top.nino.api.model.vo.ChatResVo;
 import top.nino.api.model.vo.Response;
 import top.nino.api.model.vo.dto.ChatResDto;
 import top.nino.service.chatgpt.ChatGPTService;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author : zengzhongjie
+ * @author : nino
  * @date : 2024/2/3 01:15
  */
 @Controller("/chatGPT")

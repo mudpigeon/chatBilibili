@@ -1,10 +1,6 @@
 package top.nino.core;
 
-
-
-
 import org.apache.commons.compress.compressors.brotli.BrotliCompressorInputStream;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,7 +10,9 @@ import java.util.regex.Pattern;
 import java.util.zip.InflaterOutputStream;
 
 public class ByteUtils {
+
 	public static final int UNICODE_LEN = 2;
+
 	/**
 	 * Hex字符串转byte
 	 * 

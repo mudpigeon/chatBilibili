@@ -48,7 +48,6 @@ public class AdvertSetConf extends TimingLiveSetConf implements Serializable, St
 				if (is_open()) {
 					threadComponent.startAdvertThread(this);
 				} else {
-					threadComponent.setAdvertThread(this);
 					threadComponent.closeAdvertThread();
 				}
 			}
@@ -56,7 +55,6 @@ public class AdvertSetConf extends TimingLiveSetConf implements Serializable, St
 			if (is_open()) {
 				threadComponent.startAdvertThread(this);
 			} else {
-				threadComponent.setAdvertThread(this);
 				threadComponent.closeAdvertThread();
 			}
 		}

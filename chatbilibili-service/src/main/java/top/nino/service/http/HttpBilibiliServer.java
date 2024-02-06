@@ -7,10 +7,16 @@ import okhttp3.Headers;
 import okhttp3.Response;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import top.nino.api.model.danmu.RoomInfo;
 import top.nino.api.model.enums.ResponseCode;
 import top.nino.api.model.http.HttpBibilibiliUrl;
 import top.nino.api.model.http.HttpHeader;
 import top.nino.api.model.login.QrCodeInfo;
+import top.nino.api.model.room.AnchorMedalInfo;
+import top.nino.api.model.room.RoomAnchorInfo;
+import top.nino.api.model.room.RoomAllInfo;
+import top.nino.api.model.room.RoomStatusInfo;
+import top.nino.api.model.server.DanmuInfo;
 import top.nino.api.model.user.User;
 import top.nino.api.model.user.UserManager;
 import top.nino.api.model.user_in_room_barrageMsg.UserBarrageMsg;
@@ -40,13 +46,14 @@ public class HttpBilibiliServer {
         }
 
     }
+
     /**
      * 获取用户信息 需要cookie 初始化
      */
     public static User httpGetUserInfo(String cookieValue) {
         User user = null;
 
-        if(StringUtils.isBlank(cookieValue)) {
+        if (StringUtils.isBlank(cookieValue)) {
             return user;
         }
 
@@ -79,7 +86,7 @@ public class HttpBilibiliServer {
             return user;
         }
 
-        log.error("未知错误,原因未知:{}" , responseJsonObject);
+        log.error("未知错误,原因未知:{}", responseJsonObject);
         return user;
     }
 
@@ -91,14 +98,14 @@ public class HttpBilibiliServer {
 
         UserBarrageMsg userBarrageMsg = null;
 
-        if(ObjectUtils.isEmpty(roomId) || roomId == 0) {
+        if (ObjectUtils.isEmpty(roomId) || roomId == 0) {
             // 如果没有直播间短号，直接结束
             return userBarrageMsg;
         }
 
-        Map<String, String> headers = new HashMap<>(4);
+        Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeader.USER_AGENT_KEY, HttpHeader.USER_AGENT_KEY);
-        headers.put(HttpHeader.REFER_KEY, HttpHeader.REFER_PARAM_NONE_ROOM_ID + roomId);
+        headers.put(HttpHeader.REFER_KEY, HttpHeader.REFER_LIVE_BILIBILI + roomId);
 
         if (StringUtils.isNotBlank(cookieValue)) {
             headers.put("cookie", cookieValue);
@@ -145,14 +152,14 @@ public class HttpBilibiliServer {
     public static UserManager httpGetUserManagerMsg(Long roomId, Long shortRoomId, String cookieValue) {
 
         UserManager userManager = null;
-        if(ObjectUtils.isEmpty(shortRoomId) || shortRoomId == 0) {
+        if (ObjectUtils.isEmpty(shortRoomId) || shortRoomId == 0) {
             // 如果没有直播间短号，直接结束
             return userManager;
         }
 
         Map<String, String> headers = new HashMap<>(4);
         headers.put(HttpHeader.USER_AGENT_KEY, HttpHeader.USER_AGENT_KEY);
-        headers.put(HttpHeader.REFER_KEY, HttpHeader.REFER_PARAM_NONE_ROOM_ID + shortRoomId);
+        headers.put(HttpHeader.REFER_KEY, HttpHeader.REFER_LIVE_BILIBILI + shortRoomId);
 
         if (StringUtils.isNotBlank(cookieValue)) {
             headers.put("cookie", cookieValue);
@@ -227,7 +234,6 @@ public class HttpBilibiliServer {
     }
 
     /**
-     *
      * HTTP 二维码轮询
      * 86101 未扫
      * 86090 扫了未确认
@@ -241,7 +247,7 @@ public class HttpBilibiliServer {
         myResponse.setCode(ResponseCode.NONE_QRCODE_KEY_INFO.getCode());
         myResponse.setMsg(ResponseCode.NONE_QRCODE_KEY_INFO.getMsg());
 
-        if(StringUtils.isBlank(qrCodeKey)){
+        if (StringUtils.isBlank(qrCodeKey)) {
             return myResponse;
         }
         StringBuilder cookieValue = new StringBuilder();
@@ -256,7 +262,7 @@ public class HttpBilibiliServer {
 
         try {
             Response response = OkHttp3Utils.getHttp3Utils()
-                    .httpGet(HttpBibilibiliUrl.Get_QRCODE_SCAN_STATUS, headers, requestParams);
+                    .httpGet(HttpBibilibiliUrl.GET_QRCODE_SCAN_STATUS, headers, requestParams);
             String responseData = response.body().string();
             log.info("检查二维码扫描情况：{}", JSONObject.parseObject(responseData).getJSONObject("data"));
             if (JSONObject.parseObject(responseData).getJSONObject("data").getIntValue("code") == 0) {
@@ -278,21 +284,21 @@ public class HttpBilibiliServer {
                 return myResponse;
             }
 
-            if(JSONObject.parseObject(responseData).getJSONObject("data").getIntValue("code") == 86038) {
+            if (JSONObject.parseObject(responseData).getJSONObject("data").getIntValue("code") == 86038) {
                 myResponse.setCode(ResponseCode.QRCODE_UN_VALID_INFO.getCode());
                 myResponse.setMsg(ResponseCode.QRCODE_UN_VALID_INFO.getMsg());
                 return myResponse;
 
             }
 
-            if(JSONObject.parseObject(responseData).getJSONObject("data").getIntValue("code") == 86101) {
+            if (JSONObject.parseObject(responseData).getJSONObject("data").getIntValue("code") == 86101) {
                 myResponse.setCode(ResponseCode.QRCODE_NO_SCAN_INFO.getCode());
                 myResponse.setMsg(ResponseCode.QRCODE_NO_SCAN_INFO.getMsg());
                 return myResponse;
 
             }
 
-            if(JSONObject.parseObject(responseData).getJSONObject("data").getIntValue("code") == 86090) {
+            if (JSONObject.parseObject(responseData).getJSONObject("data").getIntValue("code") == 86090) {
                 myResponse.setCode(ResponseCode.QRCODE_NO_SECOND_CHECK_INFO.getCode());
                 myResponse.setMsg(ResponseCode.QRCODE_NO_SECOND_CHECK_INFO.getMsg());
                 return myResponse;
@@ -303,5 +309,197 @@ public class HttpBilibiliServer {
         myResponse.setCode(ResponseCode.QRCODE_UN_KNOW_INFO.getCode());
         myResponse.setMsg(ResponseCode.QRCODE_UN_KNOW_INFO.getMsg());
         return myResponse;
+    }
+
+    /**
+     * 获取直播间状态信息
+     *
+     * @param roomId 直播间房间号
+     */
+    public static RoomStatusInfo httpGetRoomStatusInfo(Long roomId) {
+        RoomStatusInfo roomStatusInfo = null;
+
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put(HttpHeader.USER_AGENT_KEY, HttpHeader.USER_AGENT_VALUE);
+
+        String responseDataString;
+        try {
+            responseDataString = OkHttp3Utils.getHttp3Utils()
+                    .httpGet(HttpBibilibiliUrl.GET_ROOM_STATUS_INFO + roomId, headers, null).body()
+                    .string();
+        } catch (Exception e) {
+            log.error("获取直播间状态信息错误", e);
+            return roomStatusInfo;
+        }
+        if (ObjectUtils.isEmpty(responseDataString)) {
+            return roomStatusInfo;
+        }
+
+        JSONObject responseJsonObject = JSONObject.parseObject(responseDataString);
+        short code = responseJsonObject.getShort("code");
+        if (code == 0) {
+            roomStatusInfo = responseJsonObject.getObject("data", RoomStatusInfo.class);
+        } else {
+            log.error("直播房间号不存在，或者未知错误，请尝试更换房间号,原因:{}", responseJsonObject.getString("message"));
+        }
+        return roomStatusInfo;
+    }
+
+
+    /**
+     * 获取目标房间部分信息
+     *
+     * @param roomId
+     * @return
+     */
+    public static RoomAnchorInfo httpGetRoomAnchorInfo(Long roomId, Long shortRoomId) {
+
+        RoomAnchorInfo roomAnchorInfo = null;
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put(HttpHeader.USER_AGENT_KEY, HttpHeader.USER_AGENT_VALUE);
+        headers.put(HttpHeader.REFER_KEY, HttpHeader.REFER_BILIBILI + shortRoomId);
+
+        String responseDataString;
+        try {
+            responseDataString = OkHttp3Utils.getHttp3Utils()
+                    .httpGet(HttpBibilibiliUrl.GET_ROOM_ANCHOR_INFO + roomId,
+                            headers, null)
+                    .body().string();
+        } catch (Exception e) {
+            log.error("获取直播间和主播关联信息错误", e);
+            return roomAnchorInfo;
+        }
+
+        JSONObject responseJsonObject = JSONObject.parseObject(responseDataString);
+        short code = responseJsonObject.getShort("code");
+        if (code == 0) {
+            roomAnchorInfo = responseJsonObject.getObject("data", RoomAnchorInfo.class);
+        } else {
+            log.error("直播房间号不存在，或者未知错误，请尝试更换房间号,原因:" + responseJsonObject.getString("message"));
+        }
+        return roomAnchorInfo;
+    }
+
+
+    /**
+     * 获取主播关注数
+     *
+     * @return 返回关注数
+     */
+    public static Long httpGetAnchorFanSum(Long anchorUid) {
+
+        Long followersNum = 0L;
+
+        if (ObjectUtils.isEmpty(anchorUid)) {
+            return followersNum;
+        }
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put(HttpHeader.USER_AGENT_KEY, HttpHeader.USER_AGENT_VALUE);
+        headers.put(HttpHeader.REFER_KEY, HttpHeader.REFER_SPACE_BILIBILI + "{" + anchorUid + "}/");
+
+        Map<String, String> requestData = new HashMap<>();
+        requestData.put("vmid", anchorUid.toString());
+
+        String responseDataString = null;
+        try {
+            responseDataString = OkHttp3Utils.getHttp3Utils().httpGet(HttpBibilibiliUrl.GET_ANCHOR_FAN_SUM, headers, requestData)
+                    .body().string();
+        } catch (Exception e) {
+            log.error("获取获取主播关注数失败", e);
+            return followersNum;
+        }
+        JSONObject responseJsonObject = JSONObject.parseObject(responseDataString);
+        short code = responseJsonObject.getShort("code");
+        if (code == 0) {
+            followersNum = ((JSONObject) responseJsonObject.get("data")).getLong("follower");
+        } else {
+            log.error("获取关注数失败，请重试:{}", responseJsonObject.getString("message"));
+        }
+        return followersNum;
+    }
+
+
+    /**
+     * 获取房间最详细信息 日后扩容 目前只是获取主播uid 改
+     * @return
+     */
+    public static RoomAllInfo httpGetRoomAllInfo(Long shortRoomId) {
+
+        RoomAllInfo roomAllInfo = new RoomAllInfo();
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put(HttpHeader.USER_AGENT_KEY, HttpHeader.USER_AGENT_KEY);
+        headers.put(HttpHeader.REFER_KEY, HttpHeader.REFER_LIVE_BILIBILI + shortRoomId);
+
+        String responseDataString;
+        try {
+            responseDataString = OkHttp3Utils.getHttp3Utils()
+                    .httpGet(HttpBibilibiliUrl.GET_ROOM_INFO + shortRoomId, headers, null)
+                    .body().string();
+        } catch (Exception e) {
+            log.error("获取直播间信息失败", e);
+            return roomAllInfo;
+        }
+        JSONObject responseJsonObject = JSONObject.parseObject(responseDataString);
+        short code = responseJsonObject.getShort("code");
+
+        AnchorMedalInfo anchorMedalInfo = null;
+        RoomInfo roomInfo = null;
+
+        if (code == 0) {
+            roomInfo = JSON.parseObject(
+                    ((JSONObject) responseJsonObject.get("data")).getString("room_info"),
+                    RoomInfo.class);
+            anchorMedalInfo = JSON.parseObject(responseJsonObject.getJSONObject("data").getJSONObject("anchor_info").getString("medal_info"),
+                    AnchorMedalInfo.class);
+        } else {
+            log.error("获取房间详细信息失败，请稍后尝试:{}", responseJsonObject.getString("message"));
+        }
+        roomAllInfo.setRoomInfo(roomInfo);
+        roomAllInfo.setAnchorMedalInfo(anchorMedalInfo);
+        return roomAllInfo;
+    }
+
+
+    /**
+     * 获取连接目标房间websocket端口 接口
+     *
+     * @return
+     */
+    public static DanmuInfo httpGetDanmuInfo(String cookieValue, Long roomId, Long shortRoomId) {
+        DanmuInfo danmuInfo = null;
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put(HttpHeader.REFER_KEY, HttpHeader.REFER_LIVE_BILIBILI + shortRoomId);
+        headers.put(HttpHeader.USER_AGENT_KEY, HttpHeader.USER_AGENT_VALUE);
+        if (StringUtils.isNotBlank(cookieValue)) {
+            headers.put("cookie", cookieValue);
+        }
+
+        Map<String, String> requestData = new HashMap<>();
+        requestData.put("id", roomId.toString());
+        requestData.put("type", "0");
+
+        String responseDataString;
+        try {
+            responseDataString = OkHttp3Utils.getHttp3Utils()
+                    .httpGet(HttpBibilibiliUrl.GET_DANMU_INFO, headers, requestData)
+                    .body().string();
+        } catch (Exception e) {
+            log.error("获取B站弹幕服务器地址异常", e);
+            return danmuInfo;
+        }
+
+        JSONObject responseJsonObject = JSONObject.parseObject(responseDataString);
+        short code = responseJsonObject.getShort("code");
+        if (code == 0) {
+            danmuInfo = responseJsonObject.getObject("data", DanmuInfo.class);
+        } else {
+            log.error("未知错误,原因:{}", responseJsonObject.getString("message"));
+        }
+        return danmuInfo;
     }
 }

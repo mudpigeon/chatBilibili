@@ -4,10 +4,10 @@ import lombok.ToString;
 import org.springframework.context.annotation.Configuration;
 import top.nino.api.model.auto_reply.AutoReply;
 import top.nino.api.model.user.UserCookieInfo;
-import top.nino.chatbilibili.conf.base.CenterSetConf;
+import top.nino.chatbilibili.conf.base.AllSettingConfig;
 import top.nino.api.model.danmu.Gift;
 import top.nino.api.model.enums.LiveStatusEnum;
-import top.nino.api.model.room.MedalInfoAnchor;
+import top.nino.api.model.room.AnchorMedalInfo;
 import top.nino.api.model.user.AutoSendGift;
 import top.nino.api.model.user.User;
 import top.nino.api.model.user.UserManager;
@@ -32,28 +32,30 @@ public class GlobalSettingConf {
 	public final static String FILE_COOKIE_PREFIX = "validCookie";
 	public final static String FILE_SETTING_PREFIX = "setting";
 
-	// url 直播弹幕websocket地址
-	public static String ROOM_DANMU_WEBSOCKET_URL = "wss://broadcastlv.chat.bilibili.com:2245/sub";
-
 	// 包头长
-	public final static char packageHeadLength = 16;
+	public final static char PACKAGE_HEAD_LENGTH = 16;
 
 	// 心跳包&验证包协议版本
-	public final static char packageVersion = 1;
+	public final static char PACKAGE_VERSION = 1;
 
 	// 验证包协议类型
-	public final static int firstPackageType = 7;
+	public final static int FIRST_PACKAGE_TYPE = 7;
 
 	// 心跳包 16进制
-	public final static String heartByte="0000001f0010000100000002000000015b6f626a656374204f626a6563745d";
+	public final static String HEART_BYTE = "0000001f0010000100000002000000015b6f626a656374204f626a6563745d";
 
-	//------------- 基本预设好的常量-----------结束----------------------
+	//-------------1.基本预设好的常量-----------结束----------------------
+
+
+
+
+
 
 
 	//------------- 2.运行中加载/缓存的数据-----------开始----------------------
 
 	// 设置
-	public static CenterSetConf centerSetConf;
+	public static AllSettingConfig ALL_SETTING_CONF;
 
 	// cookie String串
 	public static String COOKIE_VALUE;
@@ -68,40 +70,60 @@ public class GlobalSettingConf {
 	public static Long ROOM_ID;
 
 	// 房间长号
-	public static Long ROOMID_LONG = null;
+	public static Long ROOMID_LONG;
 
 	// 房间短号
 	public static Long SHORT_ROOM_ID;
 
 	//是否显示人气
-	public static Boolean IS_ROOM_POPULARITY = false;
+	public static Boolean IS_ROOM_POPULARITY;
 
 	// 主播uid
-	public static Long ANCHOR_UID = null;
+	public static Long ANCHOR_UID;
 
 	// 主播名称
-	public static String ANCHOR_NAME = null;
+	public static String ANCHOR_NAME;
 
 	// 粉丝数
-	public static Long FANS_NUM =null;
+	public static Long FANS_NUM;
 
 	// 直播状态 0不直播 1直播 2轮播
 	public static Integer LIVE_STATUS = LiveStatusEnum.CLOSED.getCode();
 
+	// 主播勋章信息
+	public static AnchorMedalInfo ANCHOR_MEDAL_INFO;
+
+	// url 直播弹幕websocket地址
+	public static String ROOM_DANMU_WEBSOCKET_URL = "wss://broadcastlv.chat.bilibili.com:2245/sub";
+
 	// user弹幕长度
 	public static UserBarrageMsg USER_BARRAGE_MESSAGE;
 
-	//------------- 运行中加载/缓存的数据-----------结束----------------------
+	// user房间管理信息
+	public static UserManager USER_MANAGER;
+
+	//处理弹幕包集合
+	public final static Vector<String> danmuList = new Vector<String>(100);
+
+	//------------- 2.运行中加载/缓存的数据-----------结束----------------------
+
+
 
 
 	//------------- 3.行为-----------开始----------------------
+
 	public static void clearUserCache(){
 		GlobalSettingConf.COOKIE_VALUE = null;
 		GlobalSettingConf.USER_COOKIE_INFO = null;
 		GlobalSettingConf.USER = null;
 		GlobalSettingConf.USER_BARRAGE_MESSAGE = null;
 	}
-	//------------- 行为-----------结束----------------------
+
+
+	//------------- 3.行为-----------结束----------------------
+
+
+
 
 
 
@@ -111,21 +133,18 @@ public class GlobalSettingConf {
 	public static WebSocketProxy webSocketProxy;
 
 	// 心跳线程
-	public static HeartByteThread heartByteThread;
+	public static HeartCheckBilibiliDanmuServerThread heartCheckBilibiliDanmuServerThread;
 
 	// 处理信息分类线程
-	public static ParseMessageThread parseMessageThread;
+	public static ParseDanmuMessageThread parseDanmuMessageThread;
 
 	// 日志线程
 	public static LogThread logThread;
 
 	//------------- 4.线程-----------结束----------------------
 
-	// 主播粉丝数
 
 
-	// 主播勋章信息
-	public static MedalInfoAnchor MEDALINFOANCHOR = null;
 
 	// 房间人气
 	public static Long ROOM_POPULARITY =1L;
@@ -136,9 +155,6 @@ public class GlobalSettingConf {
 	// 点赞数量
 	public static Long ROOM_LIKE = 0L;
 
-	// user房间管理信息
-	public static UserManager USERMANAGER = null;
-
 	//心跳包协议类型
 	public final static int heartPackageType = 2;
 
@@ -148,8 +164,6 @@ public class GlobalSettingConf {
 	//重新连接线程
 	public static ReConnThread reConnThread;
 
-	//处理弹幕包集合
-	public final static Vector<String> resultStrs = new Vector<String>(100);
 
 	//礼物感谢集
 	public final static Map<String, Vector<Gift>> thankGiftConcurrentHashMap = new ConcurrentHashMap<String,Vector<Gift>>(3000);
@@ -202,7 +216,7 @@ public class GlobalSettingConf {
 
 	public static void init_all(){
 		GlobalSettingConf.replys.clear();
-		GlobalSettingConf.resultStrs.clear();
+		GlobalSettingConf.danmuList.clear();
 		GlobalSettingConf.thankGiftConcurrentHashMap.clear();
 		GlobalSettingConf.barrageString.clear();
 		GlobalSettingConf.logString.clear();
@@ -211,7 +225,7 @@ public class GlobalSettingConf {
 
 	public static void init_connect(){
 		GlobalSettingConf.replys.clear();
-		GlobalSettingConf.resultStrs.clear();
+		GlobalSettingConf.danmuList.clear();
 		GlobalSettingConf.barrageString.clear();
 		GlobalSettingConf.logString.clear();
 		GlobalSettingConf.ROOM_ID = null;

@@ -1,16 +1,14 @@
 package top.nino.chatbilibili.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.nino.api.model.user.User;
-import top.nino.api.model.user.UserCookieInfo;
 import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.component.ThreadComponent;
-import top.nino.chatbilibili.conf.base.CenterSetConf;
+import top.nino.chatbilibili.conf.base.AllSettingConfig;
 import top.nino.chatbilibili.service.GlobalSettingFileService;
-import top.nino.chatbilibili.service.SettingService;
 import top.nino.core.BASE64Encoder;
 import top.nino.core.CookieUtils;
 import top.nino.core.LocalGlobalSettingFileUtil;
@@ -75,22 +73,22 @@ public class GlobalSettingFileServiceImpl implements GlobalSettingFileService {
 
         if(StringUtils.isBlank(localGlobalSettingMap.get(GlobalSettingConf.FILE_SETTING_PREFIX))) {
             // 第一次，则要 直接新建默认配置
-            GlobalSettingConf.centerSetConf = new CenterSetConf();
+            GlobalSettingConf.ALL_SETTING_CONF = new AllSettingConfig();
         } else {
             // 可以从本地 加载 配置
-            GlobalSettingConf.centerSetConf = CenterSetConf.of(localGlobalSettingMap.get(GlobalSettingConf.FILE_SETTING_PREFIX));
+            GlobalSettingConf.ALL_SETTING_CONF = AllSettingConfig.of(localGlobalSettingMap.get(GlobalSettingConf.FILE_SETTING_PREFIX));
 
             // 有直播间信息的话去加载
-            if (GlobalSettingConf.centerSetConf.getRoomId() != null && GlobalSettingConf.centerSetConf.getRoomId() > 0) {
-                GlobalSettingConf.ROOMID_LONG = GlobalSettingConf.centerSetConf.getRoomId();
+            if (GlobalSettingConf.ALL_SETTING_CONF.getRoomId() != null && GlobalSettingConf.ALL_SETTING_CONF.getRoomId() > 0) {
+                GlobalSettingConf.ROOMID_LONG = GlobalSettingConf.ALL_SETTING_CONF.getRoomId();
             }
             if (GlobalSettingConf.ROOMID_LONG != null && GlobalSettingConf.ROOMID_LONG > 0) {
-                GlobalSettingConf.centerSetConf.setRoomId(GlobalSettingConf.ROOMID_LONG);
+                GlobalSettingConf.ALL_SETTING_CONF.setRoomId(GlobalSettingConf.ROOMID_LONG);
             }
         }
 
         // 把所有的默认配置也放入缓存
-        localGlobalSettingMap.put(GlobalSettingConf.FILE_SETTING_PREFIX, BASE64Encoder.encode(GlobalSettingConf.centerSetConf.toJson().getBytes()));
+        localGlobalSettingMap.put(GlobalSettingConf.FILE_SETTING_PREFIX, BASE64Encoder.encode(GlobalSettingConf.ALL_SETTING_CONF.toJson().getBytes()));
 
         // 将缓存写到本地
         LocalGlobalSettingFileUtil.writeFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME, localGlobalSettingMap);
@@ -103,25 +101,25 @@ public class GlobalSettingFileServiceImpl implements GlobalSettingFileService {
      * 运行处理弹幕的线程
      */
     @Override
-    public void reConnectRoom() {
+    public void startReceiveDanmuThread() {
 
-        synchronized (GlobalSettingConf.centerSetConf) {
+        synchronized (GlobalSettingConf.ALL_SETTING_CONF) {
 
-            if (GlobalSettingConf.ROOM_ID == null || GlobalSettingConf.ROOM_ID <= 0) {
+            if (ObjectUtils.isEmpty(GlobalSettingConf.ROOM_ID) || GlobalSettingConf.ROOM_ID <= 0) {
                 // 这些配置都是跟直播间相关的，所以必须设置直播间
                 return;
             }
 
-            if (GlobalSettingConf.webSocketProxy == null || !GlobalSettingConf.webSocketProxy.isOpen()) {
+            if (ObjectUtils.isEmpty(GlobalSettingConf.webSocketProxy) || !GlobalSettingConf.webSocketProxy.isOpen()) {
                 return;
             }
 
             // 到了这里说明 已经连接到了 一个直播间
             // 所以直接启动弹幕接收
-            threadComponent.startParseMessageThread(GlobalSettingConf.centerSetConf);
+            threadComponent.startParseMessageThread();
 
             // 是否使用记录日志线程
-            if (GlobalSettingConf.centerSetConf.is_log()) {
+            if (GlobalSettingConf.ALL_SETTING_CONF.is_log()) {
                 threadComponent.startLogThread();
             } else {
                 threadComponent.closeLogThread();

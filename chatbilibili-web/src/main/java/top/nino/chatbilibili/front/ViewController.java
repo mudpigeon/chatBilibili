@@ -46,7 +46,7 @@ public class ViewController {
             HttpBilibiliServer.loginOut(GlobalSettingConf.COOKIE_VALUE);
             settingService.clearLoginCache();
             // 因为用户信息变更了，所以要重新连接直播间
-            globalSettingFileService.reConnectRoom();
+            globalSettingFileService.startReceiveDanmuThread();
         }
         return "redirect:/";
     }
