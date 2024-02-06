@@ -2,6 +2,7 @@ package top.nino.chatbilibili.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import top.nino.chatbilibili.tool.ParseSetStatusTools;
 import top.nino.core.*;
 
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,7 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class SettingServiceImpl implements SettingService {
 
-    private final String cookies = "ySZL4SBB";
 
     @Autowired
     private ClientService clientService;
@@ -46,10 +47,10 @@ public class SettingServiceImpl implements SettingService {
             Map<String, String> profileMap = new ConcurrentHashMap<>();
             BASE64Encoder base64Encoder = new BASE64Encoder();
             if (GlobalSettingConf.USER != null) {
-                profileMap.put(cookies, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
+                profileMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
             }
             profileMap.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
-            LocalGlobalSettingFileUtil.writeFile(profileMap, "DanmujiProfile");
+            LocalGlobalSettingFileUtil.writeFile("DanmujiProfile", profileMap);
             log.info("保存配置文件成功");
             profileMap.clear();
         }
@@ -63,15 +64,15 @@ public class SettingServiceImpl implements SettingService {
                 return;
             }
             if (GlobalSettingConf.ROOMID_LONG != null && GlobalSettingConf.ROOMID_LONG > 0) {
-                centerSetConf.setRoomid(GlobalSettingConf.ROOMID_LONG);
+                centerSetConf.setRoomId(GlobalSettingConf.ROOMID_LONG);
             }
             Map<String, String> profileMap = new ConcurrentHashMap<>();
             BASE64Encoder base64Encoder = new BASE64Encoder();
             if (GlobalSettingConf.USER != null) {
-                profileMap.put(cookies, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
+                profileMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
             }
             profileMap.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
-            LocalGlobalSettingFileUtil.writeFile(profileMap, "DanmujiProfile");
+            LocalGlobalSettingFileUtil.writeFile("DanmujiProfile", profileMap);
             try {
                 GlobalSettingConf.centerSetConf = JSONObject.parseObject(
                         new String(base64Encoder.decode(LocalGlobalSettingFileUtil.readFile("DanmujiProfile").get("set"))),
@@ -86,29 +87,34 @@ public class SettingServiceImpl implements SettingService {
         }
     }
 
-    public void connectSet(CenterSetConf centerSetConf) {
-        synchronized (centerSetConf) {
-            Map<String, String> profileMap = new ConcurrentHashMap<>();
-            BASE64Encoder base64Encoder = new BASE64Encoder();
-            if (GlobalSettingConf.USER != null) {
-                profileMap.put(cookies, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
+    @Override
+    public void connectSet() {
+        synchronized (GlobalSettingConf.centerSetConf) {
+
+            Map<String, String> localGlobalSettingMap = new HashMap<>();
+
+            // 将当前的全局配置写到本地
+            if (ObjectUtils.isNotEmpty(GlobalSettingConf.USER)) {
+                // cookie字符串放入map
+                localGlobalSettingMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, BASE64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
             }
-            profileMap.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
-            LocalGlobalSettingFileUtil.writeFile(profileMap, "DanmujiProfile");
+            localGlobalSettingMap.put(GlobalSettingConf.FILE_SETTING_PREFIX, BASE64Encoder.encode(GlobalSettingConf.centerSetConf.toJson().getBytes()));
+            LocalGlobalSettingFileUtil.writeFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME, localGlobalSettingMap);
+
             try {
+                // 再读出来
                 GlobalSettingConf.centerSetConf = JSONObject.parseObject(
-                        new String(base64Encoder.decode(LocalGlobalSettingFileUtil.readFile("DanmujiProfile").get("set"))),
+                        new String(BASE64Encoder.decode(LocalGlobalSettingFileUtil.readFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME).get(GlobalSettingConf.FILE_SETTING_PREFIX))),
                         CenterSetConf.class);
-                GlobalSettingConf.centerSetConf = ParseSetStatusTools.initCenterChildConfig(GlobalSettingConf.centerSetConf);
-                if (GlobalSettingConf.ROOMID != null) {
+
+                if (ObjectUtils.isNotEmpty(GlobalSettingConf.ROOM_ID)) {
                     globalSettingFileService.reConnectRoom();
                 }
                 log.info("读取配置文件历史房间成功");
             } catch (Exception e) {
-                // TODO: handle exception
                 log.error("读取配置文件历史房间失败:" + e);
             }
-            profileMap.clear();
+            localGlobalSettingMap.clear();
         }
     }
 
@@ -118,8 +124,5 @@ public class SettingServiceImpl implements SettingService {
         threadComponent.closeUser(true);
         log.info("用户退出成功");
     }
-
-
-
 
 }

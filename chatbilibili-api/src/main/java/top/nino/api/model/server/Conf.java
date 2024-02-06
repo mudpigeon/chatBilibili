@@ -8,11 +8,14 @@ import java.io.Serializable;
 import java.util.List;
 
 
+/**
+ * @author nino
+ */
 @Data
 @NoArgsConstructor
 public class Conf implements Serializable{
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 4877957980247956836L;
 	private Short business_id;
@@ -22,6 +25,6 @@ public class Conf implements Serializable{
 	private Short refresh_rate;
 	private Short refresh_row_factor;
 	private String token;
-	
-	
+
+
 }

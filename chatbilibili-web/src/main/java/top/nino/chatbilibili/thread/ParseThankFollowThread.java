@@ -12,7 +12,7 @@ import java.util.Vector;
 @Getter
 @Setter
 public class ParseThankFollowThread extends Thread {
-//	private Logger LOGGER = LogManager.getLogger(ParseThankFollowThread.class);
+	//	private Logger LOGGER = LogManager.getLogger(ParseThankFollowThread.class);
 	public volatile boolean FLAG = false;
 	private String thankFollowString = "感谢 %uNames% 的关注";
 	private Short num = 1;
@@ -39,32 +39,7 @@ public class ParseThankFollowThread extends Thread {
 				long nowTime = System.currentTimeMillis();
 				if (nowTime - getTimestamp() < getDelaytime()) {
 				} else {
-					//do something
-					if(GlobalSettingConf.interacts.size()>0) {
-						interacts.addAll(GlobalSettingConf.interacts);
-						for (int i = 0; i < interacts.size(); i += getNum()) {
-							for (int j = i; j < i + getNum(); j++) {
-								if (j >= interacts.size()) {
-									break;
-								}
-								stringBuilder.append(interacts.get(j).getUname()).append(",");
-							}
-							stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
-							
-							thankFollowStr =StringUtils.replace(handleThankStr(getThankFollowString()), "%uNames%", stringBuilder.toString());
-							stringBuilder.delete(0, stringBuilder.length());
-							if (GlobalSettingConf.sendBarrageThread != null
-									&& !GlobalSettingConf.sendBarrageThread.FLAG) {
-								GlobalSettingConf.barrageString.add(thankFollowStr);
-								synchronized (GlobalSettingConf.sendBarrageThread) {
-									GlobalSettingConf.sendBarrageThread.notify();
-								}
-							}
-							thankFollowStr = null;
-						}
-					}
-					interacts.clear();
-					GlobalSettingConf.interacts.clear();
+
 					break;
 				}
 			}

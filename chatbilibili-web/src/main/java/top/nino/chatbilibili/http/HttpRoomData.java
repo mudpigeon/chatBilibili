@@ -45,7 +45,7 @@ public class HttpRoomData {
 			headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
 		}
 		datas = new HashMap<>(3);
-		datas.put("id", GlobalSettingConf.ROOMID.toString());
+		datas.put("id", GlobalSettingConf.ROOM_ID.toString());
 		datas.put("type", "0");
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
@@ -70,11 +70,11 @@ public class HttpRoomData {
 
 	/**
 	 * 获取目标房间部分信息
-	 * 
+	 *
 	 * @param roomid
 	 * @return
 	 */
-	public static Room httpGetRoomData(long roomid) {
+	public static Room httpGetRoomData(Long roomid) {
 		String data = null;
 		JSONObject jsonObject = null;
 		Room room = null;
@@ -111,10 +111,10 @@ public class HttpRoomData {
 
 	/**
 	 * 获取房间信息
-	 * 
+	 *
 	 * @param roomid
 	 */
-	public static RoomInit httpGetRoomInit(long roomid) {
+	public static RoomInit httpGetRoomInit(Long roomid) {
 		String data = null;
 		RoomInit roomInit = null;
 		JSONObject jsonObject = null;
@@ -151,7 +151,7 @@ public class HttpRoomData {
 
 	/**
 	 * 获取房间最详细信息 日后扩容 目前只是获取主播uid 改
-	 * 
+	 *
 	 * @return
 	 */
 	public static RoomInfoAnchor httpGetRoomInfo() {
@@ -199,7 +199,7 @@ public class HttpRoomData {
 
 	/**
 	 * 获取关注名字集合
-	 * 
+	 *
 	 * @return 关注uname集
 	 */
 	public static ConcurrentHashMap<Long, String> httpGetFollowers() {
@@ -211,26 +211,26 @@ public class HttpRoomData {
 		ConcurrentHashMap<Long, String> followConcurrentHashMap = null;
 		Map<String, String> headers = null;
 		Map<String, String> datas = null;
-		if (GlobalSettingConf.AUID == null) {
+		if (GlobalSettingConf.ANCHOR_UID == null) {
 			return null;
 		}
-		if (GlobalSettingConf.FANSNUM.equals(null) || GlobalSettingConf.FANSNUM.equals(0L)) {
+		if (GlobalSettingConf.FANS_NUM.equals(null) || GlobalSettingConf.FANS_NUM.equals(0L)) {
 			page = 1;
 		} else {
-			page = (int) Math.ceil((float) GlobalSettingConf.FANSNUM / 20F);
+			page = (int) Math.ceil((float) GlobalSettingConf.FANS_NUM / 20F);
 			page = page > 5 ? 5 : page;
 		}
 		followConcurrentHashMap = new ConcurrentHashMap<Long, String>();
 		while (page > 0) {
 			headers = new HashMap<>(3);
-			headers.put("referer", "https://space.bilibili.com/{" + GlobalSettingConf.AUID + "}/");
+			headers.put("referer", "https://space.bilibili.com/{" + GlobalSettingConf.ANCHOR_UID + "}/");
 			headers.put("user-agent",
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 //			if (StringUtils.isNotBlank(PublicDataConf.COOKIE_VALUE)) {
 //				headers.put("cookie", PublicDataConf.COOKIE_VALUE);
 //			}
 			datas = new HashMap<>(6);
-			datas.put("vmid", GlobalSettingConf.AUID.toString());
+			datas.put("vmid", GlobalSettingConf.ANCHOR_UID.toString());
 			datas.put("pn", String.valueOf(page));
 			datas.put("ps", "50");
 			datas.put("order", "desc");
@@ -255,7 +255,7 @@ public class HttpRoomData {
 			}
 
 			if (code == 0) {
-				GlobalSettingConf.FANSNUM = ((JSONObject) jsonObject.get("data")).getLong("total");
+				GlobalSettingConf.FANS_NUM = ((JSONObject) jsonObject.get("data")).getLong("total");
 				jsonArray = ((JSONObject) jsonObject.get("data")).getJSONArray("list");
 				for (Object object : jsonArray) {
 					followConcurrentHashMap.put(((JSONObject) object).getLong("mid"),
@@ -271,7 +271,7 @@ public class HttpRoomData {
 
 	/**
 	 * 获取关注数
-	 * 
+	 *
 	 * @return 返回关注数
 	 */
 	public static Long httpGetFollowersNum() {
@@ -281,18 +281,18 @@ public class HttpRoomData {
 		Map<String, String> headers = null;
 		Map<String, String> datas = null;
 		Long followersNum = 0L;
-		if (GlobalSettingConf.AUID == null) {
+		if (GlobalSettingConf.ANCHOR_UID == null) {
 			return followersNum;
 		}
 		headers = new HashMap<>(3);
-		headers.put("referer", "https://space.bilibili.com/{" + GlobalSettingConf.AUID + "}/");
+		headers.put("referer", "https://space.bilibili.com/{" + GlobalSettingConf.ANCHOR_UID + "}/");
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 //			if (StringUtils.isNotBlank(PublicDataConf.COOKIE_VALUE)) {
 //				headers.put("cookie", PublicDataConf.COOKIE_VALUE);
 //			}
 		datas = new HashMap<>(2);
-		datas.put("vmid", GlobalSettingConf.AUID.toString());
+		datas.put("vmid", GlobalSettingConf.ANCHOR_UID.toString());
 		try {
 			data = OkHttp3Utils.getHttp3Utils().httpGet("https://api.bilibili.com/x/relation/stat", headers, datas)
 					.body().string();
@@ -339,9 +339,9 @@ public class HttpRoomData {
 //				headers.put("cookie", PublicDataConf.COOKIE_VALUE);
 //			}
 			datas = new HashMap<>(4);
-			datas.put("roomid", GlobalSettingConf.ROOMID.toString());
+			datas.put("roomid", GlobalSettingConf.ROOM_ID.toString());
 			datas.put("page", String.valueOf(i));
-			datas.put("ruid", GlobalSettingConf.AUID.toString());
+			datas.put("ruid", GlobalSettingConf.ANCHOR_UID.toString());
 			datas.put("page_size", "29");
 			try {
 				data = OkHttp3Utils.getHttp3Utils()
@@ -396,9 +396,9 @@ public class HttpRoomData {
 //			headers.put("cookie", PublicDataConf.COOKIE_VALUE);
 //		}
 		datas = new HashMap<>(5);
-		datas.put("roomid", GlobalSettingConf.ROOMID.toString());
+		datas.put("roomid", GlobalSettingConf.ROOM_ID.toString());
 		datas.put("page", String.valueOf(1));
-		datas.put("ruid", GlobalSettingConf.AUID.toString());
+		datas.put("ruid", GlobalSettingConf.ANCHOR_UID.toString());
 		datas.put("page_size", "29");
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
@@ -474,7 +474,7 @@ public class HttpRoomData {
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
 					.httpGet("https://api.live.bilibili.com/xlive/lottery-interface/v1/lottery/getLotteryInfoWeb?roomid="
-							+ GlobalSettingConf.ROOMID, headers, null)
+							+ GlobalSettingConf.ROOM_ID, headers, null)
 					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
@@ -562,10 +562,10 @@ public class HttpRoomData {
 		code = jsonObject.getShort("code");
 		if (code == 0) {
 			jsonArray = ((JSONObject) jsonObject.get("data")).getJSONArray("list");
-				for (Object object : jsonArray) {
-					RoomGift roomGift =JSONObject.parseObject(((JSONObject)object).toJSONString(),RoomGift.class);
-					giftMaps.put(roomGift.getId(),roomGift);
-				}
+			for (Object object : jsonArray) {
+				RoomGift roomGift =JSONObject.parseObject(((JSONObject)object).toJSONString(),RoomGift.class);
+				giftMaps.put(roomGift.getId(),roomGift);
+			}
 		} else {
 			LOGGER.error("获取礼物失败,原因:" + jsonObject.getString("message"));
 		}
@@ -589,7 +589,7 @@ public class HttpRoomData {
 		if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
 			headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
 		}
-		datas.put("roomid",String.valueOf(GlobalSettingConf.ROOMID));
+		datas.put("roomid",String.valueOf(GlobalSettingConf.ROOM_ID));
 		datas.put("page",String.valueOf(page));
 		try {
 			data = OkHttp3Utils.getHttp3Utils()

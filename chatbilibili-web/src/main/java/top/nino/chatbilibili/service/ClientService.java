@@ -1,8 +1,11 @@
 package top.nino.chatbilibili.service;
 
 
+/**
+ * @author nino
+ */
 public interface ClientService {
-	void startConnService(long roomid) throws Exception;
+	void startConnService(Long roomId) throws Exception;
 	void reConnService() throws Exception;
 	boolean closeConnService();
 }

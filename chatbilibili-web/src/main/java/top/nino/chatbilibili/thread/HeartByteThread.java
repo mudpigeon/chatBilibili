@@ -9,7 +9,7 @@ import top.nino.core.HexUtils;
  * @author nino
  */
 public class HeartByteThread extends Thread {
-//	private Logger LOGGER = LogManager.getLogger(HeartByteThread.class);
+	//	private Logger LOGGER = LogManager.getLogger(HeartByteThread.class);
 //	Websocket client;
 //	String heartByte;
 	public volatile boolean HFLAG = false;
@@ -23,7 +23,6 @@ public class HeartByteThread extends Thread {
 	@Override
 	public void run() {
 		super.run();
-		// TODO 自动生成的方法存根
 		while (!HFLAG) {
 			if (HFLAG) {
 				return;
@@ -33,12 +32,11 @@ public class HeartByteThread extends Thread {
 					Thread.sleep(30000);
 					GlobalSettingConf.webSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.heartByte));
 				} catch (Exception e) {
-					// TODO: handle exception
 //					LOGGER.info("心跳线程关闭:"+e);
 //					e.printStackTrace();
 				}
 			}
-			
+
 		}
 	}
 

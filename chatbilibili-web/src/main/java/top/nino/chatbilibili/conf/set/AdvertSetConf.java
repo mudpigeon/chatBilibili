@@ -23,9 +23,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdvertSetConf extends TimingLiveSetConf implements Serializable, StartThreadInterface {
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -643702235901579872L;
 	//如何发送 0 1
@@ -42,7 +42,7 @@ public class AdvertSetConf extends TimingLiveSetConf implements Serializable, St
 			return;
 		}
 		if (is_live_open()) {
-			if (GlobalSettingConf.lIVE_STATUS != 1) {
+			if (GlobalSettingConf.LIVE_STATUS != 1) {
 				threadComponent.closeAdvertThread();
 			} else {
 				if (is_open()) {
@@ -61,6 +61,6 @@ public class AdvertSetConf extends TimingLiveSetConf implements Serializable, St
 			}
 		}
 	}
-	
-	
+
+
 }

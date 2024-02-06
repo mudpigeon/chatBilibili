@@ -22,6 +22,14 @@ public class Response<T> {
 	private Object result;
 	private Timestamp timestamp;
 
+	public Response() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Calendar calendar = Calendar.getInstance();
+		String times = dateFormat.format(calendar.getTime());
+		Timestamp timestamp = Timestamp.valueOf(times.toString());
+		this.timestamp = timestamp;
+	}
+
 	public Response(ResponseCode code, Object result, Timestamp timestamp) {
 		super();
 		this.code = code.getCode();
@@ -53,6 +61,14 @@ public class Response<T> {
 		String times = dateFormat.format(calendar.getTime());
 		Timestamp timestamp = Timestamp.valueOf(times.toString());
 		return new Response(ResponseCode.syserror,"",timestamp);
+	}
+
+	public static Response error(ResponseCode responseCode, HttpServletRequest request) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Calendar calendar = Calendar.getInstance();
+		String times = dateFormat.format(calendar.getTime());
+		Timestamp timestamp = Timestamp.valueOf(times.toString());
+		return new Response(responseCode,"",timestamp);
 	}
 
 }

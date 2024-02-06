@@ -9,28 +9,28 @@ public class ParseIndentityTools {
 
 	/**
 	 * 判断舰长类型返回相应的字符串
-	 * 
+	 *
 	 * @param type short型的数字 目前范围[0,3]
 	 * @return 舰长类型字符串
 	 */
 	public static String parseGuard(Short type) {
 		switch (type) {
-		case 0:
-			return "";
-		case 1:
-			return "[总督]";
-		case 2:
-			return "[提督]";
-		case 3:
-			return "[舰长]";
-		default:
-			return "";
+			case 0:
+				return "";
+			case 1:
+				return "[总督]";
+			case 2:
+				return "[提督]";
+			case 3:
+				return "[舰长]";
+			default:
+				return "";
 		}
 	}
 
 	/**
 	 * 判断是否为房管 1 yes  当 uid相同时即是主播
-	 * 
+	 *
 	 * @param uid 用户uid用于 判断是否是主播
 	 * @param type short类型数据 目前范围[0,1]
 	 * @return 类型字符串
@@ -39,7 +39,7 @@ public class ParseIndentityTools {
 		if (type == 1) {
 			return "[房管]";
 		}
-		if (uid.equals(GlobalSettingConf.AUID)) {
+		if (uid.equals(GlobalSettingConf.ANCHOR_UID)) {
 			return "[主播]";
 		}
 		return "";
@@ -47,7 +47,7 @@ public class ParseIndentityTools {
 
 	/**
 	 * 判断老爷类型 vip1 svip1 0 0
-	 * 
+	 *
 	 * @param barrage 弹幕对象
 	 * @return 类型字符串
 	 */
@@ -61,7 +61,7 @@ public class ParseIndentityTools {
 
 	/**
 	 * 醒目留言时间++
-	 * 
+	 *
 	 * @param time
 	 * @return
 	 */
@@ -71,7 +71,7 @@ public class ParseIndentityTools {
 		}
 		return time;
 	}
-	
+
 	/**
 	 * 过滤金银瓜子类型
 	 * @param coin_type
@@ -82,12 +82,12 @@ public class ParseIndentityTools {
 			return -1;
 		}
 		switch(coin_type.trim()) {
-		case "silver":
-			return 0;
-		case "gold":
-			return 1;
-		default:
-			return -1;
+			case "silver":
+				return 0;
+			case "gold":
+				return 1;
+			default:
+				return -1;
 		}
 	}
 }

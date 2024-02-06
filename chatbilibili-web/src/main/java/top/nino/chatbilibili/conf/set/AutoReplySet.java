@@ -21,25 +21,25 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AutoReplySet extends OpenSetConf implements Serializable{
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 562887876061232840L;
 	/**
-	* 是否独特
-	*/
+	 * 是否独特
+	 */
 	@JSONField(name = "is_accurate")
 	private boolean is_accurate = false;
 	/**
-	* 关键字集合
-	*/
+	 * 关键字集合
+	 */
 	private HashSet<String> keywords;
 	/**
-	* 屏蔽字集合
-	*/
+	 * 屏蔽字集合
+	 */
 	private HashSet<String> shields;
 	/**
-	* 发送弹幕体
-	*/
+	 * 发送弹幕体
+	 */
 	private String reply;
 
 

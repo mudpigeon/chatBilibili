@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 
+/**
+ * 主播和直播 关联信息
+ * @author nino
+ */
 @Data
 @NoArgsConstructor
 public class Room implements Serializable {

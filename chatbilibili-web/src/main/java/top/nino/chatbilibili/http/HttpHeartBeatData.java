@@ -126,13 +126,13 @@ public class HttpHeartBeatData {
 		if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
 			headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
 		}
-		long[] ids = {roomInfo.getParent_area_id(),roomInfo.getArea_id(),0, GlobalSettingConf.ROOMID};
+		long[] ids = {roomInfo.getParent_area_id(),roomInfo.getArea_id(),0, GlobalSettingConf.ROOM_ID};
 		stringBuilder.append("[")
-		.append("\"").append(CurrencyTools.deviceHash()).append("\"").append(",")
-		.append("\"").append(CurrencyTools.getUUID()).append("\"").append("]");
+				.append("\"").append(CurrencyTools.deviceHash()).append("\"").append(",")
+				.append("\"").append(CurrencyTools.getUUID()).append("\"").append("]");
 		String devices =stringBuilder.toString();
 		params = new LinkedHashMap<>(10);
-		long ts =System.currentTimeMillis(); 
+		long ts =System.currentTimeMillis();
 		params.put("id", Arrays.toString(ids));
 		params.put("device",devices);
 		params.put("ts", String.valueOf(ts));
@@ -172,7 +172,7 @@ public class HttpHeartBeatData {
 
 	/**
 	 * 加密s函数方法来自 https://github.com/lkeme/bilibili-pcheartbeat
-	 * 
+	 *
 	 * @param roomInfo
 	 * @param num
 	 * @param xData
@@ -195,7 +195,7 @@ public class HttpHeartBeatData {
 			headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
 		}
 		params = new HashMap<>(12);
-		long[] ids = {roomInfo.getParent_area_id(),roomInfo.getArea_id(),num, GlobalSettingConf.ROOMID};
+		long[] ids = {roomInfo.getParent_area_id(),roomInfo.getArea_id(),num, GlobalSettingConf.ROOM_ID};
 //		String[] devices = {CurrencyTools.deviceHash(),CurrencyTools.getUUID()};
 		long ts =System.currentTimeMillis();
 		xData.setId(ids);
@@ -215,10 +215,10 @@ public class HttpHeartBeatData {
 		try {
 			params.put("s", completableFuture.get());
 		} catch (InterruptedException e) {
-		//	e.printStackTrace();
+			//	e.printStackTrace();
 			LOGGER.error("s 函数处理错误1:{}",e);
 		} catch (ExecutionException e) {
-		//	e.printStackTrace();
+			//	e.printStackTrace();
 			LOGGER.error("s 函数处理错误2:{}",e);
 		}
 		params.put("id", Arrays.toString(ids));

@@ -8,6 +8,7 @@ import cn.codingguide.chatgpt4j.domain.chat.Message;
 import cn.codingguide.chatgpt4j.key.RandomKeySelectorStrategy;
 import com.google.common.collect.Lists;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import top.nino.api.model.vo.dto.ChatResDto;
 import top.nino.service.chatgpt.ChatGPTService;

@@ -22,6 +22,9 @@ public class CenterSetConf implements Serializable {
 
     private static final long serialVersionUID = 1162255349476806991L;
 
+    // 房间号
+    private Long roomId;
+
     // 是否开启弹幕
     @JSONField(name = "is_barrage")
     private boolean is_barrage = true;
@@ -64,9 +67,6 @@ public class CenterSetConf implements Serializable {
     @JSONField(name = "is_cmd")
     private boolean is_cmd = true;
 
-    // 房间号
-    private Long roomid = 0l;
-
     // window是否自动打开设置页面 默认open
     @JSONField(name = "win_auto_openSet")
     private boolean win_auto_openSet = true;
@@ -98,11 +98,10 @@ public class CenterSetConf implements Serializable {
      */
     public static CenterSetConf of(String base64){
         Assert.notNull(base64, "Base64 must cannot be null");
-        BASE64Encoder base64Encoder = new BASE64Encoder();
         try {
             //fastjson没有完善的javadoc, 方法抛出的异常也未明确指出. 是否考虑更换较规范的库?
             // {@link JSONObject#parseObject} 方法调用的异常捕获并未完全覆盖
-            return JSONObject.parseObject(new String(base64Encoder.decode(base64)), CenterSetConf.class);
+            return JSONObject.parseObject(new String(BASE64Encoder.decode(base64)), CenterSetConf.class);
         } catch (IOException|JSONException e) {
             // 因用户非法操作导致的,记录等级为warn;开发者使用方法不当导致的,记录等级为error.(不那么准确,但是warn级别确定是用户非法操作导致)
             // 在数据模型中的方法面向开发者,故给予error级别记录. 其实此处的异常也会因为用户非法修改profile文件内容导致异常.

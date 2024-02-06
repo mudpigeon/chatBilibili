@@ -27,7 +27,7 @@ public class GuardFileTools {
 //		file.setWritable(true, false);
 		if (file.exists() == false)
 			file.mkdirs();
-		file = new File(path + "/guards("+ GlobalSettingConf.ROOMID +")"+ ".txt");
+		file = new File(path + "/guards("+ GlobalSettingConf.ROOM_ID +")"+ ".txt");
 //		file.setWritable(true, false);
 		if (file.exists() == false)
 			try {
@@ -79,7 +79,7 @@ public class GuardFileTools {
 //			file.setWritable(true, false);
 			if (file.exists() == false)
 				file.mkdirs();
-			file = new File(path + "guards("+ GlobalSettingConf.ROOMID +")"+ ".txt");
+			file = new File(path + "guards("+ GlobalSettingConf.ROOM_ID +")"+ ".txt");
 //			file.setWritable(true, false);
 			if (file.exists() == false)
 				try {

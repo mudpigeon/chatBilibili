@@ -9,7 +9,7 @@ import java.io.Serializable;
 @StructClass
 public class BarrageHeadHandle implements Serializable,Cloneable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -8552333200751773861L;
 	private static BarrageHeadHandle barrageHeadHandle = new BarrageHeadHandle();
@@ -49,16 +49,6 @@ public class BarrageHeadHandle implements Serializable,Cloneable {
 		return new BarrageHeadHandle();
 	}
 
-//单例模式
-//    public static BarrageHeadHandle getBarrageHeadHandle() {
-//        if (barrageHeadHandle == null) {
-//            synchronized (BarrageHeadHandle.class) {
-//                barrageHeadHandle = new BarrageHeadHandle();
-//            }
-//        }
-//        return barrageHeadHandle;
-//    }
-
 	public static BarrageHeadHandle getBarrageHeadHandle(int packageLength, char packageHeadLength, char packageVersion, int packageType, int packageOther) {
 		try {
 			BarrageHeadHandle b = (BarrageHeadHandle)barrageHeadHandle.clone();
@@ -69,25 +59,11 @@ public class BarrageHeadHandle implements Serializable,Cloneable {
 			b.setPackageVersion(packageVersion);
 			return b;
 		} catch (CloneNotSupportedException e) {
-			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
 		return new BarrageHeadHandle(packageLength,packageHeadLength,packageVersion,packageType,packageOther);
 	}
 
-	//    public static BarrageHeadHandle getBarrageHeadHandle(int packageLength, char packageHeadLength, char packageVersion, int packageType, int packageOther) {
-//        if (barrageHeadHandle == null) {
-//            synchronized (BarrageHeadHandle.class) {
-//                barrageHeadHandle = new BarrageHeadHandle();
-//            }
-//        }
-//        barrageHeadHandle.setPackageHeadLength(packageHeadLength);
-//        barrageHeadHandle.setPackageLength(packageLength);
-//        barrageHeadHandle.setPackageOther(packageOther);
-//        barrageHeadHandle.setPackageType(packageType);
-//        barrageHeadHandle.setPackageVersion(packageVersion);
-//        return barrageHeadHandle;
-//    }
 	public int getPackageLength() {
 		return packageLength;
 	}
@@ -118,5 +94,5 @@ public class BarrageHeadHandle implements Serializable,Cloneable {
 	public void setPackageOther(int packageOther) {
 		this.packageOther = packageOther;
 	}
-	
+
 }

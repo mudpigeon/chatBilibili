@@ -8,7 +8,7 @@ import top.nino.chatbilibili.GlobalSettingConf;
 @Getter
 @Setter
 public class GiftShieldThread extends Thread {
-//	@SuppressWarnings("unused")
+	//	@SuppressWarnings("unused")
 //	private Logger LOGGER = LogManager.getLogger(GiftShieldThread.class);
 	public volatile boolean FLAG = false;
 	private int time = 300;
@@ -24,14 +24,14 @@ public class GiftShieldThread extends Thread {
 		if(GlobalSettingConf.webSocketProxy!=null&&!GlobalSettingConf.webSocketProxy.isOpen()) {
 			return;
 		}
-		GlobalSettingConf.SHIELDGIFTNAME = getGiftName();
+
 		try {
 			Thread.sleep(time * 1000);
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
 //			e.printStackTrace();
 		}
-		GlobalSettingConf.SHIELDGIFTNAME = null;
+
 	}
 
 

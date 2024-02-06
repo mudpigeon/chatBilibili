@@ -161,20 +161,13 @@ public class AutoReplyThread extends Thread {
                 }
                 is_send = false;
             } else {
-                synchronized (GlobalSettingConf.autoReplyThread) {
-                    try {
-                        GlobalSettingConf.autoReplyThread.wait();
-                    } catch (Exception e) {
-                        // TODO 自动生成的 catch 块
-//						e.printStackTrace();
-                    }
-                }
+
             }
         }
     }
 
     private synchronized boolean handle(AutoReplySet autoReplySet, String replyString, AutoReply autoReply,
-                                     String hourString, short hour, String hourReplace, boolean is_send) {
+                                        String hourString, short hour, String hourReplace, boolean is_send) {
 
         //拟议自动回复处理
         //1. 针对特定人?
@@ -188,9 +181,9 @@ public class AutoReplyThread extends Thread {
         }
         // 替换%FANS%
         if (!replyString.equals("%FANS%")) {
-            replyString = StringUtils.replace(replyString, "%FANS%", String.valueOf(GlobalSettingConf.FANSNUM));
+            replyString = StringUtils.replace(replyString, "%FANS%", String.valueOf(GlobalSettingConf.FANS_NUM));
         } else {
-            replyString = String.valueOf(GlobalSettingConf.FANSNUM);
+            replyString = String.valueOf(GlobalSettingConf.FANS_NUM);
         }
         // 替换%TIME%
         if (!replyString.equals("%TIME%")) {
@@ -200,17 +193,17 @@ public class AutoReplyThread extends Thread {
         }
         // 替换%LIVETIME%
         if (!replyString.equals("%LIVETIME%")) {
-            if (GlobalSettingConf.lIVE_STATUS == 1) {
+            if (GlobalSettingConf.LIVE_STATUS == 1) {
                 replyString = StringUtils.replace(replyString, "%LIVETIME%",
                         CurrencyTools.getGapTime(System.currentTimeMillis()
-                                - HttpRoomData.httpGetRoomInit(GlobalSettingConf.ROOMID).getLive_time() * 1000));
+                                - HttpRoomData.httpGetRoomInit(GlobalSettingConf.ROOM_ID).getLive_time() * 1000));
             } else {
                 replyString = StringUtils.replace(replyString, "%LIVETIME%", "0");
             }
         } else {
-            if (GlobalSettingConf.lIVE_STATUS == 1) {
+            if (GlobalSettingConf.LIVE_STATUS == 1) {
                 replyString = CurrencyTools.getGapTime(System.currentTimeMillis()
-                        - HttpRoomData.httpGetRoomInit(GlobalSettingConf.ROOMID).getLive_time() * 1000);
+                        - HttpRoomData.httpGetRoomInit(GlobalSettingConf.ROOM_ID).getLive_time() * 1000);
             } else {
                 replyString = "0";
             }
@@ -262,118 +255,6 @@ public class AutoReplyThread extends Thread {
                 }
             }
         }
-//        //天气 v1
-//        if (StringUtils.containsAny(replyString, AutoParamSetConf.weather_v1_all_params)) {
-//            if (autoReply.getBarrage().contains("天气") && (autoReply.getBarrage().contains("@") || autoReply.getBarrage().contains("#"))) {
-//                int path1 = autoReply.getBarrage().indexOf("@") >= 0 ? autoReply.getBarrage().indexOf("@") : autoReply.getBarrage().indexOf("#");
-//                int path2 = autoReply.getBarrage().indexOf("天气");
-//                String city = autoReply.getBarrage().substring(path1 + 1, path2);
-//                StringBuilder weatherSB = new StringBuilder();
-//                Weather weather = null;
-//                if (StringUtils.isBlank(city)) {
-//                    city = "北京";
-//                }
-//                Short day = 0;
-//                if (city.endsWith("昨天")) {
-//                    city = city.substring(0, city.indexOf("昨天"));
-//                    day = -1;
-//                } else if (city.endsWith("明天")) {
-//                    city = city.substring(0, city.indexOf("明天"));
-//                    day = 1;
-//                } else if (city.endsWith("后天")) {
-//                    city = city.substring(0, city.indexOf("后天"));
-//                    day = 2;
-//                } else if (city.endsWith("后两天")) {
-//                    city = city.substring(0, city.indexOf("后两天"));
-//                    day = 3;
-//                } else if (city.endsWith("后三天")) {
-//                    city = city.substring(0, city.indexOf("后三天"));
-//                    day = 4;
-//                } else if (city.endsWith("今天")) {
-//                    city = city.substring(0, city.indexOf("今天"));
-//                    day = 0;
-//                } else {
-//                    day = 0;
-//                }
-//                weather = apiService.getWeather(city, day);
-////                weather = HttpOtherData.httpPostWeather(city, day);
-//                if (null != weather) {
-//                    if (replyString.contains("%WEATHER%") && !StringUtils.containsAny(replyString, AutoParamSetConf.weather_v1_params)) {
-//                        if (day == 0) {
-//                            weatherSB.append(weather.getCity()).append(":").append(weather.getDate())
-//                                    .append(",").append(weather.getType()).append(" ").append(weather.getFx())
-//                                    .append(weather.getFl()).append(",").append("气温").append(weather.getWendu()).append("℃")
-//                                    .append(" ").append("最低").append(weather.getLow()).append(" ").append("最高").append(weather.getHigh())
-//                                    .append(",").append(weather.getGanmao());
-//                        } else {
-//                            weatherSB.append(weather.getCity()).append(":").append(weather.getDate())
-//                                    .append(",").append(weather.getType()).append(" ").append(weather.getFx())
-//                                    .append(weather.getFl()).append(",").append("气温").append(":").append("最低")
-//                                    .append(weather.getLow()).append(" ").append("最高").append(weather.getHigh())
-//                                    .append(",").append(weather.getGanmao());
-//                        }
-//                        if (!replyString.equals("%WEATHER%")) {
-//                            replyString = StringUtils.replace(replyString, "%WEATHER%", weatherSB.toString());
-//                        } else {
-//                            replyString = weatherSB.toString();
-//                        }
-//                    } else if (!replyString.contains("%WEATHER%") && StringUtils.containsAny(replyString,AutoParamSetConf.weather_v1_params)) {
-//                        //城市
-//                        if (replyString.contains("%W_CITY%")) {
-//                            replyString = StringUtils.replace(replyString, "%W_CITY%", weather.getCity());
-//                        }
-//                        //时间  格式 多少日星期几
-//                        if (replyString.contains("%W_DATE%")) {
-//                            replyString = StringUtils.replace(replyString, "%W_DATE%", weather.getDate());
-//                        }
-//                        //最高温度 包含°C符号
-//                        if (replyString.contains("%H_WENDU%")) {
-//                            replyString = StringUtils.replace(replyString, "%H_WENDU%", weather.getHigh());
-//                        }
-//                        //最低温度 包含°C符号
-//                        if (replyString.contains("%L_WENDU%")) {
-//                            replyString = StringUtils.replace(replyString, "%L_WENDU%", weather.getLow());
-//                        }
-//                        // 风向
-//                        if (replyString.contains("%W_FX%")) {
-//                            replyString = StringUtils.replace(replyString, "%W_FX%", weather.getFx());
-//                        }
-//                        //风力
-//                        if (replyString.contains("%W_FL%")) {
-//                            replyString = StringUtils.replace(replyString, "%W_FL%", weather.getFl());
-//                        }
-//
-//                        //天气类型 例如晴天 多云
-//                        if (replyString.contains("%W_TYPE%")) {
-//                            replyString = StringUtils.replace(replyString, "%W_TYPE%", weather.getType());
-//                        }
-//                        //分类处理当天没有的
-//                        if (day == 0) {
-//                            //感冒小提示 只有当天有 未来和过去没有
-//                            if (replyString.contains("%W_TIPS%")) {
-//                                replyString = StringUtils.replace(replyString, "%W_TIPS%", weather.getGanmao());
-//                            }
-//                            //温度 包含°C符号 只有当天有 未来和过去没有
-//                            if (replyString.contains("%WENDU%")) {
-//                                replyString = StringUtils.replace(replyString, "%WENDU%", weather.getLow());
-//                            }
-//                        } else {
-//                            if (replyString.contains("%WENDU%")) {
-//                                replyString = StringUtils.replace(replyString, "%WENDU%", "");
-//                            }
-//                            //感冒小提示 只有当天有 未来和过去没有
-//                            if (replyString.contains("%W_TIPS%")) {
-//                                replyString = StringUtils.replace(replyString, "%W_TIPS%","");
-//                            }
-//                        }
-//                    }
-//                    replyString = StringUtils.replace(replyString,"℃","度");
-//                } else {
-//                    replyString = "";
-//                }
-//                weatherSB.delete(0, weatherSB.length());
-//            }
-//        }
 
         //apex 排位 v1
         if (StringUtils.containsAny(replyString, AutoParamSetConf.apex_rank_params)) {

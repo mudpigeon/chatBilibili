@@ -21,9 +21,9 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 public class ThankGiftSetConf extends ThankLiveSetConf implements Serializable{
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -418947096472064467L;
 	//是否开启本人
@@ -76,7 +76,7 @@ public class ThankGiftSetConf extends ThankLiveSetConf implements Serializable{
 		}
 		if(is_live_open()) {
 			//没在直播
-			if(GlobalSettingConf.lIVE_STATUS !=1){
+			if(GlobalSettingConf.LIVE_STATUS !=1){
 				return false;
 			}else{
 				if(is_open()) {

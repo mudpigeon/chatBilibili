@@ -17,11 +17,11 @@ import java.util.Iterator;
 
 @Component
 public class ThreadComponentImpl implements ThreadComponent {
-	
-	
-	
-	
-	
+
+
+
+
+
 	//关闭全部线程
 	public void closeAll(){
 		closeHeartByteThread();
@@ -38,7 +38,8 @@ public class ThreadComponentImpl implements ThreadComponent {
 	}
 
 
-	//关闭用户相关线程
+	// 关闭用户相关线程
+	@Override
 	public void closeUser(boolean close){
 
 		closeUserOnlineThread();
@@ -83,7 +84,6 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public boolean startHeartByteThread() {
-		// TODO 自动生成的方法存根
 		if (GlobalSettingConf.heartByteThread != null) {
 			return false;
 		}
@@ -139,26 +139,6 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public boolean startAdvertThread(AdvertSetConf advertSetConf) {
-		// TODO 自动生成的方法存根
-		if (GlobalSettingConf.advertThread != null || StringUtils.isBlank(GlobalSettingConf.COOKIE_VALUE)) {
-			GlobalSettingConf.advertThread
-					.setAdvertStatus(ParseSetStatusTools.getAdvertStatus(advertSetConf.getStatus()));
-			GlobalSettingConf.advertThread.setTime(advertSetConf.getTime());
-			GlobalSettingConf.advertThread.setAdvertBarrage(advertSetConf.getAdverts());
-			return false;
-		}
-		GlobalSettingConf.advertThread = new AdvertThread();
-		GlobalSettingConf.advertThread.FLAG = false;
-		GlobalSettingConf.advertThread
-				.setAdvertStatus(ParseSetStatusTools.getAdvertStatus(advertSetConf.getStatus()));
-		GlobalSettingConf.advertThread.setTime(advertSetConf.getTime());
-		GlobalSettingConf.advertThread.setAdvertBarrage(advertSetConf.getAdverts());
-		GlobalSettingConf.advertThread.start();
-		startSendBarrageThread();
-		if (GlobalSettingConf.advertThread != null
-				&& !GlobalSettingConf.advertThread.getState().toString().equals("TERMINATED")) {
-			return true;
-		}
 		return false;
 	}
 
@@ -202,21 +182,9 @@ public class ThreadComponentImpl implements ThreadComponent {
 				autoReplySets.add(autoReplySet);
 			}
 		}
-		if (GlobalSettingConf.autoReplyThread != null || StringUtils.isBlank(GlobalSettingConf.COOKIE_VALUE)) {
-			GlobalSettingConf.autoReplyThread.setTime(autoReplySetConf.getTime());
-			GlobalSettingConf.autoReplyThread.setAutoReplySets(autoReplySets);
-			return false;
-		}
-		GlobalSettingConf.autoReplyThread = new AutoReplyThread();
-		GlobalSettingConf.autoReplyThread.FLAG = false;
-		GlobalSettingConf.autoReplyThread.setTime(autoReplySetConf.getTime());
-		GlobalSettingConf.autoReplyThread.setAutoReplySets(autoReplySets);
-		GlobalSettingConf.autoReplyThread.start();
+
 		startSendBarrageThread();
-		if (GlobalSettingConf.autoReplyThread != null
-				&& !GlobalSettingConf.autoReplyThread.getState().toString().equals("TERMINATED")) {
-			return true;
-		}
+
 		return false;
 	}
 
@@ -290,43 +258,19 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public boolean startGiftShieldThread(String giftName, int time) {
-		// TODO 自动生成的方法存根
-		if (GlobalSettingConf.parsethankGiftThread.getState().toString().equals("TERMINATED")
-				|| GlobalSettingConf.parsethankGiftThread.getState().toString().equals("NEW")) {
-			GlobalSettingConf.giftShieldThread = new GiftShieldThread();
-			GlobalSettingConf.giftShieldThread.FLAG = false;
-			GlobalSettingConf.giftShieldThread.setGiftName(giftName);
-			GlobalSettingConf.giftShieldThread.setTime(time);
-			GlobalSettingConf.giftShieldThread.start();
-			return true;
-		}
+
 		return false;
 	}
 
 	@Override
 	public boolean startFollowShieldThread(int time) {
-		// TODO 自动生成的方法存根
-		if (GlobalSettingConf.parsethankFollowThread.getState().toString().equals("TERMINATED")
-				|| GlobalSettingConf.parsethankFollowThread.getState().toString().equals("NEW")) {
-			GlobalSettingConf.followShieldThread = new FollowShieldThread();
-			GlobalSettingConf.followShieldThread.FLAG = false;
-			GlobalSettingConf.followShieldThread.setTime(time);
-			GlobalSettingConf.followShieldThread.start();
-			return true;
-		}
+
 		return false;
 	}
 
 	@Override
 	public boolean startWelcomeShieldThread(int time) {
-		if (GlobalSettingConf.parseThankWelcomeThread.getState().toString().equals("TERMINATED")
-				|| GlobalSettingConf.parseThankWelcomeThread.getState().toString().equals("NEW")) {
-			GlobalSettingConf.welcomeShieldThread = new WelcomeShieldThread();
-			GlobalSettingConf.welcomeShieldThread.FLAG = false;
-			GlobalSettingConf.welcomeShieldThread.setTime(time);
-			GlobalSettingConf.welcomeShieldThread.start();
-			return true;
-		}
+
 		return false;
 	}
 
@@ -389,37 +333,12 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public void startParseThankFollowThread(ThankFollowSetConf thankFollowSetConf) {
-		// TODO 自动生成的方法存根
-		if (GlobalSettingConf.parsethankFollowThread.getState().toString().equals("TERMINATED")
-				|| GlobalSettingConf.parsethankFollowThread.getState().toString().equals("NEW")) {
-			GlobalSettingConf.parsethankFollowThread = new ParseThankFollowThread();
-			GlobalSettingConf.parsethankFollowThread.setDelaytime((long) (1000 * thankFollowSetConf.getDelaytime()));
-			GlobalSettingConf.parsethankFollowThread.start();
-			GlobalSettingConf.parsethankFollowThread.setTimestamp(System.currentTimeMillis());
-			GlobalSettingConf.parsethankFollowThread.setThankFollowString(thankFollowSetConf.getFollows());
-			GlobalSettingConf.parsethankFollowThread.setNum(thankFollowSetConf.getNum());
-		} else {
-			GlobalSettingConf.parsethankFollowThread.setTimestamp(System.currentTimeMillis());
-			GlobalSettingConf.parsethankFollowThread.setThankFollowString(thankFollowSetConf.getFollows());
-			GlobalSettingConf.parsethankFollowThread.setNum(thankFollowSetConf.getNum());
-		}
+
 	}
 
 	@Override
 	public void startParseThankWelcomeThread(ThankWelcomeSetConf thankWelcomeSetConf) {
-		if (GlobalSettingConf.parseThankWelcomeThread.getState().toString().equals("TERMINATED")
-				|| GlobalSettingConf.parseThankWelcomeThread.getState().toString().equals("NEW")) {
-			GlobalSettingConf.parseThankWelcomeThread = new ParseThankWelcomeThread();
-			GlobalSettingConf.parseThankWelcomeThread.setDelaytime((long) (1000 * thankWelcomeSetConf.getDelaytime()));
-			GlobalSettingConf.parseThankWelcomeThread.start();
-			GlobalSettingConf.parseThankWelcomeThread.setTimestamp(System.currentTimeMillis());
-			GlobalSettingConf.parseThankWelcomeThread.setThankWelcomeString(thankWelcomeSetConf.getWelcomes());
-			GlobalSettingConf.parseThankWelcomeThread.setNum(thankWelcomeSetConf.getNum());
-		} else {
-			GlobalSettingConf.parseThankWelcomeThread.setTimestamp(System.currentTimeMillis());
-			GlobalSettingConf.parseThankWelcomeThread.setThankWelcomeString(thankWelcomeSetConf.getWelcomes());
-			GlobalSettingConf.parseThankWelcomeThread.setNum(thankWelcomeSetConf.getNum());
-		}
+
 	}
 
 	@Override
@@ -428,73 +347,24 @@ public class ThreadComponentImpl implements ThreadComponent {
 		// TODO 自动生成的方法存根
 		if (GlobalSettingConf.parseMessageThread != null) {
 			HashSet<ThankGiftRuleSet> thankGiftRuleSets = new HashSet<>();
-			// thankGiftRuleSets
-//			for (Iterator<ThankGiftRuleSet> iterator = centerSetConf.getThank_gift().getThankGiftRuleSets()
-//					.iterator(); iterator.hasNext();) {
-//				ThankGiftRuleSet thankGiftRuleSet = iterator.next();
-//				if (thankGiftRuleSet.is_open()) {
-//					thankGiftRuleSets.add(thankGiftRuleSet);
-//				}
-//			}
+
 			GlobalSettingConf.parseMessageThread.setCenterSetConf(centerSetConf);
 			GlobalSettingConf.parseMessageThread.setThankGiftRuleSets(thankGiftRuleSets);
 		}
 	}
 
-//	@Override
-//	public void setAdvertThread(CenterSetConf centerSetConf) {
-//		// TODO 自动生成的方法存根
-//		if (PublicDataConf.advertThread != null) {
-//			PublicDataConf.advertThread
-//					.setAdvertStatus(ParseSetStatusTools.getAdvertStatus(centerSetConf.getAdvert().getStatus()));
-//			PublicDataConf.advertThread.setTime(centerSetConf.getAdvert().getTime());
-//			PublicDataConf.advertThread.setAdvertBarrage(centerSetConf.getAdvert().getAdverts());
-//		}
-//	}
+
 
 	@Override
 	public void setAdvertThread(AdvertSetConf advertSetConf) {
-		// TODO 自动生成的方法存根
-		if (GlobalSettingConf.advertThread != null) {
-			GlobalSettingConf.advertThread
-					.setAdvertStatus(ParseSetStatusTools.getAdvertStatus(advertSetConf.getStatus()));
-			GlobalSettingConf.advertThread.setTime(advertSetConf.getTime());
-			GlobalSettingConf.advertThread.setAdvertBarrage(advertSetConf.getAdverts());
-		}
+
 	}
 
-//	@Override
-//	public void setAutoReplyThread(CenterSetConf centerSetConf) {
-//		// TODO 自动生成的方法存根
-//		if (PublicDataConf.autoReplyThread != null) {
-//			HashSet<AutoReplySet> autoReplySets = new HashSet<AutoReplySet>();
-//			for (Iterator<AutoReplySet> iterator = centerSetConf.getReply().getAutoReplySets().iterator(); iterator
-//					.hasNext();) {
-//				AutoReplySet autoReplySet = iterator.next();
-//				if (autoReplySet.is_open()) {
-//					autoReplySets.add(autoReplySet);
-//				}
-//			}
-//			PublicDataConf.autoReplyThread.setTime(centerSetConf.getReply().getTime());
-//			PublicDataConf.autoReplyThread.setAutoReplySets(autoReplySets);
-//		}
-//	}
+
 
 	@Override
 	public void setAutoReplyThread(AutoReplySetConf autoReplySetConf) {
-		// TODO 自动生成的方法存根
-		if (GlobalSettingConf.autoReplyThread != null) {
-			HashSet<AutoReplySet> autoReplySets = new HashSet<AutoReplySet>();
-			for (Iterator<AutoReplySet> iterator = autoReplySetConf.getAutoReplySets().iterator(); iterator
-					.hasNext();) {
-				AutoReplySet autoReplySet = iterator.next();
-				if (autoReplySet.is_open()) {
-					autoReplySets.add(autoReplySet);
-				}
-			}
-			GlobalSettingConf.autoReplyThread.setTime(autoReplySetConf.getTime());
-			GlobalSettingConf.autoReplyThread.setAutoReplySets(autoReplySets);
-		}
+
 	}
 
 	@Override
@@ -526,20 +396,12 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public void closeAdvertThread() {
-		if (GlobalSettingConf.advertThread != null) {
-			GlobalSettingConf.advertThread.FLAG = true;
-			GlobalSettingConf.advertThread.interrupt();
-			GlobalSettingConf.advertThread = null;
-		}
+
 	}
 
 	@Override
 	public void closeAutoReplyThread() {
-		if (GlobalSettingConf.autoReplyThread != null) {
-			GlobalSettingConf.autoReplyThread.FLAG = true;
-			GlobalSettingConf.autoReplyThread.interrupt();
-			GlobalSettingConf.autoReplyThread = null;
-		}
+
 	}
 
 	@Override
@@ -553,35 +415,21 @@ public class ThreadComponentImpl implements ThreadComponent {
 
 	@Override
 	public void closeGiftShieldThread() {
-		if (GlobalSettingConf.giftShieldThread != null
-				&& !GlobalSettingConf.giftShieldThread.getState().toString().equals("TERMINATED")) {
-			GlobalSettingConf.giftShieldThread.FLAG = false;
-			GlobalSettingConf.giftShieldThread.interrupt();
-		}
+
 	}
 
 	@Override
 	public void closeFollowShieldThread() {
-		// TODO 自动生成的方法存根
-		if (GlobalSettingConf.followShieldThread != null
-				&& !GlobalSettingConf.followShieldThread.getState().toString().equals("TERMINATED")) {
-			GlobalSettingConf.followShieldThread.FLAG = false;
-			GlobalSettingConf.followShieldThread.interrupt();
-		}
+
 	}
 
 	@Override
 	public void closeWelcomeShieldThread() {
-		if (GlobalSettingConf.welcomeShieldThread != null
-				&& !GlobalSettingConf.welcomeShieldThread.getState().toString().equals("TERMINATED")) {
-			GlobalSettingConf.welcomeShieldThread.FLAG = false;
-			GlobalSettingConf.welcomeShieldThread.interrupt();
-		}
+
 	}
 
 	@Override
 	public void closeSmallHeartThread() {
-		// TODO 自动生成的方法存根
 		if(GlobalSettingConf.smallHeartThread!=null) {
 			GlobalSettingConf.smallHeartThread.FLAG=true;
 			GlobalSettingConf.smallHeartThread.interrupt();

@@ -64,7 +64,7 @@ public class LocalGlobalSettingFileUtil {
 		return profileMap;
 	}
 
-	public static void writeFile(Map<String, String> localGlobalSettingMap, String fileName) {
+	public static void writeFile(String fileName, Map<String, String> localGlobalSettingMap) {
 
 		new File(ABSOLUTE_JAR_PATH).mkdirs();
 

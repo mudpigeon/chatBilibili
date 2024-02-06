@@ -16,6 +16,7 @@ import top.nino.core.CookieUtils;
 import top.nino.core.LocalGlobalSettingFileUtil;
 import top.nino.service.http.HttpBilibiliServer;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,58 +38,62 @@ public class GlobalSettingFileServiceImpl implements GlobalSettingFileService {
      */
     @Override
     public boolean createAndValidateCookieAndLoadAndWrite() {
+
         Map<String, String> localGlobalSettingMap = new HashMap<>();
 
-        String cookieString = null;
-        BASE64Encoder base64Encoder = new BASE64Encoder();
-
+        // 先去加载本地文件的配置
         try {
-            // 先去加载本地文件的配置
             localGlobalSettingMap.putAll(LocalGlobalSettingFileUtil.readFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME));
-            if(StringUtils.isNotBlank(localGlobalSettingMap.get(GlobalSettingConf.FILE_COOKIE_PREFIX))) {
-                // 如果有标识，则说明可以解密获得cookieSTring
-                cookieString = new String(base64Encoder.decode(localGlobalSettingMap.get(GlobalSettingConf.FILE_COOKIE_PREFIX)));
+        } catch (IOException e) {
+            log.error("加载本地文件异常", e);
+        }
+
+        // 如果有标识，则说明可以解密获得cookieSTring
+        if(StringUtils.isNotBlank(localGlobalSettingMap.get(GlobalSettingConf.FILE_COOKIE_PREFIX))) {
+            String cookieString = null;
+            try {
+                cookieString = new String(BASE64Encoder.decode(localGlobalSettingMap.get(GlobalSettingConf.FILE_COOKIE_PREFIX)));
+            } catch (Exception e) {
+                log.error("获取本地cookie失败,请重新登录", e);
             }
-        } catch (Exception e) {
-            log.error("获取本地cookie失败,请重新登录", e);
+
+            if (StringUtils.isNotBlank(cookieString) && StringUtils.isBlank(GlobalSettingConf.COOKIE_VALUE)) {
+                // 说明直接从本地读到的cookie字符串，并且用户没有登录行为，那么就放入全局配置中
+                GlobalSettingConf.COOKIE_VALUE = cookieString;
+            }
         }
 
-        if (StringUtils.isNotBlank(cookieString) && StringUtils.isBlank(GlobalSettingConf.COOKIE_VALUE)) {
-            // 说明直接从本地读到的cookie字符串，并且用户没有登录行为，那么就放入全局配置中
-            GlobalSettingConf.COOKIE_VALUE = cookieString;
-        }
-
-        User user = HttpBilibiliServer.httpGetUserInfo(GlobalSettingConf.COOKIE_VALUE);
-        GlobalSettingConf.USER = user;
-        if(user == null) {
-            // 说明cookie失效，移除缓存
-            GlobalSettingConf.COOKIE_VALUE = null;
-            GlobalSettingConf.USER_COOKIE_INFO = null;
-        } else {
+        GlobalSettingConf.USER = HttpBilibiliServer.httpGetUserInfo(GlobalSettingConf.COOKIE_VALUE);
+        if(GlobalSettingConf.USER != null) {
             // 说明cookie仍然有效, 把cookie有效标识 放入Map
             GlobalSettingConf.USER_COOKIE_INFO = CookieUtils.parseCookie(GlobalSettingConf.COOKIE_VALUE);
-            localGlobalSettingMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, base64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
+            localGlobalSettingMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, BASE64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
+        } else {
+            // 说明cookie失效，移除缓存
+            GlobalSettingConf.clearUserCache();
         }
 
-
-        if (StringUtils.isNotBlank(localGlobalSettingMap.get(GlobalSettingConf.FILE_SETTING_PREFIX))) {
-            // 可以从本地 加载 配置
-            GlobalSettingConf.centerSetConf = CenterSetConf.of(localGlobalSettingMap.get(GlobalSettingConf.FILE_SETTING_PREFIX));
-            if (GlobalSettingConf.centerSetConf.getRoomid() != null && GlobalSettingConf.centerSetConf.getRoomid() > 0) {
-                GlobalSettingConf.ROOMID_LONG = GlobalSettingConf.centerSetConf.getRoomid();
-            } else if (GlobalSettingConf.ROOMID_LONG != null && GlobalSettingConf.ROOMID_LONG > 0) {
-                GlobalSettingConf.centerSetConf.setRoomid(GlobalSettingConf.ROOMID_LONG);
-            }
-        } else {
+        if(StringUtils.isBlank(localGlobalSettingMap.get(GlobalSettingConf.FILE_SETTING_PREFIX))) {
             // 第一次，则要 直接新建默认配置
             GlobalSettingConf.centerSetConf = new CenterSetConf();
+        } else {
+            // 可以从本地 加载 配置
+            GlobalSettingConf.centerSetConf = CenterSetConf.of(localGlobalSettingMap.get(GlobalSettingConf.FILE_SETTING_PREFIX));
+
+            // 有直播间信息的话去加载
+            if (GlobalSettingConf.centerSetConf.getRoomId() != null && GlobalSettingConf.centerSetConf.getRoomId() > 0) {
+                GlobalSettingConf.ROOMID_LONG = GlobalSettingConf.centerSetConf.getRoomId();
+            }
+            if (GlobalSettingConf.ROOMID_LONG != null && GlobalSettingConf.ROOMID_LONG > 0) {
+                GlobalSettingConf.centerSetConf.setRoomId(GlobalSettingConf.ROOMID_LONG);
+            }
         }
 
         // 把所有的默认配置也放入缓存
-        localGlobalSettingMap.put(GlobalSettingConf.FILE_SETTING_PREFIX, base64Encoder.encode(GlobalSettingConf.centerSetConf.toJson().getBytes()));
+        localGlobalSettingMap.put(GlobalSettingConf.FILE_SETTING_PREFIX, BASE64Encoder.encode(GlobalSettingConf.centerSetConf.toJson().getBytes()));
 
         // 将缓存写到本地
-        LocalGlobalSettingFileUtil.writeFile(localGlobalSettingMap, GlobalSettingConf.GLOBAL_SETTING_FILE_NAME);
+        LocalGlobalSettingFileUtil.writeFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME, localGlobalSettingMap);
 
         return true;
     }
@@ -102,7 +107,7 @@ public class GlobalSettingFileServiceImpl implements GlobalSettingFileService {
 
         synchronized (GlobalSettingConf.centerSetConf) {
 
-            if (GlobalSettingConf.ROOMID == null || GlobalSettingConf.ROOMID <= 0) {
+            if (GlobalSettingConf.ROOM_ID == null || GlobalSettingConf.ROOM_ID <= 0) {
                 // 这些配置都是跟直播间相关的，所以必须设置直播间
                 return;
             }
@@ -110,6 +115,7 @@ public class GlobalSettingFileServiceImpl implements GlobalSettingFileService {
             if (GlobalSettingConf.webSocketProxy == null || !GlobalSettingConf.webSocketProxy.isOpen()) {
                 return;
             }
+
             // 到了这里说明 已经连接到了 一个直播间
             // 所以直接启动弹幕接收
             threadComponent.startParseMessageThread(GlobalSettingConf.centerSetConf);

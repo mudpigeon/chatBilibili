@@ -21,13 +21,6 @@ public class WelcomeShieldThread extends Thread{
         if(GlobalSettingConf.webSocketProxy!=null&&!GlobalSettingConf.webSocketProxy.isOpen()) {
             return;
         }
-        GlobalSettingConf.ISSHIELDWELCOME = true;
-        try {
-            Thread.sleep(time * 1000);
-        } catch (Exception e) {
-            // TODO 自动生成的 catch 块
-//			e.printStackTrace();
-        }
-        GlobalSettingConf.ISSHIELDWELCOME = false;
+
     }
 }

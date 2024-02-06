@@ -147,9 +147,9 @@ public class ParseMessageThread extends Thread {
                             // 是不是表情弹幕
                             boolean is_emoticon = barrage.getMsg_emoticon() != null && barrage.getMsg_emoticon() == 1;
 
-                            if (getCenterSetConf().is_barrage_anchor_shield()&& GlobalSettingConf.ROOMID!=null) {
+                            if (getCenterSetConf().is_barrage_anchor_shield()&& GlobalSettingConf.ROOM_ID!=null) {
                                 // 房管
-                                if (barrage.getMedal_room() != (long) GlobalSettingConf.ROOMID) is_xunzhang = false;
+                                if (barrage.getMedal_room() != (long) GlobalSettingConf.ROOM_ID) is_xunzhang = false;
                             }
 
                             //{"cmd":"DANMU_MSG","dm_v2":"CiIwMTc0ZjQzZjhiZjgyMjE3MjJlMjA2MWNmYjY0YWQzMjU3EAEYGSDeg+MCKghmMTYyNGY0MzID6LWeOLCOu6SUMUiWlLPq+P////8BYgBoAXJnCgPotZ4SYAoMb2ZmaWNpYWxfMTQ3EklodHRwOi8vaTAuaGRzbGIuY29tL2Jmcy9saXZlL2JiZDkwNDU1NzBkMGMwMjJhOTg0YzYzN2U0MDZjYjBlMWYyMDhhYTkucG5nIAEwPDiWAYoBAJoBEAoIRTYwNkY4NzQQ4+W0pQaiAaEBCO2DhBMSD+iAs+S4nOeri+S5oOS5oCJLaHR0cHM6Ly9pMS5oZHNsYi5jb20vYmZzL2ZhY2UvNTU1MGQ0NTQyY2NhNjkxNzYzZjdhMTNhZTUzMDIzNDE3NTNiMDJiYy53ZWJwOJBOQAFaIAgUEgbliLrlhL8gpLqeBjCkup4GOKS6ngZApLqeBlABYg8IHxDx0YEFGgY+NTAwMDBqAHIAegCqARUIlqUKEgzpgI3pgaXmlaPkuroYhQg=","info":[[0,1,25,5816798,1689072355120,-1924347370,0,"f1624f43",0,0,0,"",1,{"bulge_display":0,"emoticon_unique":"official_147","height":60,"in_player_area":1,"is_dynamic":0,"url":"http://i0.hdslb.com/bfs/live/bbd9045570d0c022a984c637e406cb0e1f208aa9.png","width":150},"{}",{"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":5816798,\"dm_type\":1,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"赞\",\"user_hash\":\"4049751875\",\"emoticon_unique\":\"official_147\",\"bulge_display\":0,\"recommend_score\":0,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"0174f43f8bf8221722e2061cfb64ad3257\",\"icon\":null}","mode":0,"show_player_type":0},{"activity_identity":"","activity_source":0,"not_show":0},0],"赞",[39911917,"耳东立习习",0,0,0,10000,1,""],[20,"刺儿","逍遥散人",1017,13081892,"",0,13081892,13081892,13081892,0,1,168598],[31,0,10512625,"\u003e50000",0],["",""],0,0,null,{"ct":"E606F874","ts":1689072355},0,0,null,null,0,56,[0]],"is_report":false,"msg_id":"271830315699712","send_time":1689072355181}
@@ -160,7 +160,7 @@ public class ParseMessageThread extends Thread {
                                 if (is_barrage) {
 
                                     hbarrage = Hbarrage.copyHbarrage(barrage);
-                                    if (barrage.getUid().equals(GlobalSettingConf.AUID)) {
+                                    if (barrage.getUid().equals(GlobalSettingConf.ANCHOR_UID)) {
                                         hbarrage.setManager((short) 2);
                                     }
 
@@ -248,18 +248,7 @@ public class ParseMessageThread extends Thread {
                                     //弹幕关闭
                                 }
 
-                                //自动回复姬处理
-                                if (GlobalSettingConf.autoReplyThread != null && !GlobalSettingConf.autoReplyThread.FLAG) {
-                                    if (!GlobalSettingConf.autoReplyThread.getState().toString().equals("TIMED_WAITING")) {
-                                        if (parseAutoReplySetting(barrage)) {
-                                            GlobalSettingConf.replys.add(
-                                                    AutoReply.getAutoReply(barrage.getUid(), barrage.getUname(), barrage.getMsg()));
-                                            synchronized (GlobalSettingConf.autoReplyThread) {
-                                                GlobalSettingConf.autoReplyThread.notify();
-                                            }
-                                        }
-                                    }
-                                }
+
                                 stringBuilder.delete(0, stringBuilder.length());
                                 //						LOGGER.info("弹幕信息：" + message);
                             } else {
@@ -363,7 +352,7 @@ public class ParseMessageThread extends Thread {
                                 }
                                 stringBuilder.delete(0, stringBuilder.length());
                             }
-                             break;
+                            break;
 
                         // 上舰消息推送
                         case "GUARD_LOTTERY_START":
@@ -490,7 +479,7 @@ public class ParseMessageThread extends Thread {
                             //					fans = JSONObject.parseObject(jsonObject.getString("data"), Fans.class);
                             //					stringBuilder.append(JodaTimeUtils.getCurrentTimeString()).append(":消息推送:").append("房间号")
                             //							.append(fans.getRoomid()).append("的粉丝数:").append(fans.getFans());
-                            GlobalSettingConf.FANSNUM = JSONObject.parseObject(jsonObject.getString("data")).getLong("fans");
+                            GlobalSettingConf.FANS_NUM = JSONObject.parseObject(jsonObject.getString("data")).getLong("fans");
                             //					System.out.println(stringBuilder.toString());
                             //					stringBuilder.delete(0, stringBuilder.length());
                             //					LOGGER.info("直播间粉丝数更新消息推送:::" + message);
@@ -741,7 +730,7 @@ public class ParseMessageThread extends Thread {
                             break;
                         // 直播开启
                         case "LIVE":
-                            GlobalSettingConf.lIVE_STATUS = 1;
+                            GlobalSettingConf.LIVE_STATUS = 1;
                             //					room_id = jsonObject.getLong("roomid");
                             //					if (room_id == PublicDataConf.ROOMID) {
                             // 仅在直播有效 广告线程 改为配置文件
@@ -762,7 +751,7 @@ public class ParseMessageThread extends Thread {
 
                         // 直播准备中(或者是关闭直播)
                         case "PREPARING":
-                            GlobalSettingConf.lIVE_STATUS = 0;
+                            GlobalSettingConf.LIVE_STATUS = 0;
 //                            settingService.holdSet(getCenterSetConf());
                             GlobalSettingConf.IS_ROOM_POPULARITY = false;
                             //					LOGGER.info("直播准备中(或者是关闭直播):::" + message);
@@ -778,31 +767,31 @@ public class ParseMessageThread extends Thread {
                             // 关注
                             //控制台打印处理
 
-                                msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-                                if (msg_type == 2) {
-                                    interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
-                                    stringBuilder.append(JodaTimeUtils.formatDateTime(System.currentTimeMillis())).append(":新的关注:")
-                                            .append(interact.getUname()).append(" 关注了直播间");
-                                    //控制台打印
-                                    if (getCenterSetConf().is_cmd()) {
-                                        System.out.println(stringBuilder.toString());
-                                    }
-                                    //日志
-                                    if (GlobalSettingConf.logThread != null && !GlobalSettingConf.logThread.FLAG) {
-                                        GlobalSettingConf.logString.add(stringBuilder.toString());
-                                        synchronized (GlobalSettingConf.logThread) {
-                                            GlobalSettingConf.logThread.notify();
-                                        }
-                                    }
-                                    //前端弹幕发送
-                                    try {
-                                        danmuWebsocket.sendMessage(WsPackage.toJson("follow", (short) 0, interact));
-                                    } catch (Exception e) {
-                                        // TODO 自动生成的 catch 块
-                                        e.printStackTrace();
-                                    }
-                                    stringBuilder.delete(0, stringBuilder.length());
+                            msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+                            if (msg_type == 2) {
+                                interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
+                                stringBuilder.append(JodaTimeUtils.formatDateTime(System.currentTimeMillis())).append(":新的关注:")
+                                        .append(interact.getUname()).append(" 关注了直播间");
+                                //控制台打印
+                                if (getCenterSetConf().is_cmd()) {
+                                    System.out.println(stringBuilder.toString());
                                 }
+                                //日志
+                                if (GlobalSettingConf.logThread != null && !GlobalSettingConf.logThread.FLAG) {
+                                    GlobalSettingConf.logString.add(stringBuilder.toString());
+                                    synchronized (GlobalSettingConf.logThread) {
+                                        GlobalSettingConf.logThread.notify();
+                                    }
+                                }
+                                //前端弹幕发送
+                                try {
+                                    danmuWebsocket.sendMessage(WsPackage.toJson("follow", (short) 0, interact));
+                                } catch (Exception e) {
+                                    // TODO 自动生成的 catch 块
+                                    e.printStackTrace();
+                                }
+                                stringBuilder.delete(0, stringBuilder.length());
+                            }
                             //关注感谢
                             //欢迎进入直播间
                             //欢迎感谢
@@ -1079,7 +1068,7 @@ public class ParseMessageThread extends Thread {
 //                gift = null;
 //            }
 
-            //礼物屏蔽过滤
+        //礼物屏蔽过滤
 
         Vector<Gift> gifts = null;
         if (gift != null && StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
@@ -1123,24 +1112,7 @@ public class ParseMessageThread extends Thread {
     }
 
     public void DelayFollowTimeSetting() {
-        synchronized (GlobalSettingConf.parsethankFollowThread) {
-            if (GlobalSettingConf.parsethankFollowThread != null) {
-//				if (PublicDataConf.parsethankFollowThread.getState().toString().equals("TERMINATED")
-//						|| PublicDataConf.parsethankFollowThread.getState().toString().equals("NEW")) {
-//					PublicDataConf.parsethankFollowThread = new ParseThankFollowThread();
-//					PublicDataConf.parsethankFollowThread
-//							.setDelaytime((long) (1000 * getThankFollowSetConf().getDelaytime()));
-//					PublicDataConf.parsethankFollowThread.start();
-//					PublicDataConf.parsethankFollowThread.setTimestamp(System.currentTimeMillis());
-//					PublicDataConf.parsethankFollowThread.setThankFollowString(getThankFollowSetConf().getFollows());
-//					PublicDataConf.parsethankFollowThread.setNum(getThankFollowSetConf().getNum());
-//				} else {
-//					PublicDataConf.parsethankFollowThread.setTimestamp(System.currentTimeMillis());
-//					PublicDataConf.parsethankFollowThread.setThankFollowString(getThankFollowSetConf().getFollows());
-//					PublicDataConf.parsethankFollowThread.setNum(getThankFollowSetConf().getNum());
-//				}
-            }
-        }
+
     }
 
     public synchronized void parseFollowSetting(Interact interact) throws Exception {
@@ -1148,35 +1120,11 @@ public class ParseMessageThread extends Thread {
         if (!blackParseComponent.interact_parse(interact)) {
             interact = null;
         }
-        if (interact != null && StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-            if (GlobalSettingConf.sendBarrageThread != null && GlobalSettingConf.parsethankFollowThread != null) {
-                if (!GlobalSettingConf.sendBarrageThread.FLAG && !GlobalSettingConf.parsethankFollowThread.FLAG) {
-                    GlobalSettingConf.interacts.add(interact);
-                    DelayFollowTimeSetting();
-                }
-            }
-        }
+
     }
 
     public void DelayWelcomeTimeSetting() {
-        synchronized (GlobalSettingConf.parseThankWelcomeThread) {
-            if (GlobalSettingConf.parseThankWelcomeThread != null) {
-//				if (PublicDataConf.parsethankFollowThread.getState().toString().equals("TERMINATED")
-//						|| PublicDataConf.parsethankFollowThread.getState().toString().equals("NEW")) {
-//					PublicDataConf.parsethankFollowThread = new ParseThankFollowThread();
-//					PublicDataConf.parsethankFollowThread
-//							.setDelaytime((long) (1000 * getThankFollowSetConf().getDelaytime()));
-//					PublicDataConf.parsethankFollowThread.start();
-//					PublicDataConf.parsethankFollowThread.setTimestamp(System.currentTimeMillis());
-//					PublicDataConf.parsethankFollowThread.setThankFollowString(getThankFollowSetConf().getFollows());
-//					PublicDataConf.parsethankFollowThread.setNum(getThankFollowSetConf().getNum());
-//				} else {
-//					PublicDataConf.parsethankFollowThread.setTimestamp(System.currentTimeMillis());
-//					PublicDataConf.parsethankFollowThread.setThankFollowString(getThankFollowSetConf().getFollows());
-//					PublicDataConf.parsethankFollowThread.setNum(getThankFollowSetConf().getNum());
-//				}
-            }
-        }
+
     }
 
     public synchronized void parseWelcomeSetting(Interact interact) throws Exception {

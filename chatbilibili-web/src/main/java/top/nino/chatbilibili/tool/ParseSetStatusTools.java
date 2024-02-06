@@ -13,71 +13,71 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ParseSetStatusTools {
 	public static ShieldGift getGiftShieldStatus(short code) {
 		switch (code) {
-		case 0:
-			return ShieldGift.OPTIONAL;
-		case 1:
-			return ShieldGift.SILVER;
-		case 2:
-			return ShieldGift.HIGH_PRICE;
-		case 3:
-			return ShieldGift.CUSTOM_RULE;
-		default:
-			return ShieldGift.OPTIONAL;
+			case 0:
+				return ShieldGift.OPTIONAL;
+			case 1:
+				return ShieldGift.SILVER;
+			case 2:
+				return ShieldGift.HIGH_PRICE;
+			case 3:
+				return ShieldGift.CUSTOM_RULE;
+			default:
+				return ShieldGift.OPTIONAL;
 		}
 	}
 
 	public static ThankGiftStatus getThankGiftStatus(short code) {
 		switch (code) {
-		case 0:
-			return ThankGiftStatus.one_people;
-		case 1:
-			return ThankGiftStatus.some_people;
-		case 2:
-			return ThankGiftStatus.some_peoples;
-		default:
-			return ThankGiftStatus.one_people;
+			case 0:
+				return ThankGiftStatus.one_people;
+			case 1:
+				return ThankGiftStatus.some_people;
+			case 2:
+				return ThankGiftStatus.some_peoples;
+			default:
+				return ThankGiftStatus.one_people;
 		}
 	}
 
 	public static AdvertStatus getAdvertStatus(short code) {
 		switch (code) {
-		case 0:
-			return AdvertStatus.deafult;
-		case 1:
-			return AdvertStatus.random;
-		default:
-			return AdvertStatus.deafult;
+			case 0:
+				return AdvertStatus.deafult;
+			case 1:
+				return AdvertStatus.random;
+			default:
+				return AdvertStatus.deafult;
 		}
 	}
 
 	public static ListGiftShieldStatus getListGiftShieldStatus(short code) {
 		switch (code) {
-		case 0:
-			return ListGiftShieldStatus.BLACK;
-		case 1:
-			return ListGiftShieldStatus.WHITE;
-		default:
-			return ListGiftShieldStatus.BLACK;
+			case 0:
+				return ListGiftShieldStatus.BLACK;
+			case 1:
+				return ListGiftShieldStatus.WHITE;
+			default:
+				return ListGiftShieldStatus.BLACK;
 		}
 	}
 
 
 	public static ListPeopleShieldStatus getListPeopleShieldStatus(short code) {
 		switch (code) {
-		case 0:
-			return ListPeopleShieldStatus.ALL;
-		case 1:
-			return ListPeopleShieldStatus.MEDAL;
-		case 2:
-			return ListPeopleShieldStatus.GUARD;
-		default:
-			return ListPeopleShieldStatus.ALL;
+			case 0:
+				return ListPeopleShieldStatus.ALL;
+			case 1:
+				return ListPeopleShieldStatus.MEDAL;
+			case 2:
+				return ListPeopleShieldStatus.GUARD;
+			default:
+				return ListPeopleShieldStatus.ALL;
 		}
 	}
 
 	/**
-	* 等待移除 2.4.9
-	*/
+	 * 等待移除 2.4.9
+	 */
 	@Deprecated
 	public static ConcurrentHashMap<ShieldMessage, Boolean> getMessageConcurrentHashMap(CenterSetConf centerSetConf,
 																						short live_status) {
@@ -131,7 +131,6 @@ public class ParseSetStatusTools {
 	}
 
 	public static CenterSetConf initCenterChildConfig(CenterSetConf centerSetConf){
-
 		return centerSetConf;
 	}
 }

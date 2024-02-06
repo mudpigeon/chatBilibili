@@ -22,7 +22,7 @@ public class LogFileTools {
 		if (logFileTools == null) {
 			synchronized (LogFileTools.class) {
 				if (logFileTools == null) {
-				logFileTools = new LogFileTools();
+					logFileTools = new LogFileTools();
 				}
 			}
 		}
@@ -52,7 +52,7 @@ public class LogFileTools {
 				file.mkdirs();
 			stringBuilder.append(JodaTimeUtils.getCurrentDateString());
 			stringBuilder.append("(");
-			stringBuilder.append(GlobalSettingConf.ROOMID);
+			stringBuilder.append(GlobalSettingConf.ROOM_ID);
 			stringBuilder.append(")");
 			file = new File(path + stringBuilder.toString() + ".txt");
 //			file.setWritable(true, false);

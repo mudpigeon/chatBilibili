@@ -19,14 +19,14 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ThankFollowSetConf extends ThankLiveSetConf implements Serializable{
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7461261092620918037L;
 	//发送弹幕
 	private String follows="谢谢%uNames%的关注~";
 
-	
-	
+
+
 	// 方法区
 	public boolean is_followThank(){
 		if(StringUtils.isBlank(GlobalSettingConf.COOKIE_VALUE)){
@@ -35,7 +35,7 @@ public class ThankFollowSetConf extends ThankLiveSetConf implements Serializable
 		//是否开启仅在直播中运行
 		if(is_live_open()) {
 			//没在直播
-			if(GlobalSettingConf.lIVE_STATUS !=1){
+			if(GlobalSettingConf.LIVE_STATUS !=1){
 				return false;
 			}else{
 				if(is_open()) {

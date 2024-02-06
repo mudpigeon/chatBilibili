@@ -37,7 +37,7 @@ public class ThankWelcomeSetConf extends ThankLiveSetConf implements Serializabl
         }
         if(is_live_open()) {
             //没在直播
-            if(GlobalSettingConf.lIVE_STATUS !=1){
+            if(GlobalSettingConf.LIVE_STATUS !=1){
                 return false;
             }else{
                 if(is_open()) {

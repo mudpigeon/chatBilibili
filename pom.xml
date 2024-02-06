@@ -31,7 +31,7 @@
         <guava.version>31.1-jre</guava.version>
         <mybaits-plus.version>3.5.2</mybaits-plus.version>
         <aliyun-sdk-oss.version>3.17.2</aliyun-sdk-oss.version>
-        <qrcode-plugin.version>3.0.0</qrcode-plugin.version>
+        <qrCodeInfo-plugin.version>3.0.0</qrCodeInfo-plugin.version>
         <commons-io.version>2.11.0</commons-io.version>
         <hutool-all.version>5.8.15</hutool-all.version>
         <itextpdf.version>5.5.13.3</itextpdf.version>
@@ -86,8 +86,8 @@
 
             <dependency>
                 <groupId>com.github.liuyueyi.media</groupId>
-                <artifactId>qrcode-plugin</artifactId>
-                <version>${qrcode-plugin.version}</version>
+                <artifactId>qrCodeInfo-plugin</artifactId>
+                <version>${qrCodeInfo-plugin.version}</version>
             </dependency>
 
             <dependency>

@@ -46,7 +46,7 @@ public class CurrencyTools {
         String wsUrl = null;
         int control = 0;
         if (hostServers.size() > 0) {
-            while (!(GlobalSettingConf.URL).equals(wsUrl)) {
+            while (!(GlobalSettingConf.ROOM_DANMU_WEBSOCKET_URL).equals(wsUrl)) {
                 if (control > 5) {
                     break;
                 }
@@ -130,8 +130,8 @@ public class CurrencyTools {
      * @return
      */
     public static long parseRoomId() {
-        if (GlobalSettingConf.SHORTROOMID != null && GlobalSettingConf.SHORTROOMID > 0) {
-            return GlobalSettingConf.SHORTROOMID;
+        if (GlobalSettingConf.SHORT_ROOM_ID != null && GlobalSettingConf.SHORT_ROOM_ID > 0) {
+            return GlobalSettingConf.SHORT_ROOM_ID;
         }
         return 0;
     }
@@ -468,7 +468,7 @@ public class CurrencyTools {
     }
 
     public static void handleLotteryInfoWebByTx(Long roomid,String giftName,int time){
-            //设置缓存
+        //设置缓存
         if(time>0) {
             CacheConf.setTX(roomid, StringUtils.isBlank(giftName)?"":giftName,time * 1000l);
         }
