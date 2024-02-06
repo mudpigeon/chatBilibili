@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.io.Serializable;
 
 
+/**
+ * @author nino
+ */
 @Data
 @NoArgsConstructor
 @Slf4j

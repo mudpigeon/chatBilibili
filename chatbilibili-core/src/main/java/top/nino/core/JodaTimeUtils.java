@@ -455,7 +455,6 @@ public final class JodaTimeUtils {
 	    } catch (Exception e) {
 	        // ignore
 	    }
-
 	    return dateStr;
 	}
 

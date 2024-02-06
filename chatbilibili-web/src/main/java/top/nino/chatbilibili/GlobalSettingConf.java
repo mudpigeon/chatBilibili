@@ -102,8 +102,6 @@ public class GlobalSettingConf {
 	// user房间管理信息
 	public static UserManager USER_MANAGER;
 
-	//处理弹幕包集合
-	public final static Vector<String> danmuList = new Vector<String>(100);
 
 	//------------- 2.运行中加载/缓存的数据-----------结束----------------------
 
@@ -128,6 +126,12 @@ public class GlobalSettingConf {
 
 
 	//------------- 4.线程----------开始----------------------
+
+	// 处理弹幕包集合
+	public final static Vector<String> danmuList = new Vector<>(100);
+
+	// log日志待写入集合
+	public final static Vector<String> logList = new Vector<>(100);
 
 	// websocket客户端主线程
 	public static WebSocketProxy webSocketProxy;
@@ -171,8 +175,6 @@ public class GlobalSettingConf {
 	//待发弹幕集
 	public final static Vector<String> barrageString = new Vector<String>();
 
-	//log日志待写入集合
-	public final static Vector<String> logString = new Vector<String>(100);
 
 	//自动回复处理弹幕
 	public final static Vector<AutoReply> replys = new Vector<AutoReply>();
@@ -219,7 +221,7 @@ public class GlobalSettingConf {
 		GlobalSettingConf.danmuList.clear();
 		GlobalSettingConf.thankGiftConcurrentHashMap.clear();
 		GlobalSettingConf.barrageString.clear();
-		GlobalSettingConf.logString.clear();
+		GlobalSettingConf.logList.clear();
 
 	}
 
@@ -227,7 +229,7 @@ public class GlobalSettingConf {
 		GlobalSettingConf.replys.clear();
 		GlobalSettingConf.danmuList.clear();
 		GlobalSettingConf.barrageString.clear();
-		GlobalSettingConf.logString.clear();
+		GlobalSettingConf.logList.clear();
 		GlobalSettingConf.ROOM_ID = null;
 		GlobalSettingConf.ANCHOR_NAME = null;
 		GlobalSettingConf.ANCHOR_UID= null;

@@ -1,9 +1,9 @@
 package top.nino.chatbilibili.thread;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import top.nino.api.model.superchat.MedalInfo;
 import top.nino.api.model.vo.WsPackage;
@@ -17,6 +17,7 @@ import top.nino.chatbilibili.rest.DanmuWebsocket;
 import top.nino.chatbilibili.service.SettingService;
 import top.nino.chatbilibili.tool.*;
 import top.nino.core.JodaTimeUtils;
+import top.nino.core.ParseDanmuUserRoleUtils;
 import top.nino.core.SpringUtils;
 import top.nino.service.chatgpt.ChatGPTService;
 
@@ -55,8 +56,6 @@ public class ParseDanmuMessageThread extends Thread {
 
             RedPackage redPackage = null;
             short msg_type = 0;
-            // high_level danmu
-            Hbarrage hbarrage = null;
             StringBuilder stringBuilder = new StringBuilder(200);
 
             while (!FLAG) {
@@ -86,124 +85,109 @@ public class ParseDanmuMessageThread extends Thread {
                 switch (cmd) {
                     // 弹幕
                     case "DANMU_MSG":
-                        JSONArray array = messageJsonObject.getJSONArray("info");
-                        DanmuMessage danmuMessage = DanmuMessage.getDanmuMessageByJSONArray(array);
 
-                        // 是否开启弹幕
-                        boolean is_barrage = GlobalSettingConf.ALL_SETTING_CONF.is_barrage();
+                        if(!GlobalSettingConf.ALL_SETTING_CONF.is_barrage()) {
+                            break;
+                        }
+
+                        DanmuMessage danmuMessage = DanmuMessage.getDanmuMessageByJSONArray(messageJsonObject.getJSONArray("info"));
 
                         // 勋章弹幕
                         boolean is_xunzhang = true;
-
-                        // 是不是表情弹幕
-                        boolean is_emoticon = danmuMessage.getMsg_emoticon() != null && danmuMessage.getMsg_emoticon() == 1;
-
                         if (GlobalSettingConf.ALL_SETTING_CONF.is_barrage_anchor_shield()&& GlobalSettingConf.ROOM_ID!=null) {
                             // 房管
-                            if (danmuMessage.getMedal_room() != (long) GlobalSettingConf.ROOM_ID) is_xunzhang = false;
+                            if (danmuMessage.getMedal_room() != (long) GlobalSettingConf.ROOM_ID) {
+                                is_xunzhang = false;
+                            }
                         }
 
-                        //{"cmd":"DANMU_MSG","dm_v2":"CiIwMTc0ZjQzZjhiZjgyMjE3MjJlMjA2MWNmYjY0YWQzMjU3EAEYGSDeg+MCKghmMTYyNGY0MzID6LWeOLCOu6SUMUiWlLPq+P////8BYgBoAXJnCgPotZ4SYAoMb2ZmaWNpYWxfMTQ3EklodHRwOi8vaTAuaGRzbGIuY29tL2Jmcy9saXZlL2JiZDkwNDU1NzBkMGMwMjJhOTg0YzYzN2U0MDZjYjBlMWYyMDhhYTkucG5nIAEwPDiWAYoBAJoBEAoIRTYwNkY4NzQQ4+W0pQaiAaEBCO2DhBMSD+iAs+S4nOeri+S5oOS5oCJLaHR0cHM6Ly9pMS5oZHNsYi5jb20vYmZzL2ZhY2UvNTU1MGQ0NTQyY2NhNjkxNzYzZjdhMTNhZTUzMDIzNDE3NTNiMDJiYy53ZWJwOJBOQAFaIAgUEgbliLrlhL8gpLqeBjCkup4GOKS6ngZApLqeBlABYg8IHxDx0YEFGgY+NTAwMDBqAHIAegCqARUIlqUKEgzpgI3pgaXmlaPkuroYhQg=","info":[[0,1,25,5816798,1689072355120,-1924347370,0,"f1624f43",0,0,0,"",1,{"bulge_display":0,"emoticon_unique":"official_147","height":60,"in_player_area":1,"is_dynamic":0,"url":"http://i0.hdslb.com/bfs/live/bbd9045570d0c022a984c637e406cb0e1f208aa9.png","width":150},"{}",{"extra":"{\"send_from_me\":false,\"mode\":0,\"color\":5816798,\"dm_type\":1,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"赞\",\"user_hash\":\"4049751875\",\"emoticon_unique\":\"official_147\",\"bulge_display\":0,\"recommend_score\":0,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\",\"animation\":{},\"emots\":null,\"is_audited\":false,\"id_str\":\"0174f43f8bf8221722e2061cfb64ad3257\",\"icon\":null}","mode":0,"show_player_type":0},{"activity_identity":"","activity_source":0,"not_show":0},0],"赞",[39911917,"耳东立习习",0,0,0,10000,1,""],[20,"刺儿","逍遥散人",1017,13081892,"",0,13081892,13081892,13081892,0,1,168598],[31,0,10512625,"\u003e50000",0],["",""],0,0,null,{"ct":"E606F874","ts":1689072355},0,0,null,null,0,56,[0]],"is_report":false,"msg_id":"271830315699712","send_time":1689072355181}
-                        // 过滤礼物自动弹幕 & 可能非主播勋章弹幕
+
+                        // 普通弹幕
                         if (danmuMessage.getMsg_type() == 0 && is_xunzhang) {
-
-                            //是否开启弹幕
-                            if (is_barrage) {
-
-                                hbarrage = Hbarrage.copyHbarrage(danmuMessage);
-                                if (danmuMessage.getUid().equals(GlobalSettingConf.ANCHOR_UID)) {
-                                    hbarrage.setManager((short) 2);
-                                }
-
-                                // 判断类型输出
-                                stringBuilder.append(JodaTimeUtils.formatDateTime(danmuMessage.getTimestamp()));
-                                if (is_emoticon) {
-                                    stringBuilder.append(":收到表情:");
-                                } else {
-                                    stringBuilder.append(":收到弹幕:");
-                                }
-
-                                if (GlobalSettingConf.ALL_SETTING_CONF.is_barrage_vip()) {
-                                    // 老爷
-                                    stringBuilder.append(ParseIndentityTools.parseVip(danmuMessage));
-                                } else {
-                                    hbarrage.setVip((short) 0);
-                                    hbarrage.setSvip((short) 0);
-                                }
-
-                                if (GlobalSettingConf.ALL_SETTING_CONF.is_barrage_guard()) {
-                                    // 舰长
-                                    stringBuilder.append(ParseIndentityTools.parseGuard(danmuMessage.getUguard()));
-                                } else {
-                                    hbarrage.setUguard((short) 0);
-                                }
-
-                                if (GlobalSettingConf.ALL_SETTING_CONF.is_barrage_manager()) {
-                                    // 房管
-                                    stringBuilder
-                                            .append(ParseIndentityTools.parseManager(danmuMessage.getUid(), danmuMessage.getManager()));
-                                } else {
-                                    hbarrage.setManager((short) 0);
-                                }
-
-                                if (GlobalSettingConf.ALL_SETTING_CONF.is_barrage_medal()) {
-                                    // 勋章+勋章等级
-                                    if (StringUtils.isNotBlank(danmuMessage.getMedal_name())) {
-                                        stringBuilder.append("[").append(danmuMessage.getMedal_name()).append(" ")
-                                                .append(danmuMessage.getMedal_level()).append("]");
-                                    }
-                                } else {
-                                    hbarrage.setMedal_level(null);
-                                    hbarrage.setMedal_name(null);
-                                    hbarrage.setMedal_room(null);
-                                    hbarrage.setMedal_anchor(null);
-                                }
-
-                                if (GlobalSettingConf.ALL_SETTING_CONF.is_barrage_ul()) {
-                                    // ul等级
-                                    stringBuilder.append("[").append("UL").append(danmuMessage.getUlevel()).append("]");
-                                } else {
-                                    hbarrage.setUlevel(null);
-                                }
-
-                                stringBuilder.append(danmuMessage.getUname());
-                                stringBuilder.append(" 它说:");
-                                stringBuilder.append(danmuMessage.getMsg());
-
-
-                                // 控制台打印
-                                if (GlobalSettingConf.ALL_SETTING_CONF.is_cmd()) {
-                                    System.out.println(stringBuilder.toString());
-                                }
-
-                                // todo 加入chatGPT
-//                                    ChatResVo chatResVo = chatGPTService.chatCompletions(barrage.getMsg());
-//                                    System.out.println(JSON.toJSONString(chatResVo));
-
-                                // 高级显示处理
-                                try {
-                                    danmuWebsocket.sendMessage(WsPackage.toJson("danmu", (short) 0, hbarrage));
-                                } catch (Exception e) {
-                                    // TODO 自动生成的 catch 块
-                                    e.printStackTrace();
-                                }
-
-                                // 日志处理
-                                if (GlobalSettingConf.logThread != null && !GlobalSettingConf.logThread.FLAG) {
-                                    GlobalSettingConf.logString.add(stringBuilder.toString());
-                                    synchronized (GlobalSettingConf.logThread) {
-                                        GlobalSettingConf.logThread.notify();
-                                    }
-                                }
-                            } else {
-                                //弹幕关闭
+                            // 高级弹幕
+                            DanmuUserRoleInfo danmuUserRoleInfo = DanmuUserRoleInfo.copyHbarrage(danmuMessage);
+                            if (danmuMessage.getUid().equals(GlobalSettingConf.ANCHOR_UID)) {
+                                danmuUserRoleInfo.setManager((short) 2);
                             }
 
+                            StringBuilder danmuResultString = new StringBuilder();
+
+                            // 添加弹幕时间
+                            danmuResultString.append(JodaTimeUtils.formatDateTime(danmuMessage.getTimestamp()));
+
+                            // 是不是表情弹幕
+                            boolean is_emoticon = danmuMessage.getMsg_emoticon() != null && danmuMessage.getMsg_emoticon() == 1;
+                            if (is_emoticon) {
+                                danmuResultString.append(":收到表情:");
+                            } else {
+                                danmuResultString.append(":收到弹幕:");
+                            }
+
+                            // 老爷
+                            if (GlobalSettingConf.ALL_SETTING_CONF.is_barrage_vip()) {
+                                danmuResultString.append(ParseDanmuUserRoleUtils.parseVip(danmuMessage));
+                            } else {
+                                danmuUserRoleInfo.setVip((short) 0);
+                                danmuUserRoleInfo.setSvip((short) 0);
+                            }
+
+                            // 舰长
+                            if (GlobalSettingConf.ALL_SETTING_CONF.is_barrage_guard()) {
+                                danmuResultString.append(ParseDanmuUserRoleUtils.parseGuard(danmuMessage));
+                            } else {
+                                danmuUserRoleInfo.setUguard((short) 0);
+                            }
+
+                            // 房管
+                            if (GlobalSettingConf.ALL_SETTING_CONF.is_barrage_manager()) {
+                                danmuResultString.append(ParseDanmuUserRoleUtils.parseManager(GlobalSettingConf.ANCHOR_UID, danmuMessage));
+                            } else {
+                                danmuUserRoleInfo.setManager((short) 0);
+                            }
+
+                            // 勋章+勋章等级
+                            if (GlobalSettingConf.ALL_SETTING_CONF.is_barrage_medal()) {
+                                if (StringUtils.isNotBlank(danmuMessage.getMedal_name())) {
+                                    danmuResultString.append("[").append(danmuMessage.getMedal_name()).append(" ")
+                                            .append(danmuMessage.getMedal_level()).append("]");
+                                }
+                            } else {
+                                danmuUserRoleInfo.setMedal_level(null);
+                                danmuUserRoleInfo.setMedal_name(null);
+                                danmuUserRoleInfo.setMedal_room(null);
+                                danmuUserRoleInfo.setMedal_anchor(null);
+                            }
+
+                            // 用户等级
+                            if (GlobalSettingConf.ALL_SETTING_CONF.is_barrage_ul()) {
+                                danmuResultString.append(ParseDanmuUserRoleUtils.parseUserLevel(danmuMessage));
+                            } else {
+                                danmuUserRoleInfo.setUlevel(null);
+                            }
+
+                            danmuResultString.append(ParseDanmuUserRoleUtils.parseDanmuContent(danmuMessage));
+
+                            // 控制台打印
+                            if (GlobalSettingConf.ALL_SETTING_CONF.is_cmd()) {
+                                log.info(danmuResultString.toString());
+                            }
+
+                            try {
+                                // 发送到本地网页
+                                danmuWebsocket.sendMessage(WsPackage.toJson("danmu", (short) 0, danmuUserRoleInfo));
+                            } catch (Exception e) {
+                                log.info("弹幕消息发送到本地网页异常", e);
+                            }
+
+                            // 日志处理
+                            if (ObjectUtils.isNotEmpty(GlobalSettingConf.logThread) && !GlobalSettingConf.logThread.FLAG) {
+                                GlobalSettingConf.logList.add(stringBuilder.toString());
+                                synchronized (GlobalSettingConf.logThread) {
+                                    GlobalSettingConf.logThread.notify();
+                                }
+                            }
 
                             stringBuilder.delete(0, stringBuilder.length());
-                            //						LOGGER.info("弹幕信息：" + message);
-                        } else {
-                            //				    LOGGER.info("test中貌似为礼物弹幕：" + message);
                         }
                         break;
 
@@ -241,7 +225,7 @@ public class ParseDanmuMessageThread extends Thread {
                                     e.printStackTrace();
                                 }
                                 if (GlobalSettingConf.logThread != null && !GlobalSettingConf.logThread.FLAG) {
-                                    GlobalSettingConf.logString.add(stringBuilder.toString());
+                                    GlobalSettingConf.logList.add(stringBuilder.toString());
                                     synchronized (GlobalSettingConf.logThread) {
                                         GlobalSettingConf.logThread.notify();
                                     }
@@ -296,7 +280,7 @@ public class ParseDanmuMessageThread extends Thread {
                                 e.printStackTrace();
                             }
                             if (GlobalSettingConf.logThread != null && !GlobalSettingConf.logThread.FLAG) {
-                                GlobalSettingConf.logString.add(stringBuilder.toString());
+                                GlobalSettingConf.logList.add(stringBuilder.toString());
                                 synchronized (GlobalSettingConf.logThread) {
                                     GlobalSettingConf.logThread.notify();
                                 }
@@ -341,7 +325,7 @@ public class ParseDanmuMessageThread extends Thread {
                                 e.printStackTrace();
                             }
                             if (GlobalSettingConf.logThread != null && !GlobalSettingConf.logThread.FLAG) {
-                                GlobalSettingConf.logString.add(stringBuilder.toString());
+                                GlobalSettingConf.logList.add(stringBuilder.toString());
                                 synchronized (GlobalSettingConf.logThread) {
                                     GlobalSettingConf.logThread.notify();
                                 }
@@ -729,7 +713,7 @@ public class ParseDanmuMessageThread extends Thread {
                             }
                             //日志
                             if (GlobalSettingConf.logThread != null && !GlobalSettingConf.logThread.FLAG) {
-                                GlobalSettingConf.logString.add(stringBuilder.toString());
+                                GlobalSettingConf.logList.add(stringBuilder.toString());
                                 synchronized (GlobalSettingConf.logThread) {
                                     GlobalSettingConf.logThread.notify();
                                 }
@@ -843,7 +827,7 @@ public class ParseDanmuMessageThread extends Thread {
                                 e.printStackTrace();
                             }
                             if (GlobalSettingConf.logThread != null && !GlobalSettingConf.logThread.FLAG) {
-                                GlobalSettingConf.logString.add(stringBuilder.toString());
+                                GlobalSettingConf.logList.add(stringBuilder.toString());
                                 synchronized (GlobalSettingConf.logThread) {
                                     GlobalSettingConf.logThread.notify();
                                 }
