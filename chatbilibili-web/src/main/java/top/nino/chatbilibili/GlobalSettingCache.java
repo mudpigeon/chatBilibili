@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @ToString
 @Configuration
-public class GlobalSettingConf {
+public class GlobalSettingCache {
 
 	//------------- 1.基本预设好的常量-----------开始----------------------
 	public final static String GLOBAL_SETTING_FILE_NAME = "chatBilibili-globalSetting";
@@ -112,10 +112,10 @@ public class GlobalSettingConf {
 	//------------- 3.行为-----------开始----------------------
 
 	public static void clearUserCache(){
-		GlobalSettingConf.COOKIE_VALUE = null;
-		GlobalSettingConf.USER_COOKIE_INFO = null;
-		GlobalSettingConf.USER = null;
-		GlobalSettingConf.USER_BARRAGE_MESSAGE = null;
+		GlobalSettingCache.COOKIE_VALUE = null;
+		GlobalSettingCache.USER_COOKIE_INFO = null;
+		GlobalSettingCache.USER = null;
+		GlobalSettingCache.USER_BARRAGE_MESSAGE = null;
 	}
 
 
@@ -208,29 +208,29 @@ public class GlobalSettingConf {
 
 
 	public static void init_send(){
-		GlobalSettingConf.thankGiftConcurrentHashMap.clear();
-		GlobalSettingConf.barrageString.clear();
+		GlobalSettingCache.thankGiftConcurrentHashMap.clear();
+		GlobalSettingCache.barrageString.clear();
 	}
 
 	public static void init_all(){
-		GlobalSettingConf.danmuList.clear();
-		GlobalSettingConf.thankGiftConcurrentHashMap.clear();
-		GlobalSettingConf.barrageString.clear();
-		GlobalSettingConf.logList.clear();
+		GlobalSettingCache.danmuList.clear();
+		GlobalSettingCache.thankGiftConcurrentHashMap.clear();
+		GlobalSettingCache.barrageString.clear();
+		GlobalSettingCache.logList.clear();
 
 	}
 
 	public static void init_connect(){
-		GlobalSettingConf.danmuList.clear();
-		GlobalSettingConf.barrageString.clear();
-		GlobalSettingConf.logList.clear();
-		GlobalSettingConf.ROOM_ID = null;
-		GlobalSettingConf.ANCHOR_NAME = null;
-		GlobalSettingConf.ANCHOR_UID= null;
-		GlobalSettingConf.FANS_NUM = null;
-		GlobalSettingConf.SHORT_ROOM_ID = null;
-		GlobalSettingConf.LIVE_STATUS = 0;
-		GlobalSettingConf.ROOM_POPULARITY = 1L;
+		GlobalSettingCache.danmuList.clear();
+		GlobalSettingCache.barrageString.clear();
+		GlobalSettingCache.logList.clear();
+		GlobalSettingCache.ROOM_ID = null;
+		GlobalSettingCache.ANCHOR_NAME = null;
+		GlobalSettingCache.ANCHOR_UID= null;
+		GlobalSettingCache.FANS_NUM = null;
+		GlobalSettingCache.SHORT_ROOM_ID = null;
+		GlobalSettingCache.LIVE_STATUS = 0;
+		GlobalSettingCache.ROOM_POPULARITY = 1L;
 	}
 
 

@@ -6,12 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import top.nino.api.model.danmu.Gift;
 import top.nino.api.model.enums.ListGiftShieldStatus;
 import top.nino.api.model.enums.ListPeopleShieldStatus;
-import top.nino.api.model.enums.ShieldGift;
 import top.nino.api.model.enums.ThankGiftStatus;
-import top.nino.chatbilibili.GlobalSettingConf;
 
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;

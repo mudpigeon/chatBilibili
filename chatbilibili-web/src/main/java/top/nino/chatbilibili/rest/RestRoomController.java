@@ -5,7 +5,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.nino.api.model.vo.Response;
-import top.nino.chatbilibili.GlobalSettingConf;
+import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.chatbilibili.service.ClientService;
 import top.nino.chatbilibili.service.SettingService;
 
@@ -29,19 +29,19 @@ public class RestRoomController {
     @ResponseBody
     @GetMapping(value = "/connectRoom")
     public Response<?> connectRoom(HttpServletRequest req, @RequestParam("roomId") Long roomId) {
-        if (ObjectUtils.isEmpty(GlobalSettingConf.bilibiliWebSocketProxy) || !GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
+        if (ObjectUtils.isEmpty(GlobalSettingCache.bilibiliWebSocketProxy) || !GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
             try {
                 clientService.loadRoomInfoAndOpenWebSocket(roomId);
             } catch (Exception e) {
                 log.error("加载直播间信息并开启websocket异常", e);
             }
-            if (ObjectUtils.isNotEmpty(GlobalSettingConf.ROOM_ID)) {
-                GlobalSettingConf.ALL_SETTING_CONF.setRoomId(GlobalSettingConf.ROOM_ID);
-                GlobalSettingConf.ROOMID_LONG = GlobalSettingConf.ROOM_ID;
+            if (ObjectUtils.isNotEmpty(GlobalSettingCache.ROOM_ID)) {
+                GlobalSettingCache.ALL_SETTING_CONF.setRoomId(GlobalSettingCache.ROOM_ID);
+                GlobalSettingCache.ROOMID_LONG = GlobalSettingCache.ROOM_ID;
             }
             settingService.writeAndReadSettingAndStartReceive();
         }
 
-        return Response.success(ObjectUtils.isNotEmpty(GlobalSettingConf.bilibiliWebSocketProxy) && GlobalSettingConf.bilibiliWebSocketProxy.isOpen(), req);
+        return Response.success(ObjectUtils.isNotEmpty(GlobalSettingCache.bilibiliWebSocketProxy) && GlobalSettingCache.bilibiliWebSocketProxy.isOpen(), req);
     }
 }

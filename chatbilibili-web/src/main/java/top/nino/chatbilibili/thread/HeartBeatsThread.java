@@ -1,7 +1,7 @@
 package top.nino.chatbilibili.thread;
 
 
-import top.nino.chatbilibili.GlobalSettingConf;
+import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.chatbilibili.http.HttpHeartBeatData;
 
 public class HeartBeatsThread extends Thread{
@@ -15,7 +15,7 @@ public class HeartBeatsThread extends Thread{
 			if (FLAG) {
 				return;
 			}
-			if(GlobalSettingConf.USER==null) {
+			if(GlobalSettingCache.USER==null) {
 				return;
 			}
 			HttpHeartBeatData.httpGetHeartBeatOrS(System.currentTimeMillis());

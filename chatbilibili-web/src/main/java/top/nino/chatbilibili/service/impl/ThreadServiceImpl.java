@@ -2,7 +2,7 @@ package top.nino.chatbilibili.service.impl;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
-import top.nino.chatbilibili.GlobalSettingConf;
+import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.chatbilibili.AllSettingConfig;
 import top.nino.chatbilibili.service.ThreadService;
 import top.nino.chatbilibili.thread.*;
@@ -43,66 +43,66 @@ public class ThreadServiceImpl implements ThreadService {
 	public void startParseMessageThread() {
 
 
-		if (ObjectUtils.isNotEmpty(GlobalSettingConf.parseDanmuMessageThread)  && !"TERMINATED".equals(GlobalSettingConf.parseDanmuMessageThread.getState().toString())) {
+		if (ObjectUtils.isNotEmpty(GlobalSettingCache.parseDanmuMessageThread)  && !"TERMINATED".equals(GlobalSettingCache.parseDanmuMessageThread.getState().toString())) {
 			return;
 		}
 
-		GlobalSettingConf.parseDanmuMessageThread = new ParseDanmuMessageThread();
-		GlobalSettingConf.parseDanmuMessageThread.closeFlag = false;
-		GlobalSettingConf.parseDanmuMessageThread.start();
-		if (GlobalSettingConf.parseDanmuMessageThread != null
-				&& !GlobalSettingConf.parseDanmuMessageThread.getState().toString().equals("TERMINATED")) {
+		GlobalSettingCache.parseDanmuMessageThread = new ParseDanmuMessageThread();
+		GlobalSettingCache.parseDanmuMessageThread.closeFlag = false;
+		GlobalSettingCache.parseDanmuMessageThread.start();
+		if (GlobalSettingCache.parseDanmuMessageThread != null
+				&& !GlobalSettingCache.parseDanmuMessageThread.getState().toString().equals("TERMINATED")) {
 		}
 	}
 
 	@Override
 	public void startHeartCheckBilibiliDanmuServerThread() {
-		if (ObjectUtils.isNotEmpty(GlobalSettingConf.heartCheckBilibiliDanmuServerThread)) {
+		if (ObjectUtils.isNotEmpty(GlobalSettingCache.heartCheckBilibiliDanmuServerThread)) {
 			return;
 		}
 		// 没有心跳线程，就去启动
-		GlobalSettingConf.heartCheckBilibiliDanmuServerThread = new HeartCheckBilibiliDanmuServerThread();
-		GlobalSettingConf.heartCheckBilibiliDanmuServerThread.HFLAG = false;
-		GlobalSettingConf.heartCheckBilibiliDanmuServerThread.start();
+		GlobalSettingCache.heartCheckBilibiliDanmuServerThread = new HeartCheckBilibiliDanmuServerThread();
+		GlobalSettingCache.heartCheckBilibiliDanmuServerThread.HFLAG = false;
+		GlobalSettingCache.heartCheckBilibiliDanmuServerThread.start();
 
 	}
 
 	@Override
 	public void startLogThread() {
-		if (GlobalSettingConf.logThread != null) {
+		if (GlobalSettingCache.logThread != null) {
 			return;
 		}
-		GlobalSettingConf.logThread = new LogThread();
-		GlobalSettingConf.logThread.FLAG = false;
-		GlobalSettingConf.logThread.start();
-		if (GlobalSettingConf.logThread != null && !GlobalSettingConf.logThread.getState().toString().equals("TERMINATED")) {
+		GlobalSettingCache.logThread = new LogThread();
+		GlobalSettingCache.logThread.FLAG = false;
+		GlobalSettingCache.logThread.start();
+		if (GlobalSettingCache.logThread != null && !GlobalSettingCache.logThread.getState().toString().equals("TERMINATED")) {
 		}
 	}
 
 
 	@Override
 	public boolean startUserOnlineThread() {
-		if (GlobalSettingConf.heartBeatThread != null || GlobalSettingConf.heartBeatsThread != null
-				|| GlobalSettingConf.userOnlineHeartThread != null) {
+		if (GlobalSettingCache.heartBeatThread != null || GlobalSettingCache.heartBeatsThread != null
+				|| GlobalSettingCache.userOnlineHeartThread != null) {
 			return false;
 		}
-		GlobalSettingConf.heartBeatThread = new HeartBeatThread();
-		GlobalSettingConf.heartBeatThread.FLAG = false;
-		GlobalSettingConf.heartBeatThread.start();
+		GlobalSettingCache.heartBeatThread = new HeartBeatThread();
+		GlobalSettingCache.heartBeatThread.FLAG = false;
+		GlobalSettingCache.heartBeatThread.start();
 
-		GlobalSettingConf.heartBeatsThread = new HeartBeatsThread();
-		GlobalSettingConf.heartBeatsThread.FLAG = false;
-		GlobalSettingConf.heartBeatsThread.start();
+		GlobalSettingCache.heartBeatsThread = new HeartBeatsThread();
+		GlobalSettingCache.heartBeatsThread.FLAG = false;
+		GlobalSettingCache.heartBeatsThread.start();
 
-		GlobalSettingConf.userOnlineHeartThread = new UserOnlineHeartThread();
-		GlobalSettingConf.userOnlineHeartThread.FLAG = false;
-		GlobalSettingConf.userOnlineHeartThread.start();
+		GlobalSettingCache.userOnlineHeartThread = new UserOnlineHeartThread();
+		GlobalSettingCache.userOnlineHeartThread.FLAG = false;
+		GlobalSettingCache.userOnlineHeartThread.start();
 
-		if (GlobalSettingConf.heartBeatThread != null && GlobalSettingConf.heartBeatsThread != null
-				&& GlobalSettingConf.userOnlineHeartThread != null
-				&& !GlobalSettingConf.heartBeatThread.getState().toString().equals("TERMINATED")
-				&& !GlobalSettingConf.heartBeatsThread.getState().toString().equals("TERMINATED")
-				&& !GlobalSettingConf.userOnlineHeartThread.getState().toString().equals("TERMINATED")) {
+		if (GlobalSettingCache.heartBeatThread != null && GlobalSettingCache.heartBeatsThread != null
+				&& GlobalSettingCache.userOnlineHeartThread != null
+				&& !GlobalSettingCache.heartBeatThread.getState().toString().equals("TERMINATED")
+				&& !GlobalSettingCache.heartBeatsThread.getState().toString().equals("TERMINATED")
+				&& !GlobalSettingCache.userOnlineHeartThread.getState().toString().equals("TERMINATED")) {
 			return true;
 		} else {
 			closeUserOnlineThread();
@@ -112,19 +112,19 @@ public class ThreadServiceImpl implements ThreadService {
 
 	@Override
 	public boolean startSmallHeartThread() {
-		if (GlobalSettingConf.smallHeartThread != null
-				&& !GlobalSettingConf.smallHeartThread.getState().toString().equals("TERMINATED")) {
+		if (GlobalSettingCache.smallHeartThread != null
+				&& !GlobalSettingCache.smallHeartThread.getState().toString().equals("TERMINATED")) {
 			return false;
 		}
-		if(null== GlobalSettingConf.userOnlineHeartThread) {
+		if(null== GlobalSettingCache.userOnlineHeartThread) {
 			return false;
 		}
 
-		GlobalSettingConf.smallHeartThread = new SmallHeartThread();
-		GlobalSettingConf.smallHeartThread.FLAG = false;
-		GlobalSettingConf.smallHeartThread.start();
-		if (GlobalSettingConf.smallHeartThread != null
-				&& !GlobalSettingConf.smallHeartThread.getState().toString().equals("TERMINATED")) {
+		GlobalSettingCache.smallHeartThread = new SmallHeartThread();
+		GlobalSettingCache.smallHeartThread.FLAG = false;
+		GlobalSettingCache.smallHeartThread.start();
+		if (GlobalSettingCache.smallHeartThread != null
+				&& !GlobalSettingCache.smallHeartThread.getState().toString().equals("TERMINATED")) {
 			return true;
 		}
 		return false;
@@ -148,63 +148,63 @@ public class ThreadServiceImpl implements ThreadService {
 
 	@Override
 	public void closeUserOnlineThread() {
-		if (GlobalSettingConf.userOnlineHeartThread != null) {
-			GlobalSettingConf.userOnlineHeartThread.FLAG = true;
-			GlobalSettingConf.userOnlineHeartThread.interrupt();
-			GlobalSettingConf.userOnlineHeartThread = null;
+		if (GlobalSettingCache.userOnlineHeartThread != null) {
+			GlobalSettingCache.userOnlineHeartThread.FLAG = true;
+			GlobalSettingCache.userOnlineHeartThread.interrupt();
+			GlobalSettingCache.userOnlineHeartThread = null;
 		}
-		if (GlobalSettingConf.heartBeatThread != null) {
-			GlobalSettingConf.heartBeatThread.FLAG = true;
-			GlobalSettingConf.heartBeatThread.interrupt();
-			GlobalSettingConf.heartBeatThread = null;
+		if (GlobalSettingCache.heartBeatThread != null) {
+			GlobalSettingCache.heartBeatThread.FLAG = true;
+			GlobalSettingCache.heartBeatThread.interrupt();
+			GlobalSettingCache.heartBeatThread = null;
 		}
-		if (GlobalSettingConf.heartBeatsThread != null) {
-			GlobalSettingConf.heartBeatsThread.FLAG = true;
-			GlobalSettingConf.heartBeatsThread.interrupt();
-			GlobalSettingConf.heartBeatsThread = null;
+		if (GlobalSettingCache.heartBeatsThread != null) {
+			GlobalSettingCache.heartBeatsThread.FLAG = true;
+			GlobalSettingCache.heartBeatsThread.interrupt();
+			GlobalSettingCache.heartBeatsThread = null;
 		}
 	}
 
 	@Override
 	public void setParseMessageThread(AllSettingConfig allSettingConfig) {
-		if (GlobalSettingConf.parseDanmuMessageThread != null) {
+		if (GlobalSettingCache.parseDanmuMessageThread != null) {
 
 		}
 	}
 
 	@Override
 	public void closeParseMessageThread() {
-		if (GlobalSettingConf.parseDanmuMessageThread != null) {
-			GlobalSettingConf.parseDanmuMessageThread.closeFlag = true;
-			GlobalSettingConf.parseDanmuMessageThread.interrupt();
-			GlobalSettingConf.parseDanmuMessageThread = null;
+		if (GlobalSettingCache.parseDanmuMessageThread != null) {
+			GlobalSettingCache.parseDanmuMessageThread.closeFlag = true;
+			GlobalSettingCache.parseDanmuMessageThread.interrupt();
+			GlobalSettingCache.parseDanmuMessageThread = null;
 		}
 	}
 
 	@Override
 	public void closeHeartByteThread() {
-		if (GlobalSettingConf.heartCheckBilibiliDanmuServerThread != null) {
-			GlobalSettingConf.heartCheckBilibiliDanmuServerThread.HFLAG = true;
-			GlobalSettingConf.heartCheckBilibiliDanmuServerThread.interrupt();
-			GlobalSettingConf.heartCheckBilibiliDanmuServerThread = null;
+		if (GlobalSettingCache.heartCheckBilibiliDanmuServerThread != null) {
+			GlobalSettingCache.heartCheckBilibiliDanmuServerThread.HFLAG = true;
+			GlobalSettingCache.heartCheckBilibiliDanmuServerThread.interrupt();
+			GlobalSettingCache.heartCheckBilibiliDanmuServerThread = null;
 		}
 	}
 
 	@Override
 	public void closeLogThread() {
-		if (GlobalSettingConf.logThread != null) {
-			GlobalSettingConf.logThread.FLAG = true;
-			GlobalSettingConf.logThread.interrupt();
-			GlobalSettingConf.logThread = null;
+		if (GlobalSettingCache.logThread != null) {
+			GlobalSettingCache.logThread.FLAG = true;
+			GlobalSettingCache.logThread.interrupt();
+			GlobalSettingCache.logThread = null;
 		}
 	}
 
 	@Override
 	public void closeSmallHeartThread() {
-		if(GlobalSettingConf.smallHeartThread!=null) {
-			GlobalSettingConf.smallHeartThread.FLAG=true;
-			GlobalSettingConf.smallHeartThread.interrupt();
-			GlobalSettingConf.smallHeartThread=null;
+		if(GlobalSettingCache.smallHeartThread!=null) {
+			GlobalSettingCache.smallHeartThread.FLAG=true;
+			GlobalSettingCache.smallHeartThread.interrupt();
+			GlobalSettingCache.smallHeartThread=null;
 		}
 	}
 

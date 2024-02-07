@@ -2,7 +2,7 @@ package top.nino.chatbilibili.thread;
 
 
 import lombok.extern.slf4j.Slf4j;
-import top.nino.chatbilibili.GlobalSettingConf;
+import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.core.data.HexUtils;
 
 /**
@@ -21,10 +21,10 @@ public class HeartCheckBilibiliDanmuServerThread extends Thread {
 	@Override
 	public void run() {
 		while (!HFLAG) {
-			if(GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
+			if(GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
 				try {
 					Thread.sleep(30000);
-					GlobalSettingConf.bilibiliWebSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.HEART_BYTE));
+					GlobalSettingCache.bilibiliWebSocketProxy.send(HexUtils.fromHexString(GlobalSettingCache.HEART_BYTE));
 				} catch (Exception e) {
 					log.info("心跳线程关闭", e);
 				}

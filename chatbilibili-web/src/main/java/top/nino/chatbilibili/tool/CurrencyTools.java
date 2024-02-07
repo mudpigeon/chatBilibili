@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import top.nino.api.model.danmu.DanmuByteDataHandle;
-import top.nino.chatbilibili.GlobalSettingConf;
+import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.chatbilibili.client.utils.ParseWebsocketMessageUtils;
 import top.nino.core.data.ByteUtils;
 import top.nino.core.time.JodaTimeUtils;
@@ -46,8 +46,8 @@ public class CurrencyTools {
     public static byte[] heartBytes() {
         return ByteUtils.byteMerger(
                 ParseWebsocketMessageUtils.BEhandle(DanmuByteDataHandle.getBarrageHeadHandle(
-                        "[object Object]".getBytes().length + 16, GlobalSettingConf.PACKAGE_HEAD_LENGTH,
-                        GlobalSettingConf.PACKAGE_VERSION, GlobalSettingConf.heartPackageType, GlobalSettingConf.packageOther)),
+                        "[object Object]".getBytes().length + 16, GlobalSettingCache.PACKAGE_HEAD_LENGTH,
+                        GlobalSettingCache.PACKAGE_VERSION, GlobalSettingCache.heartPackageType, GlobalSettingCache.packageOther)),
                 "[object Object]".getBytes());
     }
 
@@ -81,8 +81,8 @@ public class CurrencyTools {
      * @return
      */
     public static long parseRoomId() {
-        if (GlobalSettingConf.SHORT_ROOM_ID != null && GlobalSettingConf.SHORT_ROOM_ID > 0) {
-            return GlobalSettingConf.SHORT_ROOM_ID;
+        if (GlobalSettingCache.SHORT_ROOM_ID != null && GlobalSettingCache.SHORT_ROOM_ID > 0) {
+            return GlobalSettingCache.SHORT_ROOM_ID;
         }
         return 0;
     }

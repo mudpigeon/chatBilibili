@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import top.nino.api.model.heart.XData;
-import top.nino.chatbilibili.GlobalSettingConf;
+import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.core.http.OkHttp3Utils;
 
 import java.util.*;
@@ -30,7 +30,7 @@ public class HttpOtherData {
         String data = null;
         JSONObject jsonObject = null;
         String s = null;
-        String url = GlobalSettingConf.SMALLHEART_ADRESS;
+        String url = GlobalSettingCache.SMALLHEART_ADRESS;
         if (StringUtils.isBlank(url)) {
             return null;
         }

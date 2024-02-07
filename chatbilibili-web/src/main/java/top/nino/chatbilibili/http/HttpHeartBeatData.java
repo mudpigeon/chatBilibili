@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import top.nino.api.model.danmu.RoomInfo;
 import top.nino.api.model.heart.SmallHeart;
 import top.nino.api.model.heart.XData;
-import top.nino.chatbilibili.GlobalSettingConf;
+import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.chatbilibili.tool.CurrencyTools;
 import top.nino.core.http.OkHttp3Utils;
 
@@ -37,8 +37,8 @@ public class HttpHeartBeatData {
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-		if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-			headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
+		if (StringUtils.isNotBlank(GlobalSettingCache.COOKIE_VALUE)) {
+			headers.put("cookie", GlobalSettingCache.COOKIE_VALUE);
 		}
 		try {
 			data = OkHttp3Utils.getHttp3Utils().httpGet(urlString, headers, null).body().string();
@@ -68,18 +68,18 @@ public class HttpHeartBeatData {
 		String data = null;
 		Map<String, String> headers = null;
 		Map<String, String> params = null;
-		if (GlobalSettingConf.USER_BARRAGE_MESSAGE == null && GlobalSettingConf.USER_COOKIE_INFO == null)
+		if (GlobalSettingCache.USER_BARRAGE_MESSAGE == null && GlobalSettingCache.USER_COOKIE_INFO == null)
 			return;
 		headers = new HashMap<>(4);
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" +  CurrencyTools.parseRoomId());
-		if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-			headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
+		if (StringUtils.isNotBlank(GlobalSettingCache.COOKIE_VALUE)) {
+			headers.put("cookie", GlobalSettingCache.COOKIE_VALUE);
 		}
 		params = new HashMap<>(4);
-		params.put("csrf_token", GlobalSettingConf.USER_COOKIE_INFO.getBili_jct());
-		params.put("csrf", GlobalSettingConf.USER_COOKIE_INFO.getBili_jct());
+		params.put("csrf_token", GlobalSettingCache.USER_COOKIE_INFO.getBili_jct());
+		params.put("csrf", GlobalSettingCache.USER_COOKIE_INFO.getBili_jct());
 		params.put("visit_id", "");
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
@@ -117,16 +117,16 @@ public class HttpHeartBeatData {
 		SmallHeart smallHeart=null;
 		XData xData = null;
 		StringBuilder stringBuilder = new StringBuilder(50);
-		if (GlobalSettingConf.USER_BARRAGE_MESSAGE == null && GlobalSettingConf.USER_COOKIE_INFO == null)
+		if (GlobalSettingCache.USER_BARRAGE_MESSAGE == null && GlobalSettingCache.USER_COOKIE_INFO == null)
 			return null;
 		headers = new HashMap<>(4);
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-		if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-			headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
+		if (StringUtils.isNotBlank(GlobalSettingCache.COOKIE_VALUE)) {
+			headers.put("cookie", GlobalSettingCache.COOKIE_VALUE);
 		}
-		long[] ids = {roomInfo.getParent_area_id(),roomInfo.getArea_id(),0, GlobalSettingConf.ROOM_ID};
+		long[] ids = {roomInfo.getParent_area_id(),roomInfo.getArea_id(),0, GlobalSettingCache.ROOM_ID};
 		stringBuilder.append("[")
 				.append("\"").append(CurrencyTools.deviceHash()).append("\"").append(",")
 				.append("\"").append(CurrencyTools.getUUID()).append("\"").append("]");
@@ -139,8 +139,8 @@ public class HttpHeartBeatData {
 		params.put("is_patch", "0");
 		params.put("heart_beat", "[]");
 		params.put("ua", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-		params.put("csrf_token", GlobalSettingConf.USER_COOKIE_INFO.getBili_jct());
-		params.put("csrf", GlobalSettingConf.USER_COOKIE_INFO.getBili_jct());
+		params.put("csrf_token", GlobalSettingCache.USER_COOKIE_INFO.getBili_jct());
+		params.put("csrf", GlobalSettingCache.USER_COOKIE_INFO.getBili_jct());
 		params.put("visit_id", "");
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
@@ -185,17 +185,17 @@ public class HttpHeartBeatData {
 		Map<String, String> headers = null;
 		Map<String, String> params = null;
 		SmallHeart smallHeart=null;
-		if (GlobalSettingConf.USER_BARRAGE_MESSAGE == null && GlobalSettingConf.USER_COOKIE_INFO == null)
+		if (GlobalSettingCache.USER_BARRAGE_MESSAGE == null && GlobalSettingCache.USER_COOKIE_INFO == null)
 			return xData;
 		headers = new HashMap<>(4);
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-		if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-			headers.put("cookie", GlobalSettingConf.COOKIE_VALUE);
+		if (StringUtils.isNotBlank(GlobalSettingCache.COOKIE_VALUE)) {
+			headers.put("cookie", GlobalSettingCache.COOKIE_VALUE);
 		}
 		params = new HashMap<>(12);
-		long[] ids = {roomInfo.getParent_area_id(),roomInfo.getArea_id(),num, GlobalSettingConf.ROOM_ID};
+		long[] ids = {roomInfo.getParent_area_id(),roomInfo.getArea_id(),num, GlobalSettingCache.ROOM_ID};
 //		String[] devices = {CurrencyTools.deviceHash(),CurrencyTools.getUUID()};
 		long ts =System.currentTimeMillis();
 		xData.setId(ids);
@@ -228,8 +228,8 @@ public class HttpHeartBeatData {
 		params.put("time", xData.getTime().toString());
 		params.put("ts", String.valueOf(ts));
 		params.put("ua", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-		params.put("csrf_token", GlobalSettingConf.USER_COOKIE_INFO.getBili_jct());
-		params.put("csrf", GlobalSettingConf.USER_COOKIE_INFO.getBili_jct());
+		params.put("csrf_token", GlobalSettingCache.USER_COOKIE_INFO.getBili_jct());
+		params.put("csrf", GlobalSettingCache.USER_COOKIE_INFO.getBili_jct());
 		params.put("visit_id", "");
 		try {
 			data = OkHttp3Utils.getHttp3Utils()

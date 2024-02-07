@@ -5,7 +5,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import struct.JavaStruct;
 import struct.StructException;
 import top.nino.api.model.danmu.DanmuByteDataHandle;
-import top.nino.chatbilibili.GlobalSettingConf;
+import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.core.data.ByteUtils;
 
 
@@ -48,11 +48,11 @@ public class ParseWebsocketMessageUtils {
 				String resultStr = new String(dataBodyBytes, "utf-8");
 
 				// 放入待处理弹幕集合
-				GlobalSettingConf.danmuList.add(resultStr);
+				GlobalSettingCache.danmuList.add(resultStr);
 
-				if (ObjectUtils.isNotEmpty(GlobalSettingConf.parseDanmuMessageThread) && !GlobalSettingConf.parseDanmuMessageThread.closeFlag) {
-					synchronized (GlobalSettingConf.parseDanmuMessageThread) {
-						GlobalSettingConf.parseDanmuMessageThread.notify();
+				if (ObjectUtils.isNotEmpty(GlobalSettingCache.parseDanmuMessageThread) && !GlobalSettingCache.parseDanmuMessageThread.closeFlag) {
+					synchronized (GlobalSettingCache.parseDanmuMessageThread) {
+						GlobalSettingCache.parseDanmuMessageThread.notify();
 					}
 				}
 
@@ -66,7 +66,7 @@ public class ParseWebsocketMessageUtils {
 			// 房间人气
 			if (data_type == 3) {
 				try {
-					GlobalSettingConf.ROOM_POPULARITY = ByteUtils.byteslong(dataBodyBytes);
+					GlobalSettingCache.ROOM_POPULARITY = ByteUtils.byteslong(dataBodyBytes);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -127,11 +127,11 @@ public class ParseWebsocketMessageUtils {
 
 					String resultStr = new String(subBodyBytes, "utf-8");
 
-					GlobalSettingConf.danmuList.add(resultStr);
+					GlobalSettingCache.danmuList.add(resultStr);
 
-					if (ObjectUtils.isNotEmpty(GlobalSettingConf.parseDanmuMessageThread) && !GlobalSettingConf.parseDanmuMessageThread.closeFlag) {
-						synchronized (GlobalSettingConf.parseDanmuMessageThread) {
-							GlobalSettingConf.parseDanmuMessageThread.notify();
+					if (ObjectUtils.isNotEmpty(GlobalSettingCache.parseDanmuMessageThread) && !GlobalSettingCache.parseDanmuMessageThread.closeFlag) {
+						synchronized (GlobalSettingCache.parseDanmuMessageThread) {
+							GlobalSettingCache.parseDanmuMessageThread.notify();
 						}
 					}
 				} catch (Exception e) {
@@ -144,7 +144,7 @@ public class ParseWebsocketMessageUtils {
 				// 房间人气
 				if (data_type == 3) {
 					try {
-						GlobalSettingConf.ROOM_POPULARITY = ByteUtils.byteslong(subBodyBytes);
+						GlobalSettingCache.ROOM_POPULARITY = ByteUtils.byteslong(subBodyBytes);
 					} catch (Exception e) {
 						log.info("房间人气解析异常", e);
 					}

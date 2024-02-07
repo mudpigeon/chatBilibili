@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import top.nino.chatbilibili.GlobalSettingConf;
+import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.core.file.LogFileUtils;
 
 
@@ -21,24 +21,24 @@ public class LogThread extends Thread{
 
 		while (!FLAG) {
 
-			if(ObjectUtils.isEmpty(GlobalSettingConf.bilibiliWebSocketProxy)&& !GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
+			if(ObjectUtils.isEmpty(GlobalSettingCache.bilibiliWebSocketProxy)&& !GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
 				return;
 			}
 
-			if(CollectionUtils.isEmpty(GlobalSettingConf.logList) || StringUtils.isBlank(GlobalSettingConf.logList.get(0))) {
-				synchronized (GlobalSettingConf.logThread) {
+			if(CollectionUtils.isEmpty(GlobalSettingCache.logList) || StringUtils.isBlank(GlobalSettingCache.logList.get(0))) {
+				synchronized (GlobalSettingCache.logThread) {
 					try {
-						GlobalSettingConf.logThread.wait();
+						GlobalSettingCache.logThread.wait();
 					} catch (InterruptedException e) {
 //						LOGGER.info("日志线程关闭:" + e);
 					}
 				}
 			}
 
-			String logString = GlobalSettingConf.logList.get(0);
-			LogFileUtils.logFile(logString, GlobalSettingConf.GLOBAL_SETTING_FILE_NAME, GlobalSettingConf.ROOM_ID);
+			String logString = GlobalSettingCache.logList.get(0);
+			LogFileUtils.logFile(logString, GlobalSettingCache.GLOBAL_SETTING_FILE_NAME, GlobalSettingCache.ROOM_ID);
 
-			GlobalSettingConf.logList.remove(0);
+			GlobalSettingCache.logList.remove(0);
 
 			try {
 				Thread.sleep(10);
