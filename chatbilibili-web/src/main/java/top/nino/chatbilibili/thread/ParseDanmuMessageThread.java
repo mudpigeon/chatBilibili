@@ -32,7 +32,7 @@ import java.util.Vector;
 public class ParseDanmuMessageThread extends Thread {
 
 
-    public volatile boolean FLAG = false;
+    public volatile boolean closeFlag = false;
 
     private DanmuWebsocket danmuWebsocket = SpringUtils.getBean(DanmuWebsocket.class);
 
@@ -57,7 +57,7 @@ public class ParseDanmuMessageThread extends Thread {
             short msg_type = 0;
             StringBuilder stringBuilder = new StringBuilder(200);
 
-            while (!FLAG) {
+            while (!closeFlag) {
 
                 // 当没有弹幕需要解析时，等待
                 if(CollectionUtils.isEmpty(GlobalSettingConf.danmuList) || StringUtils.isBlank(GlobalSettingConf.danmuList.get(0))) {

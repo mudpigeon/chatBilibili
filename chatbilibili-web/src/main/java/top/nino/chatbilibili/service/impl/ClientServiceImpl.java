@@ -9,17 +9,16 @@ import top.nino.api.model.room.RoomAnchorInfo;
 import top.nino.api.model.room.RoomAllInfo;
 import top.nino.api.model.room.RoomStatusInfo;
 import top.nino.api.model.server.DanmuInfo;
-import top.nino.api.model.welcome.BarrageHeadHandle;
+import top.nino.api.model.danmu.DanmuByteDataHandle;
 import top.nino.api.model.welcome.FirstSecurityData;
 import top.nino.chatbilibili.GlobalSettingConf;
-import top.nino.chatbilibili.client.WebSocketProxy;
+import top.nino.chatbilibili.client.BilibiliWebSocketProxy;
 import top.nino.chatbilibili.component.ThreadComponent;
 import top.nino.chatbilibili.http.HttpRoomData;
 import top.nino.chatbilibili.service.ClientService;
 import top.nino.chatbilibili.service.SettingService;
-import top.nino.chatbilibili.ws.HandleWebsocketPackage;
+import top.nino.chatbilibili.client.utils.ParseWebsocketMessageUtils;
 import top.nino.core.ByteUtils;
-import top.nino.chatbilibili.tool.CurrencyTools;
 import top.nino.core.DanmuUtils;
 import top.nino.core.HexUtils;
 import top.nino.service.http.HttpBilibiliServer;
@@ -89,8 +88,9 @@ public class ClientServiceImpl implements ClientService {
             firstSecurityData = new FirstSecurityData(0L, GlobalSettingConf.ROOM_ID, roomDanmuInfo.getToken());
             firstSecurityData.setBuvid(UUID.randomUUID()+"infoc");
         }
-        byte[] byte_1 = HandleWebsocketPackage.BEhandle(
-                BarrageHeadHandle.getBarrageHeadHandle(
+        // 弹幕集打包后的数据
+        byte[] byte_1 = ParseWebsocketMessageUtils.BEhandle(
+                DanmuByteDataHandle.getBarrageHeadHandle(
                 firstSecurityData.toJson().getBytes().length + GlobalSettingConf.PACKAGE_HEAD_LENGTH,
                 GlobalSettingConf.PACKAGE_HEAD_LENGTH, GlobalSettingConf.PACKAGE_VERSION, GlobalSettingConf.FIRST_PACKAGE_TYPE,
                 GlobalSettingConf.packageOther));
@@ -98,22 +98,21 @@ public class ClientServiceImpl implements ClientService {
         byte[] requestByteData = ByteUtils.byteMerger(byte_1, byte_2);
 
         // 开启websocket
-        GlobalSettingConf.webSocketProxy = new WebSocketProxy(GlobalSettingConf.ROOM_DANMU_WEBSOCKET_URL, roomAnchorInfo);
+        GlobalSettingConf.bilibiliWebSocketProxy = new BilibiliWebSocketProxy(GlobalSettingConf.ROOM_DANMU_WEBSOCKET_URL, roomAnchorInfo);
 
         // 发送验证包
-        GlobalSettingConf.webSocketProxy.send(requestByteData);
+        GlobalSettingConf.bilibiliWebSocketProxy.send(requestByteData);
 
         // 发送心跳包
-        GlobalSettingConf.webSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.HEART_BYTE));
+        GlobalSettingConf.bilibiliWebSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.HEART_BYTE));
 
         // 启动心跳线程
         threadComponent.startHeartCheckBilibiliDanmuServerThread();
-
     }
 
     @Override
     public void reConnService() throws Exception {
-        if (!GlobalSettingConf.webSocketProxy.isOpen()) {
+        if (!GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
             threadComponent.closeAll();
             RoomStatusInfo roomStatusInfo = HttpRoomData.httpGetRoomInit(GlobalSettingConf.ROOM_ID);
             RoomAnchorInfo roomAnchorInfo = HttpRoomData.httpGetRoomData(GlobalSettingConf.ROOM_ID);
@@ -122,21 +121,20 @@ public class ClientServiceImpl implements ClientService {
                     return;
                 }
             } catch (Exception e) {
-                // TODO: handle exception
                 return;
             }
             if (roomStatusInfo.getShort_id() > 0) {
                 GlobalSettingConf.SHORT_ROOM_ID = roomStatusInfo.getShort_id();
             }
             GlobalSettingConf.ROOM_ID = roomStatusInfo.getRoom_id();
-            DanmuInfo danmuInfo = HttpRoomData.httpGetConf();
-            if (danmuInfo == null) {
+            DanmuInfo roomDanmuInfo = HttpRoomData.httpGetConf();
+            if (roomDanmuInfo == null) {
                 return;
             }
             GlobalSettingConf.ANCHOR_UID = roomStatusInfo.getUid();
             GlobalSettingConf.FANS_NUM = HttpRoomData.httpGetFollowersNum();
 
-            GlobalSettingConf.ROOM_DANMU_WEBSOCKET_URL = CurrencyTools.GetWsUrl(danmuInfo.getHost_list());
+            GlobalSettingConf.ROOM_DANMU_WEBSOCKET_URL = DanmuUtils.randomGetWebsocketUrl(GlobalSettingConf.ROOM_DANMU_WEBSOCKET_URL, roomDanmuInfo.getHost_list());
 
             GlobalSettingConf.ANCHOR_NAME = roomAnchorInfo.getUname();
             GlobalSettingConf.LIVE_STATUS = roomStatusInfo.getLive_status();
@@ -148,23 +146,23 @@ public class ClientServiceImpl implements ClientService {
                 GlobalSettingConf.USER_MANAGER = HttpBilibiliServer.httpGetUserManagerMsg(GlobalSettingConf.ROOM_ID, GlobalSettingConf.SHORT_ROOM_ID, GlobalSettingConf.COOKIE_VALUE);
             }
             FirstSecurityData firstSecurityData = null;
-            GlobalSettingConf.webSocketProxy = new WebSocketProxy(GlobalSettingConf.ROOM_DANMU_WEBSOCKET_URL, roomAnchorInfo);
+            GlobalSettingConf.bilibiliWebSocketProxy = new BilibiliWebSocketProxy(GlobalSettingConf.ROOM_DANMU_WEBSOCKET_URL, roomAnchorInfo);
             if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
                 firstSecurityData = new FirstSecurityData(GlobalSettingConf.USER.getUid(), GlobalSettingConf.ROOM_ID,
-                        danmuInfo.getToken());
+                        roomDanmuInfo.getToken());
             } else {
-                firstSecurityData = new FirstSecurityData(GlobalSettingConf.ROOM_ID, danmuInfo.getToken());
+                firstSecurityData = new FirstSecurityData(GlobalSettingConf.ROOM_ID, roomDanmuInfo.getToken());
             }
-            byte[] byte_1 = HandleWebsocketPackage.BEhandle(BarrageHeadHandle.getBarrageHeadHandle(
+            byte[] byte_1 = ParseWebsocketMessageUtils.BEhandle(DanmuByteDataHandle.getBarrageHeadHandle(
                     firstSecurityData.toJson().toString().getBytes().length + GlobalSettingConf.PACKAGE_HEAD_LENGTH,
                     GlobalSettingConf.PACKAGE_HEAD_LENGTH, GlobalSettingConf.PACKAGE_VERSION, GlobalSettingConf.FIRST_PACKAGE_TYPE,
                     GlobalSettingConf.packageOther));
             byte[] byte_2 = firstSecurityData.toJson().getBytes();
             byte[] req = ByteUtils.byteMerger(byte_1, byte_2);
-            GlobalSettingConf.webSocketProxy.send(req);
-            GlobalSettingConf.webSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.HEART_BYTE));
+            GlobalSettingConf.bilibiliWebSocketProxy.send(req);
+            GlobalSettingConf.bilibiliWebSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.HEART_BYTE));
             threadComponent.startHeartCheckBilibiliDanmuServerThread();
-            if (GlobalSettingConf.webSocketProxy.isOpen()) {
+            if (GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
                 settingService.writeAndReadSettingAndStartReceive();
             }
         }
@@ -173,21 +171,21 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public boolean closeConnService() {
         boolean flag = false;
-        if (GlobalSettingConf.webSocketProxy != null) {
-            if (GlobalSettingConf.webSocketProxy.isOpen()) {
-                synchronized (GlobalSettingConf.webSocketProxy) {
-                    GlobalSettingConf.webSocketProxy.close();
+        if (GlobalSettingConf.bilibiliWebSocketProxy != null) {
+            if (GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
+                synchronized (GlobalSettingConf.bilibiliWebSocketProxy) {
+                    GlobalSettingConf.bilibiliWebSocketProxy.close();
                     try {
-                        GlobalSettingConf.webSocketProxy.closeBlocking();
+                        GlobalSettingConf.bilibiliWebSocketProxy.closeBlocking();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    GlobalSettingConf.webSocketProxy.closeConnection(1000, "手动关闭");
-                    GlobalSettingConf.webSocketProxy = null;
+                    GlobalSettingConf.bilibiliWebSocketProxy.closeConnection(1000, "手动关闭");
+                    GlobalSettingConf.bilibiliWebSocketProxy = null;
                 }
                 threadComponent.closeAll();
                 GlobalSettingConf.init_connect();
-                if (null == GlobalSettingConf.webSocketProxy || !GlobalSettingConf.webSocketProxy.isOpen()) {
+                if (null == GlobalSettingConf.bilibiliWebSocketProxy || !GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
                     flag = true;
                 }
             } else {

@@ -29,7 +29,7 @@ public class AdvertThread extends Thread {
 			if (FLAG) {
 				return;
 			}
-			if(GlobalSettingConf.webSocketProxy!=null&&!GlobalSettingConf.webSocketProxy.isOpen()) {
+			if(GlobalSettingConf.bilibiliWebSocketProxy !=null&&!GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
 				return;
 			}
 			long delay_time = new BigDecimal(getTime()).multiply(new BigDecimal("1000")).longValue();

@@ -110,7 +110,7 @@ public class GlobalSettingFileServiceImpl implements GlobalSettingFileService {
                 return;
             }
 
-            if (ObjectUtils.isEmpty(GlobalSettingConf.webSocketProxy) || !GlobalSettingConf.webSocketProxy.isOpen()) {
+            if (ObjectUtils.isEmpty(GlobalSettingConf.bilibiliWebSocketProxy) || !GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
                 return;
             }
 

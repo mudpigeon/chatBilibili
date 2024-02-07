@@ -29,11 +29,11 @@ public class RestRoomController {
     @ResponseBody
     @GetMapping(value = "/connectRoom")
     public Response<?> connectRoom(HttpServletRequest req, @RequestParam("roomId") Long roomId) {
-        if (ObjectUtils.isEmpty(GlobalSettingConf.webSocketProxy) || !GlobalSettingConf.webSocketProxy.isOpen()) {
+        if (ObjectUtils.isEmpty(GlobalSettingConf.bilibiliWebSocketProxy) || !GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
             try {
                 clientService.loadRoomInfoAndOpenWebSocket(roomId);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("加载直播间信息并开启websocket异常", e);
             }
             if (ObjectUtils.isNotEmpty(GlobalSettingConf.ROOM_ID)) {
                 GlobalSettingConf.ALL_SETTING_CONF.setRoomId(GlobalSettingConf.ROOM_ID);
@@ -42,6 +42,6 @@ public class RestRoomController {
             settingService.writeAndReadSettingAndStartReceive();
         }
 
-        return Response.success(ObjectUtils.isNotEmpty(GlobalSettingConf.webSocketProxy) && GlobalSettingConf.webSocketProxy.isOpen(), req);
+        return Response.success(ObjectUtils.isNotEmpty(GlobalSettingConf.bilibiliWebSocketProxy) && GlobalSettingConf.bilibiliWebSocketProxy.isOpen(), req);
     }
 }

@@ -2,46 +2,45 @@ package top.nino.chatbilibili.client;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import top.nino.api.model.room.RoomAnchorInfo;
 import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.thread.ReConnThread;
-import top.nino.chatbilibili.ws.HandleWebsocketPackage;
+import top.nino.chatbilibili.client.utils.ParseWebsocketMessageUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 
+/**
+ * @author nino
+ */
 @Slf4j
-public class Websocket extends WebSocketClient {
+public class BilibiliWebsocket extends WebSocketClient {
 
 
-	public Websocket(String url, RoomAnchorInfo roomAnchorInfo) throws URISyntaxException {
+	public BilibiliWebsocket(String url, RoomAnchorInfo roomAnchorInfo) throws URISyntaxException {
 		super(new URI(url));
-		log.info("已尝试连接至服务器地址:" + url + ";真实房间号为:" + roomAnchorInfo.getRoomid() + ";主播名字为:" + roomAnchorInfo.getUname());
-		// TODO 自动生成的构造函数存根
+		log.info("已尝试连接至服务器地址:{}", url);
+		log.info("真实房间号为:{}", roomAnchorInfo.getRoomid());
+		log.info("主播名字为:{}", roomAnchorInfo.getUname());
 	}
 
 	@Override
-	public void onOpen(ServerHandshake handshakedata) {
-		// TODO 自动生成的方法存根
-		log.info("websocket connect open(连接窗口打开)");
+	public void onOpen(ServerHandshake handshakeData) {
+		log.info("和b站直播间的websocket连接窗口已打开)");
 	}
 
 	@Override
 	public void onMessage(ByteBuffer message) {
-		// TODO 自动生成的方法存根
-		if(GlobalSettingConf.parseDanmuMessageThread !=null && ! GlobalSettingConf.parseDanmuMessageThread.FLAG) {
-		try {
-			HandleWebsocketPackage.handleMessage(message);
-		} catch (Exception e) {
-			// TODO 自动生成的 catch 块
-			log.info("解析错误日志生成，请将log底下文件发给管理员,或github开issue发送错误"+e);
-		}
-//			synchronized (PublicDataConf.parseMessageThread) {
-//				PublicDataConf.parseMessageThread.notify();
-//			}
+		if(ObjectUtils.isNotEmpty(GlobalSettingConf.parseDanmuMessageThread) && ! GlobalSettingConf.parseDanmuMessageThread.closeFlag) {
+			try {
+				ParseWebsocketMessageUtils.parseMessage(message);
+			} catch (Exception e) {
+				log.info("解析websocket包错误", e);
+			}
 		}
 	}
 
@@ -49,10 +48,10 @@ public class Websocket extends WebSocketClient {
 	public void onClose(int code, String reason, boolean remote) {
 		log.info("websocket connect close(连接已经断开)，纠错码:" + code);
 		GlobalSettingConf.heartCheckBilibiliDanmuServerThread.HFLAG = true;
-		GlobalSettingConf.parseDanmuMessageThread.FLAG = true;
+		GlobalSettingConf.parseDanmuMessageThread.closeFlag = true;
 		if (code != 1000) {
 			log.info("websocket connect close(连接意外断开，正在尝试重连)，错误码:" + code);
-			if (!GlobalSettingConf.webSocketProxy.isOpen()) {
+			if (!GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
 				if (GlobalSettingConf.reConnThread != null) {
 					if (GlobalSettingConf.reConnThread.getState().toString().equals("TERMINATED")) {
 						GlobalSettingConf.reConnThread = new ReConnThread();
@@ -72,12 +71,11 @@ public class Websocket extends WebSocketClient {
 
 	@Override
 	public void onError(Exception ex) {
-		// TODO 自动生成的方法存根
 		log.error("[错误信息，请将log文件下的日志发送给管理员]websocket connect error,message:" + ex.getMessage());
 		log.info("尝试重新链接");
-		synchronized (GlobalSettingConf.webSocketProxy) {
-			GlobalSettingConf.webSocketProxy.close(1006);
-			if (!GlobalSettingConf.webSocketProxy.isOpen()) {
+		synchronized (GlobalSettingConf.bilibiliWebSocketProxy) {
+			GlobalSettingConf.bilibiliWebSocketProxy.close(1006);
+			if (!GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
 				if (GlobalSettingConf.reConnThread != null) {
 					if (GlobalSettingConf.reConnThread.getState().toString().equals("TERMINATED")) {
 						GlobalSettingConf.reConnThread = new ReConnThread();
@@ -95,9 +93,7 @@ public class Websocket extends WebSocketClient {
 		}
 	}
 
-	@Override
 	public void onMessage(String message) {
-		// TODO 自动生成的方法存根
 
 	}
 

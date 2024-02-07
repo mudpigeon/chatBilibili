@@ -21,7 +21,7 @@ public class LogThread extends Thread{
 
 		while (!FLAG) {
 
-			if(ObjectUtils.isEmpty(GlobalSettingConf.webSocketProxy)&& !GlobalSettingConf.webSocketProxy.isOpen()) {
+			if(ObjectUtils.isEmpty(GlobalSettingConf.bilibiliWebSocketProxy)&& !GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
 				return;
 			}
 

@@ -18,7 +18,7 @@ public class WelcomeShieldThread extends Thread{
         if (FLAG) {
             return;
         }
-        if(GlobalSettingConf.webSocketProxy!=null&&!GlobalSettingConf.webSocketProxy.isOpen()) {
+        if(GlobalSettingConf.bilibiliWebSocketProxy !=null&&!GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
             return;
         }
 

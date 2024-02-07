@@ -34,7 +34,7 @@ public class ReConnThread extends Thread {
 //				num=0;
 //				return;
 			}
-			if (!GlobalSettingConf.webSocketProxy.isOpen()) {
+			if (!GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
 				try {
 					clientService.reConnService();
 				} catch (Exception e) {

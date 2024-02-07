@@ -54,7 +54,7 @@ public class AutoReplyThread extends Thread {
             if (FLAG) {
                 return;
             }
-            if (GlobalSettingConf.webSocketProxy != null && !GlobalSettingConf.webSocketProxy.isOpen()) {
+            if (GlobalSettingConf.bilibiliWebSocketProxy != null && !GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
                 return;
             }
             if (!CollectionUtils.isEmpty(GlobalSettingConf.replys)) {

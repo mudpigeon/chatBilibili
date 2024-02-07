@@ -11,10 +11,10 @@ import java.net.URISyntaxException;
  * @author nino
  */
 @Slf4j
-public class WebSocketProxy extends Websocket {
+public class BilibiliWebSocketProxy extends BilibiliWebsocket {
 
 
-	public WebSocketProxy(String url, RoomAnchorInfo roomAnchorInfo) throws URISyntaxException, InterruptedException {
+	public BilibiliWebSocketProxy(String url, RoomAnchorInfo roomAnchorInfo) throws URISyntaxException, InterruptedException {
 		super(url, roomAnchorInfo);
 		log.info("Connectin(连接中)...........................................");
 		super.connectBlocking();
@@ -24,6 +24,5 @@ public class WebSocketProxy extends Websocket {
 	@Override
 	public void onClose(int code, String reason, boolean remote) {
 		super.onClose(code, reason, remote);
-	
 	}
 }

@@ -65,7 +65,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 		}
 
 		GlobalSettingConf.parseDanmuMessageThread = new ParseDanmuMessageThread();
-		GlobalSettingConf.parseDanmuMessageThread.FLAG = false;
+		GlobalSettingConf.parseDanmuMessageThread.closeFlag = false;
 		GlobalSettingConf.parseDanmuMessageThread.start();
 		if (GlobalSettingConf.parseDanmuMessageThread != null
 				&& !GlobalSettingConf.parseDanmuMessageThread.getState().toString().equals("TERMINATED")) {
@@ -272,7 +272,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 	@Override
 	public void closeParseMessageThread() {
 		if (GlobalSettingConf.parseDanmuMessageThread != null) {
-			GlobalSettingConf.parseDanmuMessageThread.FLAG = true;
+			GlobalSettingConf.parseDanmuMessageThread.closeFlag = true;
 			GlobalSettingConf.parseDanmuMessageThread.interrupt();
 			GlobalSettingConf.parseDanmuMessageThread = null;
 		}

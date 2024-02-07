@@ -161,7 +161,7 @@ public class ByteUtils {
     }
 
 
-	//使用BrotliCompressorInputStream解压brotli
+	// 使用BrotliCompressorInputStream解压brotli
 	public static byte[] BytesToBrotliInflate(byte[] bs){
 		byte[] b = null;
 		try (BrotliCompressorInputStream brotliCompressorInputStream = new BrotliCompressorInputStream(new ByteArrayInputStream(bs))){
@@ -179,17 +179,17 @@ public class ByteUtils {
 	/**
 	 * byte[]的zlib解压
 	 * 
-	 * @param bs 待解压byte数组
+	 * @param dataBodyBytes 待解压byte数组
 	 * @return b 解压完成的byte[]
 	 */
-	public static byte[] BytesTozlibInflate(byte[] bs) {
+	public static byte[] BytesTozlibInflate(byte[] dataBodyBytes) {
 		byte[] b = null;
 		ByteArrayOutputStream bos = null;
 		InflaterOutputStream zos = null;
 		try {
 			bos = new ByteArrayOutputStream();
 			zos = new InflaterOutputStream(bos);
-			zos.write(bs);
+			zos.write(dataBodyBytes);
 			zos.close();
 			b = bos.toByteArray();
 			return b;

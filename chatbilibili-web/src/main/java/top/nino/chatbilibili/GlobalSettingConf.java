@@ -12,7 +12,7 @@ import top.nino.api.model.user.AutoSendGift;
 import top.nino.api.model.user.User;
 import top.nino.api.model.user.UserManager;
 import top.nino.api.model.user_in_room_barrageMsg.UserBarrageMsg;
-import top.nino.chatbilibili.client.WebSocketProxy;
+import top.nino.chatbilibili.client.BilibiliWebSocketProxy;
 import top.nino.chatbilibili.thread.*;
 
 import java.util.Map;
@@ -87,6 +87,9 @@ public class GlobalSettingConf {
 	// 粉丝数
 	public static Long FANS_NUM;
 
+	// 房间人气
+	public static Long ROOM_POPULARITY;
+
 	// 直播状态 0不直播 1直播 2轮播
 	public static Integer LIVE_STATUS = LiveStatusEnum.CLOSED.getCode();
 
@@ -134,7 +137,7 @@ public class GlobalSettingConf {
 	public final static Vector<String> logList = new Vector<>(100);
 
 	// websocket客户端主线程
-	public static WebSocketProxy webSocketProxy;
+	public static BilibiliWebSocketProxy bilibiliWebSocketProxy;
 
 	// 心跳线程
 	public static HeartCheckBilibiliDanmuServerThread heartCheckBilibiliDanmuServerThread;
@@ -153,8 +156,6 @@ public class GlobalSettingConf {
 
 
 
-	// 房间人气
-	public static Long ROOM_POPULARITY =1L;
 
 	// 房间观看人数（历史）
 	public static Long ROOM_WATCHER = 0L;

@@ -6,13 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
 import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
-import top.nino.api.model.login.LoginData;
 import top.nino.api.model.login.QrCodeInfo;
 import top.nino.api.model.user.UserBag;
+import top.nino.api.model.user.UserCookieInfo;
 import top.nino.api.model.user.UserMedal;
 import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.api.model.user_in_room_barrageMsg.UserBarrageMsg;
 import top.nino.chatbilibili.tool.CurrencyTools;
+import top.nino.core.CookieUtils;
 import top.nino.core.JodaTimeUtils;
 import top.nino.core.OkHttp3Utils;
 import top.nino.core.UrlUtils;
@@ -87,65 +88,6 @@ public class HttpUserData {
         return qrCodeInfo;
     }
 
-    /**
-     * 判断扫码状态 扫码确定后 获取用户cookie 旧版本 已废弃
-     *
-     * @param logindata
-     * @return
-     */
-    @Deprecated
-    public static String httpPostCookie(LoginData logindata) {
-        if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-            return "";
-        }
-        String data = null;
-        Response response = null;
-        Map<String, String> headers = null;
-        Map<String, String> params = null;
-        headers = new HashMap<>(3);
-        headers.put("user-agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-        headers.put("referer", "https://passport.bilibili.com/login");
-        params = new HashMap<>(3);
-        params.put("oauthKey", logindata.getOauthKey());
-        params.put("gourl", logindata.getGourl());
-        try {
-            response = OkHttp3Utils.getHttp3Utils().httpPostForm("https://passport.bilibili.com/qrcode/getLoginInfo",
-                    headers, params);
-            data = response.body().string();
-            if (JSONObject.parseObject(data).getBoolean("status")) {
-                Headers headers2 = response.headers();
-                List<String> cookies = headers2.values("Set-Cookie");
-                Set<String> cookieSet = new HashSet<>();
-                for (String string : cookies) {
-                    cookieSet.add(string.substring(0, string.indexOf(";")));
-                }
-                StringBuilder stringBuilder = new StringBuilder(100);
-                Iterator<String> iterable = cookieSet.iterator();
-                while (iterable.hasNext()) {
-                    stringBuilder.append(iterable.next());
-                    if (iterable.hasNext()) {
-                        stringBuilder.append(";");
-                    }
-                }
-                GlobalSettingConf.COOKIE_VALUE = stringBuilder.toString();
-                if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-                    //处理token
-                    CurrencyTools.parseCookie(GlobalSettingConf.COOKIE_VALUE);
-                    if (GlobalSettingConf.ROOM_ID != null) {
-                        GlobalSettingConf.USER_BARRAGE_MESSAGE = HttpBilibiliServer.httpGetUserBarrageMsg(GlobalSettingConf.SHORT_ROOM_ID, GlobalSettingConf.COOKIE_VALUE);
-                        GlobalSettingConf.USER_MANAGER = HttpBilibiliServer.httpGetUserManagerMsg(GlobalSettingConf.ROOM_ID, GlobalSettingConf.SHORT_ROOM_ID, GlobalSettingConf.COOKIE_VALUE);
-                    }
-                    log.info("扫码登录成功");
-                }
-            }
-        } catch (Exception e1) {
-            // TODO 自动生成的 catch 块
-            log.error("扫码登录失败抛出异常:" + e1);
-        }
-
-        return data;
-    }
 
     /**
      * HTTP 二维码轮询
@@ -193,7 +135,13 @@ public class HttpUserData {
                 GlobalSettingConf.COOKIE_VALUE = stringBuilder.toString();
                 if (StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
                     //处理token
-                    CurrencyTools.parseCookie(GlobalSettingConf.COOKIE_VALUE);
+                    UserCookieInfo userCookieInfo = CookieUtils.parseCookie(GlobalSettingConf.COOKIE_VALUE);
+                    if(userCookieInfo.isValidFlag()) {
+                        GlobalSettingConf.USER_COOKIE_INFO = userCookieInfo;
+                    } else {
+                        log.info("cookie解析异常");
+                        return data;
+                    }
                     //房间号非空则去获取用户弹幕长度
                     if (GlobalSettingConf.ROOM_ID != null) {
                         GlobalSettingConf.USER_BARRAGE_MESSAGE = HttpBilibiliServer.httpGetUserBarrageMsg(GlobalSettingConf.SHORT_ROOM_ID, GlobalSettingConf.COOKIE_VALUE);

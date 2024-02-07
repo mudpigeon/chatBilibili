@@ -1,4 +1,4 @@
-package top.nino.api.model.welcome;
+package top.nino.api.model.danmu;
 
 import struct.StructClass;
 import struct.StructField;
@@ -10,11 +10,11 @@ import java.io.Serializable;
  * @author nino
  */
 @StructClass
-public class BarrageHeadHandle implements Serializable,Cloneable {
+public class DanmuByteDataHandle implements Serializable,Cloneable {
 
 	private static final long serialVersionUID = -8552333200751773861L;
 
-	private static BarrageHeadHandle barrageHeadHandle = new BarrageHeadHandle();
+	private static DanmuByteDataHandle danmuByteDataHandle = new DanmuByteDataHandle();
 
 	// 数据包长度 为int
 	@StructField(order = 0)
@@ -36,9 +36,9 @@ public class BarrageHeadHandle implements Serializable,Cloneable {
 	@StructField(order = 4)
 	private int packageOther;
 
-	private BarrageHeadHandle() {}
+	private DanmuByteDataHandle() {}
 
-	public BarrageHeadHandle(int packageLength, char packageHeadLength, char packageVersion, int packageType, int packageOther) {
+	public DanmuByteDataHandle(int packageLength, char packageHeadLength, char packageVersion, int packageType, int packageOther) {
 		this.packageLength = packageLength;
 		this.packageHeadLength = packageHeadLength;
 		this.packageVersion = packageVersion;
@@ -47,18 +47,18 @@ public class BarrageHeadHandle implements Serializable,Cloneable {
 	}
 
 	// 复制模式
-	public static BarrageHeadHandle getBarrageHeadHandle() {
+	public static DanmuByteDataHandle getBarrageHeadHandle() {
 		try {
-			return (BarrageHeadHandle)barrageHeadHandle.clone();
+			return (DanmuByteDataHandle) danmuByteDataHandle.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-		return new BarrageHeadHandle();
+		return new DanmuByteDataHandle();
 	}
 
-	public static BarrageHeadHandle getBarrageHeadHandle(int packageLength, char packageHeadLength, char packageVersion, int packageType, int packageOther) {
+	public static DanmuByteDataHandle getBarrageHeadHandle(int packageLength, char packageHeadLength, char packageVersion, int packageType, int packageOther) {
 		try {
-			BarrageHeadHandle b = (BarrageHeadHandle)barrageHeadHandle.clone();
+			DanmuByteDataHandle b = (DanmuByteDataHandle) danmuByteDataHandle.clone();
 			b.setPackageHeadLength(packageHeadLength);
 			b.setPackageLength(packageLength);
 			b.setPackageOther(packageOther);
@@ -68,7 +68,7 @@ public class BarrageHeadHandle implements Serializable,Cloneable {
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-		return new BarrageHeadHandle(packageLength,packageHeadLength,packageVersion,packageType,packageOther);
+		return new DanmuByteDataHandle(packageLength,packageHeadLength,packageVersion,packageType,packageOther);
 	}
 
 	public int getPackageLength() {

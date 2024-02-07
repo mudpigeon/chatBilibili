@@ -15,6 +15,4 @@ public class HttpBibilibiliUrl {
     public static final String GET_ANCHOR_FAN_SUM = "https://api.bilibili.com/x/relation/stat";
     public static final String GET_ROOM_INFO = "https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom?room_id=";
     public static final String GET_DANMU_INFO = "https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo";
-
-
 }

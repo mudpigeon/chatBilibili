@@ -21,10 +21,10 @@ public class HeartCheckBilibiliDanmuServerThread extends Thread {
 	@Override
 	public void run() {
 		while (!HFLAG) {
-			if(GlobalSettingConf.webSocketProxy.isOpen()) {
+			if(GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
 				try {
 					Thread.sleep(30000);
-					GlobalSettingConf.webSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.HEART_BYTE));
+					GlobalSettingConf.bilibiliWebSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.HEART_BYTE));
 				} catch (Exception e) {
 					log.info("心跳线程关闭", e);
 				}
