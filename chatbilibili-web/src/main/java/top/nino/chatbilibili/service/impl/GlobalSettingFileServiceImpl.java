@@ -6,12 +6,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.nino.chatbilibili.GlobalSettingConf;
-import top.nino.chatbilibili.component.ThreadComponent;
-import top.nino.chatbilibili.conf.base.AllSettingConfig;
+import top.nino.chatbilibili.service.ThreadService;
+import top.nino.chatbilibili.AllSettingConfig;
 import top.nino.chatbilibili.service.GlobalSettingFileService;
-import top.nino.core.BASE64Encoder;
-import top.nino.core.CookieUtils;
-import top.nino.core.LocalGlobalSettingFileUtil;
+import top.nino.core.data.BASE64Utils;
+import top.nino.core.http.CookieUtils;
+import top.nino.core.file.LocalGlobalSettingFileUtils;
 import top.nino.service.http.HttpBilibiliServer;
 
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class GlobalSettingFileServiceImpl implements GlobalSettingFileService {
 
 
     @Autowired
-    private ThreadComponent threadComponent;
+    private ThreadService threadService;
 
     /**
      * 创建或加载全局配置 还包含验证cookie合法性
@@ -41,7 +41,7 @@ public class GlobalSettingFileServiceImpl implements GlobalSettingFileService {
 
         // 先去加载本地文件的配置
         try {
-            localGlobalSettingMap.putAll(LocalGlobalSettingFileUtil.readFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME));
+            localGlobalSettingMap.putAll(LocalGlobalSettingFileUtils.readFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME));
         } catch (IOException e) {
             log.error("加载本地文件异常", e);
         }
@@ -50,7 +50,7 @@ public class GlobalSettingFileServiceImpl implements GlobalSettingFileService {
         if(StringUtils.isNotBlank(localGlobalSettingMap.get(GlobalSettingConf.FILE_COOKIE_PREFIX))) {
             String cookieString = null;
             try {
-                cookieString = new String(BASE64Encoder.decode(localGlobalSettingMap.get(GlobalSettingConf.FILE_COOKIE_PREFIX)));
+                cookieString = new String(BASE64Utils.decode(localGlobalSettingMap.get(GlobalSettingConf.FILE_COOKIE_PREFIX)));
             } catch (Exception e) {
                 log.error("获取本地cookie失败,请重新登录", e);
             }
@@ -65,7 +65,7 @@ public class GlobalSettingFileServiceImpl implements GlobalSettingFileService {
         if(GlobalSettingConf.USER != null) {
             // 说明cookie仍然有效, 把cookie有效标识 放入Map
             GlobalSettingConf.USER_COOKIE_INFO = CookieUtils.parseCookie(GlobalSettingConf.COOKIE_VALUE);
-            localGlobalSettingMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, BASE64Encoder.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
+            localGlobalSettingMap.put(GlobalSettingConf.FILE_COOKIE_PREFIX, BASE64Utils.encode(GlobalSettingConf.COOKIE_VALUE.getBytes()));
         } else {
             // 说明cookie失效，移除缓存
             GlobalSettingConf.clearUserCache();
@@ -88,10 +88,10 @@ public class GlobalSettingFileServiceImpl implements GlobalSettingFileService {
         }
 
         // 把所有的默认配置也放入缓存
-        localGlobalSettingMap.put(GlobalSettingConf.FILE_SETTING_PREFIX, BASE64Encoder.encode(GlobalSettingConf.ALL_SETTING_CONF.toJson().getBytes()));
+        localGlobalSettingMap.put(GlobalSettingConf.FILE_SETTING_PREFIX, BASE64Utils.encode(GlobalSettingConf.ALL_SETTING_CONF.toJson().getBytes()));
 
         // 将缓存写到本地
-        LocalGlobalSettingFileUtil.writeFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME, localGlobalSettingMap);
+        LocalGlobalSettingFileUtils.writeFile(GlobalSettingConf.GLOBAL_SETTING_FILE_NAME, localGlobalSettingMap);
 
         return true;
     }
@@ -116,13 +116,13 @@ public class GlobalSettingFileServiceImpl implements GlobalSettingFileService {
 
             // 到了这里说明 已经连接到了 一个直播间
             // 所以直接启动弹幕接收
-            threadComponent.startParseMessageThread();
+            threadService.startParseMessageThread();
 
             // 是否使用记录日志线程
             if (GlobalSettingConf.ALL_SETTING_CONF.is_log()) {
-                threadComponent.startLogThread();
+                threadService.startLogThread();
             } else {
-                threadComponent.closeLogThread();
+                threadService.closeLogThread();
             }
         }
     }

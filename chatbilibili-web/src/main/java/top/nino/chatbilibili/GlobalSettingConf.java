@@ -2,9 +2,7 @@ package top.nino.chatbilibili;
 
 import lombok.ToString;
 import org.springframework.context.annotation.Configuration;
-import top.nino.api.model.auto_reply.AutoReply;
 import top.nino.api.model.user.UserCookieInfo;
-import top.nino.chatbilibili.conf.base.AllSettingConfig;
 import top.nino.api.model.danmu.Gift;
 import top.nino.api.model.enums.LiveStatusEnum;
 import top.nino.api.model.room.AnchorMedalInfo;
@@ -179,14 +177,10 @@ public class GlobalSettingConf {
 	public final static Vector<String> barrageString = new Vector<String>();
 
 
-	//自动回复处理弹幕
-	public final static Vector<AutoReply> replys = new Vector<AutoReply>();
+
 
 	//感谢礼物数据集线程
 	public static ParseThankGiftThread parsethankGiftThread = new ParseThankGiftThread();
-
-	//发送弹幕线程
-	public static SendBarrageThread sendBarrageThread;
 
 	//用户在线线程集
 	public static HeartBeatThread heartBeatThread;
@@ -214,13 +208,11 @@ public class GlobalSettingConf {
 
 
 	public static void init_send(){
-		GlobalSettingConf.replys.clear();
 		GlobalSettingConf.thankGiftConcurrentHashMap.clear();
 		GlobalSettingConf.barrageString.clear();
 	}
 
 	public static void init_all(){
-		GlobalSettingConf.replys.clear();
 		GlobalSettingConf.danmuList.clear();
 		GlobalSettingConf.thankGiftConcurrentHashMap.clear();
 		GlobalSettingConf.barrageString.clear();
@@ -229,7 +221,6 @@ public class GlobalSettingConf {
 	}
 
 	public static void init_connect(){
-		GlobalSettingConf.replys.clear();
 		GlobalSettingConf.danmuList.clear();
 		GlobalSettingConf.barrageString.clear();
 		GlobalSettingConf.logList.clear();

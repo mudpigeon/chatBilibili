@@ -5,8 +5,9 @@ import org.apache.logging.log4j.Logger;
 import top.nino.api.model.danmu.RoomInfo;
 import top.nino.api.model.heart.XData;
 import top.nino.api.model.tools.JodaTimeUtils;
+import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.http.HttpHeartBeatData;
-import top.nino.chatbilibili.http.HttpRoomData;
+import top.nino.service.http.HttpBilibiliServer;
 
 import java.util.Date;
 
@@ -36,7 +37,7 @@ public class SmallHeartThread extends Thread {
 			}
 			startETime = System.currentTimeMillis();
 			if(num==0) {
-				roomInfo = HttpRoomData.httpGetRoomInfo().getRoomInfo();
+				roomInfo = HttpBilibiliServer.httpGetRoomAllInfo(GlobalSettingConf.SHORT_ROOM_ID).getRoomInfo();
 				try {
 					setxData(HttpHeartBeatData.httpPostE(roomInfo));
 				} catch (Exception e) {

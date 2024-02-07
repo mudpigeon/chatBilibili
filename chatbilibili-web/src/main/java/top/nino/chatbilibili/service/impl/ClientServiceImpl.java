@@ -10,17 +10,16 @@ import top.nino.api.model.room.RoomAllInfo;
 import top.nino.api.model.room.RoomStatusInfo;
 import top.nino.api.model.server.DanmuInfo;
 import top.nino.api.model.danmu.DanmuByteDataHandle;
-import top.nino.api.model.welcome.FirstSecurityData;
+import top.nino.api.model.danmu.FirstSecurityData;
 import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.client.BilibiliWebSocketProxy;
-import top.nino.chatbilibili.component.ThreadComponent;
-import top.nino.chatbilibili.http.HttpRoomData;
+import top.nino.chatbilibili.service.ThreadService;
 import top.nino.chatbilibili.service.ClientService;
 import top.nino.chatbilibili.service.SettingService;
 import top.nino.chatbilibili.client.utils.ParseWebsocketMessageUtils;
-import top.nino.core.ByteUtils;
-import top.nino.core.DanmuUtils;
-import top.nino.core.HexUtils;
+import top.nino.core.data.ByteUtils;
+import top.nino.core.websocket.DanmuUtils;
+import top.nino.core.data.HexUtils;
 import top.nino.service.http.HttpBilibiliServer;
 
 
@@ -37,7 +36,7 @@ public class ClientServiceImpl implements ClientService {
     private SettingService settingService;
 
     @Autowired
-    private ThreadComponent threadComponent;
+    private ThreadService threadService;
 
     @Override
     public void loadRoomInfoAndOpenWebSocket(Long roomId) throws Exception {
@@ -107,15 +106,15 @@ public class ClientServiceImpl implements ClientService {
         GlobalSettingConf.bilibiliWebSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.HEART_BYTE));
 
         // 启动心跳线程
-        threadComponent.startHeartCheckBilibiliDanmuServerThread();
+        threadService.startHeartCheckBilibiliDanmuServerThread();
     }
 
     @Override
     public void reConnService() throws Exception {
         if (!GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
-            threadComponent.closeAll();
-            RoomStatusInfo roomStatusInfo = HttpRoomData.httpGetRoomInit(GlobalSettingConf.ROOM_ID);
-            RoomAnchorInfo roomAnchorInfo = HttpRoomData.httpGetRoomData(GlobalSettingConf.ROOM_ID);
+            threadService.closeAll();
+            RoomStatusInfo roomStatusInfo = HttpBilibiliServer.httpGetRoomStatusInfo(GlobalSettingConf.ROOM_ID);
+            RoomAnchorInfo roomAnchorInfo = HttpBilibiliServer.httpGetRoomAnchorInfo(GlobalSettingConf.ROOM_ID, GlobalSettingConf.SHORT_ROOM_ID);
             try {
                 if (roomStatusInfo.getRoom_id() < 1 || roomStatusInfo.getRoom_id() == null) {
                     return;
@@ -127,12 +126,12 @@ public class ClientServiceImpl implements ClientService {
                 GlobalSettingConf.SHORT_ROOM_ID = roomStatusInfo.getShort_id();
             }
             GlobalSettingConf.ROOM_ID = roomStatusInfo.getRoom_id();
-            DanmuInfo roomDanmuInfo = HttpRoomData.httpGetConf();
+            DanmuInfo roomDanmuInfo = HttpBilibiliServer.httpGetDanmuInfo(GlobalSettingConf.COOKIE_VALUE, GlobalSettingConf.ROOM_ID, GlobalSettingConf.SHORT_ROOM_ID);
             if (roomDanmuInfo == null) {
                 return;
             }
             GlobalSettingConf.ANCHOR_UID = roomStatusInfo.getUid();
-            GlobalSettingConf.FANS_NUM = HttpRoomData.httpGetFollowersNum();
+            GlobalSettingConf.FANS_NUM = HttpBilibiliServer.httpGetAnchorFanSum(GlobalSettingConf.ANCHOR_UID);
 
             GlobalSettingConf.ROOM_DANMU_WEBSOCKET_URL = DanmuUtils.randomGetWebsocketUrl(GlobalSettingConf.ROOM_DANMU_WEBSOCKET_URL, roomDanmuInfo.getHost_list());
 
@@ -161,7 +160,7 @@ public class ClientServiceImpl implements ClientService {
             byte[] req = ByteUtils.byteMerger(byte_1, byte_2);
             GlobalSettingConf.bilibiliWebSocketProxy.send(req);
             GlobalSettingConf.bilibiliWebSocketProxy.send(HexUtils.fromHexString(GlobalSettingConf.HEART_BYTE));
-            threadComponent.startHeartCheckBilibiliDanmuServerThread();
+            threadService.startHeartCheckBilibiliDanmuServerThread();
             if (GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
                 settingService.writeAndReadSettingAndStartReceive();
             }
@@ -183,7 +182,7 @@ public class ClientServiceImpl implements ClientService {
                     GlobalSettingConf.bilibiliWebSocketProxy.closeConnection(1000, "手动关闭");
                     GlobalSettingConf.bilibiliWebSocketProxy = null;
                 }
-                threadComponent.closeAll();
+                threadService.closeAll();
                 GlobalSettingConf.init_connect();
                 if (null == GlobalSettingConf.bilibiliWebSocketProxy || !GlobalSettingConf.bilibiliWebSocketProxy.isOpen()) {
                     flag = true;

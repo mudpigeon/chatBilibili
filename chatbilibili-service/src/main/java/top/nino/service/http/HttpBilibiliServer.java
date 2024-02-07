@@ -20,8 +20,8 @@ import top.nino.api.model.server.DanmuInfo;
 import top.nino.api.model.user.User;
 import top.nino.api.model.user.UserManager;
 import top.nino.api.model.user_in_room_barrageMsg.UserBarrageMsg;
-import top.nino.core.HttpConstructUtil;
-import top.nino.core.OkHttp3Utils;
+import top.nino.core.http.HttpHeaderConstructUtil;
+import top.nino.core.http.OkHttp3Utils;
 
 import java.util.*;
 
@@ -39,7 +39,7 @@ public class HttpBilibiliServer {
         try {
             OkHttp3Utils.getHttp3Utils().httpGet(
                     HttpBibilibiliUrl.GET_LOGIN_OUT,
-                    HttpConstructUtil.constructHeader(cookieValue, HttpHeader.REFER_BILIBILI),
+                    HttpHeaderConstructUtil.constructHeader(cookieValue, HttpHeader.REFER_BILIBILI),
                     null);
         } catch (Exception e) {
             log.error(String.valueOf(e));
@@ -62,7 +62,7 @@ public class HttpBilibiliServer {
         try {
             responseString = OkHttp3Utils.getHttp3Utils().httpGet(
                     HttpBibilibiliUrl.GET_USER_INFO,
-                    HttpConstructUtil.constructHeader(cookieValue),
+                    HttpHeaderConstructUtil.constructHeader(cookieValue),
                     null).body().string();
         } catch (Exception e) {
             log.error(String.valueOf(e));

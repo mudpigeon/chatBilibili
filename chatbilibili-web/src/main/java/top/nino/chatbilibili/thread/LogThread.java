@@ -5,7 +5,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import top.nino.chatbilibili.GlobalSettingConf;
-import top.nino.core.LogFileUtils;
+import top.nino.core.file.LogFileUtils;
 
 
 /**

@@ -4,7 +4,6 @@ package top.nino.chatbilibili.rest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
-import top.nino.chatbilibili.http.HttpUserData;
 
 
 import javax.websocket.*;
@@ -35,7 +34,7 @@ public class DanmuWebsocket {
 	public void onMessage(String message) throws IOException {
 		//反向发送 23333333333 (滑稽
 		// 主动向房间发送消息需要调用http请求. (https://api.live.bilibili.com/msg/send)
-		HttpUserData.httpPostSendBarrage(message);
+//		HttpUserData.httpPostSendBarrage(message);
 //		for(DanmuWebsocket danmuWebsocket:webSocketServers) {
 //			danmuWebsocket.session.getBasicRemote().sendText(message);
 //		}

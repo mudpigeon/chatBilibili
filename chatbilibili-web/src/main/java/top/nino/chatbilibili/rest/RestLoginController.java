@@ -9,8 +9,8 @@ import top.nino.api.model.user.UserCookieInfo;
 import top.nino.api.model.vo.Response;
 import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.chatbilibili.service.GlobalSettingFileService;
-import top.nino.core.CookieUtils;
-import top.nino.core.QrcodeUtils;
+import top.nino.core.http.CookieUtils;
+import top.nino.core.qrcode.QrcodeUtils;
 import top.nino.service.http.HttpBilibiliServer;
 
 import javax.annotation.Resource;

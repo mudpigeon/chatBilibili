@@ -16,7 +16,6 @@ public enum AdvertStatus {
 	private int code;
 
 	
-	
 	private AdvertStatus(int code) {
 		this.code = code;
 	}

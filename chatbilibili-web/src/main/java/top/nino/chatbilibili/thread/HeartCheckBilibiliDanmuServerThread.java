@@ -3,7 +3,7 @@ package top.nino.chatbilibili.thread;
 
 import lombok.extern.slf4j.Slf4j;
 import top.nino.chatbilibili.GlobalSettingConf;
-import top.nino.core.HexUtils;
+import top.nino.core.data.HexUtils;
 
 /**
  * 心跳检测线程

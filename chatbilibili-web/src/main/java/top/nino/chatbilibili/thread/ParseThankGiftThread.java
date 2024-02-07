@@ -9,9 +9,6 @@ import top.nino.api.model.enums.ListPeopleShieldStatus;
 import top.nino.api.model.enums.ShieldGift;
 import top.nino.api.model.enums.ThankGiftStatus;
 import top.nino.chatbilibili.GlobalSettingConf;
-import top.nino.chatbilibili.conf.base.ThankGiftRuleSet;
-import top.nino.chatbilibili.tool.ParseSetStatusTools;
-import top.nino.chatbilibili.tool.ShieldGiftTools;
 
 
 import java.util.HashSet;
@@ -31,7 +28,6 @@ public class ParseThankGiftThread extends Thread {
 	private String thankGiftString = "感谢%uName%大佬%Type%的%GiftName% x%Num%";
 	private ThankGiftStatus thankGiftStatus;
 	private Short num = 2;
-	private HashSet<ThankGiftRuleSet> thankGiftRuleSets;
 	private boolean is_num = true;
 
 	private ListGiftShieldStatus listGiftShieldStatus;

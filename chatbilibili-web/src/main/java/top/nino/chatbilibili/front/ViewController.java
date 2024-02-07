@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import top.nino.chatbilibili.GlobalSettingConf;
-import top.nino.chatbilibili.http.HttpUserData;
 import top.nino.chatbilibili.service.GlobalSettingFileService;
 import top.nino.chatbilibili.service.SettingService;
 import top.nino.service.http.HttpBilibiliServer;

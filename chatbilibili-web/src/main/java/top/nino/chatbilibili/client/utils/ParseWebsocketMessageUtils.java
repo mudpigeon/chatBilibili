@@ -6,7 +6,7 @@ import struct.JavaStruct;
 import struct.StructException;
 import top.nino.api.model.danmu.DanmuByteDataHandle;
 import top.nino.chatbilibili.GlobalSettingConf;
-import top.nino.core.ByteUtils;
+import top.nino.core.data.ByteUtils;
 
 
 import java.nio.ByteBuffer;

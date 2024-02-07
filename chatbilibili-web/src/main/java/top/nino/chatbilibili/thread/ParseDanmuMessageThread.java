@@ -6,21 +6,18 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import top.nino.api.model.superchat.MedalInfo;
-import top.nino.api.model.vo.WsPackage;
+import top.nino.api.model.vo.WebsocketMessagePackage;
 import top.nino.chatbilibili.GlobalSettingConf;
 import top.nino.api.model.danmu.*;
 import top.nino.api.model.superchat.SuperChat;
-import top.nino.chatbilibili.component.BlackParseComponent;
-import top.nino.chatbilibili.component.ThreadComponent;
+import top.nino.chatbilibili.service.ThreadService;
 import top.nino.chatbilibili.rest.DanmuWebsocket;
 import top.nino.chatbilibili.service.SettingService;
 import top.nino.chatbilibili.tool.*;
-import top.nino.core.JodaTimeUtils;
-import top.nino.core.ParseDanmuUserRoleUtils;
+import top.nino.core.time.JodaTimeUtils;
+import top.nino.core.websocket.ParseDanmuUserRoleUtils;
 import top.nino.service.spring.SpringUtils;
 import top.nino.service.chatgpt.ChatGPTService;
-
-import java.util.Vector;
 
 
 /**
@@ -38,9 +35,8 @@ public class ParseDanmuMessageThread extends Thread {
 
     private SettingService settingService = SpringUtils.getBean(SettingService.class);
 
-    private BlackParseComponent blackParseComponent = SpringUtils.getBean(BlackParseComponent.class);
 
-    private ThreadComponent threadComponent = SpringUtils.getBean(ThreadComponent.class);
+    private ThreadService threadService = SpringUtils.getBean(ThreadService.class);
 
     private ChatGPTService chatGPTService = SpringUtils.getBean(ChatGPTService.class);
 
@@ -173,7 +169,7 @@ public class ParseDanmuMessageThread extends Thread {
 
                             try {
                                 // 发送到本地网页
-                                danmuWebsocket.sendMessage(WsPackage.toJson("danmu", (short) 0, danmuUserRoleInfo));
+                                danmuWebsocket.sendMessage(WebsocketMessagePackage.toJson("danmu", (short) 0, danmuUserRoleInfo));
                             } catch (Exception e) {
                                 log.info("弹幕消息发送到本地网页异常", e);
                             }
@@ -218,7 +214,7 @@ public class ParseDanmuMessageThread extends Thread {
                                     System.out.println(stringBuilder.toString());
                                 }
                                 try {
-                                    danmuWebsocket.sendMessage(WsPackage.toJson("gift", (short) 0, gift));
+                                    danmuWebsocket.sendMessage(WebsocketMessagePackage.toJson("gift", (short) 0, gift));
                                 } catch (Exception e) {
                                     // TODO 自动生成的 catch 块
                                     e.printStackTrace();
@@ -273,7 +269,7 @@ public class ParseDanmuMessageThread extends Thread {
                             gift.setUname(guard.getUsername());
                             gift.setUid(guard.getUid());
                             try {
-                                danmuWebsocket.sendMessage(WsPackage.toJson("gift", (short) 0, gift));
+                                danmuWebsocket.sendMessage(WebsocketMessagePackage.toJson("gift", (short) 0, gift));
                             } catch (Exception e) {
                                 // TODO 自动生成的 catch 块
                                 e.printStackTrace();
@@ -318,7 +314,7 @@ public class ParseDanmuMessageThread extends Thread {
                                 System.out.println(stringBuilder.toString());
                             }
                             try {
-                                danmuWebsocket.sendMessage(WsPackage.toJson("superchat", (short) 0, superChat));
+                                danmuWebsocket.sendMessage(WebsocketMessagePackage.toJson("superchat", (short) 0, superChat));
                             } catch (Exception e) {
                                 // TODO 自动生成的 catch 块
                                 e.printStackTrace();
@@ -719,7 +715,7 @@ public class ParseDanmuMessageThread extends Thread {
                             }
                             //前端弹幕发送
                             try {
-                                danmuWebsocket.sendMessage(WsPackage.toJson("follow", (short) 0, interact));
+                                danmuWebsocket.sendMessage(WebsocketMessagePackage.toJson("follow", (short) 0, interact));
                             } catch (Exception e) {
                                 // TODO 自动生成的 catch 块
                                 e.printStackTrace();
@@ -820,7 +816,7 @@ public class ParseDanmuMessageThread extends Thread {
                             gift.setUid(redPackage.getUid());
                             gift.setMedal_info(redPackage.getMedal_info());
                             try {
-                                danmuWebsocket.sendMessage(WsPackage.toJson("gift", (short) 0, gift));
+                                danmuWebsocket.sendMessage(WebsocketMessagePackage.toJson("gift", (short) 0, gift));
                             } catch (Exception e) {
                                 // TODO 自动生成的 catch 块
                                 e.printStackTrace();
@@ -946,72 +942,7 @@ public class ParseDanmuMessageThread extends Thread {
         }
     }
 
-    public synchronized void parseGiftSetting(Gift gift) throws Exception {
 
-        //礼物屏蔽过滤
-
-        Vector<Gift> gifts = null;
-        if (gift != null && StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-            if (GlobalSettingConf.sendBarrageThread != null && GlobalSettingConf.parsethankGiftThread != null) {
-                if (!GlobalSettingConf.sendBarrageThread.FLAG && !GlobalSettingConf.parsethankGiftThread.TFLAG) {
-                    if (GlobalSettingConf.thankGiftConcurrentHashMap.size() > 0) {
-                        gifts = GlobalSettingConf.thankGiftConcurrentHashMap.get(gift.getUname());
-                        if (gifts != null) {
-                            int flagNum = 0;
-                            for (Gift giftChild : gifts) {
-                                int num1 = giftChild.getNum();
-                                int num2 = gift.getNum();
-                                long total_coin1 = giftChild.getTotal_coin();
-                                long total_coin2 = gift.getTotal_coin();
-                                if (giftChild.getGiftName().equals(gift.getGiftName())) {
-                                    giftChild.setNum(num1 + num2);
-                                    giftChild.setTotal_coin(total_coin1 + total_coin2);
-                                    DelayGiftTimeSetting();
-                                    flagNum++;
-                                }
-                            }
-                            if (flagNum == 0) {
-                                gifts.add(gift);
-                                DelayGiftTimeSetting();
-                            }
-                        } else {
-                            gifts = new Vector<Gift>();
-                            gifts.add(gift);
-                            GlobalSettingConf.thankGiftConcurrentHashMap.put(gift.getUname(), gifts);
-                            DelayGiftTimeSetting();
-                        }
-                    } else {
-                        gifts = new Vector<Gift>();
-                        gifts.add(gift);
-                        GlobalSettingConf.thankGiftConcurrentHashMap.put(gift.getUname(), gifts);
-                        DelayGiftTimeSetting();
-                    }
-                }
-            }
-        }
-    }
-
-    public void DelayFollowTimeSetting() {
-
-    }
-
-    public synchronized void parseFollowSetting(Interact interact) throws Exception {
-        //黑名单处理
-        if (!blackParseComponent.interact_parse(interact)) {
-            interact = null;
-        }
-
-    }
-
-
-    public synchronized void parseWelcomeSetting(Interact interact) throws Exception {
-        if (!blackParseComponent.interact_parse(interact)) {
-            interact = null;
-        }
-        if (interact != null && StringUtils.isNotBlank(GlobalSettingConf.COOKIE_VALUE)) {
-
-        }
-    }
 
     public static String parseCmd(String cmd) {
         if(StringUtils.isBlank(cmd)) {
