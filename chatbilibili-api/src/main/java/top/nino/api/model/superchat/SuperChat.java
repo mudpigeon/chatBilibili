@@ -8,9 +8,6 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class SuperChat implements Serializable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -726210364306930621L;
 	//superchatid
 	private Long id;
