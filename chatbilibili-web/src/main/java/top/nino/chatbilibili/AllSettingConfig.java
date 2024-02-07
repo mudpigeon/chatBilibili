@@ -25,6 +25,8 @@ public class AllSettingConfig implements Serializable {
 
     private static final long serialVersionUID = 1162255349476806991L;
 
+    // ---------已经在使用--------------
+
     // 房间号
     private Long roomId;
 

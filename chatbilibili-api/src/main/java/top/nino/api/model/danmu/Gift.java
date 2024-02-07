@@ -1,5 +1,6 @@
 package top.nino.api.model.danmu;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import top.nino.api.model.superchat.MedalInfo;
 
@@ -108,5 +109,14 @@ public class Gift implements Serializable,Cloneable{
 		return new Gift();
 	}
 
-
+	public static Gift getGiftByJsonObject(JSONObject giftJsonObject, short giftType) {
+		return getGift(giftJsonObject.getInteger("giftId"), giftJsonObject.getShort("giftType"),
+				giftJsonObject.getString("giftName"), giftJsonObject.getInteger("num"),
+				giftJsonObject.getString("uname"), giftJsonObject.getString("face"),
+				giftJsonObject.getShort("guard_level"), giftJsonObject.getLong("uid"),
+				giftJsonObject.getLong("timestamp"), giftJsonObject.getString("action"),
+				giftJsonObject.getInteger("price"),
+				giftType,
+				giftJsonObject.getLong("total_coin"), giftJsonObject.getObject("medal_info", MedalInfo.class));
+	}
 }

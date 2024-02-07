@@ -41,6 +41,24 @@ public class DanmuUtils {
         }
         log.info("获取破站弹幕服务器websocket地址：{}", websocketUrl);
         return websocketUrl;
+    }
 
+    public static String parseCmd(String cmd) {
+        if(StringUtils.isBlank(cmd)) {
+            return cmd;
+        }
+        if (cmd.startsWith("DANMU_MSG")) {
+            return "DANMU_MSG";
+        }
+        if (cmd.startsWith("SEND_GIFT")) {
+            return "SEND_GIFT";
+        }
+        if (cmd.startsWith("GUARD_BUY")) {
+            return "GUARD_BUY";
+        }
+        if(cmd.startsWith("SUPER_CHAT_MESSAGE")) {
+            return "SUPER_CHAT_MESSAGE";
+        }
+        return cmd;
     }
 }

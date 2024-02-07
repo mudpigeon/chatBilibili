@@ -1,4 +1,4 @@
-package top.nino.core.websocket;
+package top.nino.core.websocket.parse;
 
 import top.nino.api.model.danmu.DanmuMessage;
 

@@ -87,6 +87,12 @@ public class GlobalSettingCache {
 	// 房间人气
 	public static Long ROOM_POPULARITY;
 
+	// 点赞数量
+	public static Long ROOM_LIKE;
+
+	// 房间观看人数（历史）
+	public static Long ROOM_WATCHER;
+
 	// 直播状态 0不直播 1直播 2轮播
 	public static Integer LIVE_STATUS = LiveStatusEnum.CLOSED.getCode();
 
@@ -154,11 +160,9 @@ public class GlobalSettingCache {
 
 
 
-	// 房间观看人数（历史）
-	public static Long ROOM_WATCHER = 0L;
 
-	// 点赞数量
-	public static Long ROOM_LIKE = 0L;
+
+
 
 	//心跳包协议类型
 	public final static int heartPackageType = 2;
