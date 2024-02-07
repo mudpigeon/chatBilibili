@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+/**
+ * @author nino
+ */
 @Data
 @NoArgsConstructor
 public class UserBarrageMsg {

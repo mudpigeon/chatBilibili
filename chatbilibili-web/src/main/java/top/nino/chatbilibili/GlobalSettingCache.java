@@ -6,7 +6,6 @@ import top.nino.api.model.user.UserCookieInfo;
 import top.nino.api.model.danmu.Gift;
 import top.nino.api.model.enums.LiveStatusEnum;
 import top.nino.api.model.room.AnchorMedalInfo;
-import top.nino.api.model.user.AutoSendGift;
 import top.nino.api.model.user.User;
 import top.nino.api.model.user.UserManager;
 import top.nino.api.model.user_in_room_barrageMsg.UserBarrageMsg;
@@ -199,9 +198,6 @@ public class GlobalSettingCache {
 
 	public static int manager_login_size=0;
 
-
-	//可以赠送礼物集合 要初始化
-	public static Map<Integer, AutoSendGift> autoSendGiftMap = null;
 
 	//测试模式
 	public static boolean TEST_MODE = false;

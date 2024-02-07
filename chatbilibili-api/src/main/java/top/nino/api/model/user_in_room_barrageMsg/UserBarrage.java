@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 
+/**
+ * @author nino
+ */
 @Data
 @NoArgsConstructor
 public class UserBarrage implements Serializable{

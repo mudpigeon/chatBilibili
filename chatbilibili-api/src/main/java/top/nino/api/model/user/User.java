@@ -1,6 +1,5 @@
 package top.nino.api.model.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
