@@ -9,15 +9,12 @@ import top.nino.api.model.vo.WebsocketMessagePackage;
 import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.api.model.danmu.*;
 import top.nino.api.model.superchat.SuperChat;
-import top.nino.chatbilibili.service.ThreadService;
-import top.nino.chatbilibili.rest.DanmuWebsocket;
-import top.nino.chatbilibili.service.SettingService;
+import top.nino.chatbilibili.client.ChatBilibiliWebsocketController;
 import top.nino.chatbilibili.tool.*;
 import top.nino.core.time.JodaTimeUtils;
 import top.nino.core.websocket.DanmuUtils;
 import top.nino.core.websocket.parse.*;
 import top.nino.service.spring.SpringUtils;
-import top.nino.service.chatgpt.ChatGPTService;
 
 
 /**
@@ -31,22 +28,18 @@ public class ParseDanmuMessageThread extends Thread {
 
     public volatile boolean closeFlag = false;
 
-    private DanmuWebsocket danmuWebsocket = SpringUtils.getBean(DanmuWebsocket.class);
-
-    private SettingService settingService = SpringUtils.getBean(SettingService.class);
-
-    private ThreadService threadService = SpringUtils.getBean(ThreadService.class);
-
-    private ChatGPTService chatGPTService = SpringUtils.getBean(ChatGPTService.class);
-
+    private final ChatBilibiliWebsocketController chatBilibiliWebsocketController = SpringUtils.getBean(ChatBilibiliWebsocketController.class);
 
     @Override
     public void run() {
 
         while (!closeFlag) {
 
+            String message = null;
+
+
             // 当没有弹幕需要解析时，等待
-            if(CollectionUtils.isEmpty(GlobalSettingCache.danmuList) || StringUtils.isBlank(GlobalSettingCache.danmuList.get(0))) {
+            if (CollectionUtils.isEmpty(GlobalSettingCache.danmuList) || StringUtils.isBlank(GlobalSettingCache.danmuList.get(0))) {
                 synchronized (GlobalSettingCache.parseDanmuMessageThread) {
                     try {
                         GlobalSettingCache.parseDanmuMessageThread.wait();
@@ -56,22 +49,28 @@ public class ParseDanmuMessageThread extends Thread {
                 }
             }
 
-            // 拿取第一条消息
-            String message = GlobalSettingCache.danmuList.get(0);
-
-            JSONObject messageJsonObject = JSONObject.parseObject(message);
-            log.info("收到一条未解析的消息：{}", messageJsonObject.toString());
-
-
-            String cmd = DanmuUtils.parseCmd(messageJsonObject.getString("cmd"));
-            if (StringUtils.isBlank(cmd)) {
-                continue;
+            synchronized (GlobalSettingCache.danmuList) {
+                // 拿取第一条消息
+                message = GlobalSettingCache.danmuList.get(0);
             }
 
+
+
+            JSONObject messageJsonObject = JSONObject.parseObject(message);
+
+
+
+            String haveKnownCmd = DanmuUtils.parseHaveKnownCmd(messageJsonObject.getString("cmd"));
+            if (StringUtils.isBlank(haveKnownCmd)) {
+                GlobalSettingCache.danmuList.remove(0);
+                continue;
+            }
+            // log.info("收到一条可解析的消息：{}", messageJsonObject.toString());
             String parseResultString = "";
-            String cmdResultString = "";
+            String cmdResultString = haveKnownCmd;
             Object objectResult = null;
-            switch (cmd) {
+
+            switch (haveKnownCmd) {
                 // 弹幕
                 case "DANMU_MSG":
 
@@ -161,7 +160,6 @@ public class ParseDanmuMessageThread extends Thread {
                     danmuResultString.append(ParseDanmuUserRoleUtils.parseDanmuContent(danmuMessage));
 
                     parseResultString = danmuResultString.toString();
-                    cmdResultString = "danmu";
                     objectResult = danmuUserRoleInfo;
                     break;
 
@@ -183,9 +181,11 @@ public class ParseDanmuMessageThread extends Thread {
                     }
 
                     Gift normalGift = Gift.getGiftByJsonObject(messageJsonObject, gift_type);
-
-                    parseResultString = ParseDanmuGiftUtils.parseGiftDanmuContent(normalGift);
-                    cmdResultString = "gift";
+                    try{
+                        parseResultString = ParseDanmuGiftUtils.parseGiftDanmuContent(normalGift);
+                    } catch (Exception e) {
+                        log.info("礼物异常:", e);
+                    }
                     objectResult = normalGift;
                     break;
                 // 上舰
@@ -197,7 +197,6 @@ public class ParseDanmuMessageThread extends Thread {
                     Guard guard = JSONObject.parseObject(messageJsonObject.getString("data"), Guard.class);
 
                     parseResultString = ParseDanmuGuardUtils.parseGuardDanmuContent(guard);
-                    cmdResultString = "gift";
                     objectResult = ParseDanmuGuardUtils.parseGuardDanmuToGiftClass(guard);
                     break;
 
@@ -259,7 +258,6 @@ public class ParseDanmuMessageThread extends Thread {
                     String redPackageResultString = ParseDanmuRedPackageUtils.parseRedPackageDanmeContent(redPackage);
 
                     parseResultString = redPackageResultString;
-                    cmdResultString = "gift";
                     objectResult = ParseDanmuRedPackageUtils.parseRedPackageDanmuToGiftClass(redPackage);
                     break;
                 case "LIKE_INFO_V3_UPDATE":
@@ -271,10 +269,14 @@ public class ParseDanmuMessageThread extends Thread {
             }
 
             if(StringUtils.isNotBlank(parseResultString) && StringUtils.isNotBlank(cmdResultString) && ObjectUtils.isNotEmpty(objectResult)) {
-                logAndSendToLocalWebSocket(parseResultString, cmdResultString, objectResult);
+                logAndSendToLocalWebSocket(parseResultString, haveKnownCmd, objectResult);
             }
+
             // 解析完成移除
-            GlobalSettingCache.danmuList.remove(0);
+            synchronized (GlobalSettingCache.danmuList) {
+                GlobalSettingCache.danmuList.remove(0);
+            }
+            // log.info("消息解析成功:{}", messageJsonObject);
         }
 
     }
@@ -288,7 +290,9 @@ public class ParseDanmuMessageThread extends Thread {
 
         try {
             // 发送到本地网页
-            danmuWebsocket.sendMessage(WebsocketMessagePackage.toJson(cmd, (short) 0, result));
+            String sendToViewString = WebsocketMessagePackage.toJson(cmd, (short) 0, result);
+            log.info("向前端页面发送:{}", sendToViewString);
+            chatBilibiliWebsocketController.sendMessageToView(sendToViewString);
         } catch (Exception e) {
             log.info("弹幕消息发送到本地网页异常", e);
         }

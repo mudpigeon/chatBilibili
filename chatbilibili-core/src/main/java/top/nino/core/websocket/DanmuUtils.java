@@ -43,22 +43,31 @@ public class DanmuUtils {
         return websocketUrl;
     }
 
-    public static String parseCmd(String cmd) {
+    /**
+     * 我目前已知的解析类型
+     * @param cmd
+     * @return
+     */
+    public static String parseHaveKnownCmd(String cmd) {
         if(StringUtils.isBlank(cmd)) {
             return cmd;
         }
+        // 普通弹幕
         if (cmd.startsWith("DANMU_MSG")) {
             return "DANMU_MSG";
         }
+        // 送礼
         if (cmd.startsWith("SEND_GIFT")) {
             return "SEND_GIFT";
         }
+        // 上舰
         if (cmd.startsWith("GUARD_BUY")) {
             return "GUARD_BUY";
         }
+        // SC
         if(cmd.startsWith("SUPER_CHAT_MESSAGE")) {
             return "SUPER_CHAT_MESSAGE";
         }
-        return cmd;
+        return "";
     }
 }

@@ -48,7 +48,9 @@ public class ParseWebsocketMessageUtils {
 				String resultStr = new String(dataBodyBytes, "utf-8");
 
 				// 放入待处理弹幕集合
-				GlobalSettingCache.danmuList.add(resultStr);
+				synchronized (GlobalSettingCache.danmuList) {
+					GlobalSettingCache.danmuList.add(resultStr);
+				}
 
 				if (ObjectUtils.isNotEmpty(GlobalSettingCache.parseDanmuMessageThread) && !GlobalSettingCache.parseDanmuMessageThread.closeFlag) {
 					synchronized (GlobalSettingCache.parseDanmuMessageThread) {
@@ -127,7 +129,9 @@ public class ParseWebsocketMessageUtils {
 
 					String resultStr = new String(subBodyBytes, "utf-8");
 
-					GlobalSettingCache.danmuList.add(resultStr);
+					synchronized (GlobalSettingCache.danmuList) {
+						GlobalSettingCache.danmuList.add(resultStr);
+					}
 
 					if (ObjectUtils.isNotEmpty(GlobalSettingCache.parseDanmuMessageThread) && !GlobalSettingCache.parseDanmuMessageThread.closeFlag) {
 						synchronized (GlobalSettingCache.parseDanmuMessageThread) {

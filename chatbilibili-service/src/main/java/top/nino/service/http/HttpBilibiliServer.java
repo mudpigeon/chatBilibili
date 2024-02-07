@@ -181,6 +181,7 @@ public class HttpBilibiliServer {
         short code = responseJsonObject.getShort("code");
         if (code == 0) {
             Boolean manager = responseJsonObject.getJSONObject("data").getJSONObject("badge").getBoolean("is_room_admin");
+            userManager = new UserManager();
             userManager.set_manager(manager != null ? manager : false);
             userManager.setRoomid(roomId);
             userManager.setShort_roomid(shortRoomId);
